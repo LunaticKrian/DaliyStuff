@@ -356,8 +356,92 @@ async function exportPdf() {
   }
 }
 
+// ── 导出预览弹窗 ──────────────────────────────────────────────────────
+// 预览实例带 transform:scale 仅供观看；下载仍走离屏未缩放的 printRoot（scale 会干扰
+// html2canvas 抓图几何）。data/labels/lang 响应式同源，两份模板实例自动同步。
+const showPreview = ref(false)
+const previewBodyEl = ref<HTMLElement | null>(null)
+const previewStageEl = ref<HTMLElement | null>(null)
+const fitScale = ref(1)    // 自动适应宽度的基准倍率
+const zoomManual = ref(1)  // 手动叠加倍率（1 = 恰好适应宽度）
+const stageH = ref(0)      // 预览 stage 未缩放的内容高（px）
+
+const ZOOM_MIN = 0.5
+const ZOOM_MAX = 2.0
+const ZOOM_STEP = 0.1
+const A4_W = 794   // 210mm @ 96dpi，与 utils/exportPdf.ts 一致
+const A4_H = 1123  // 297mm @ 96dpi
+
+const scale = computed(() => +(fitScale.value * zoomManual.value).toFixed(3))
+const zoomPercent = computed(() => Math.round(scale.value * 100))
+// 分页线原始坐标倍数（落在 1123/2246/… 处，随 stage 一起 scale）
+const pageBreaks = computed<number[]>(() => {
+  if (stageH.value <= A4_H) return []
+  const n = Math.floor(stageH.value / A4_H)
+  return Array.from({ length: n }, (_, i) => i + 1)
+})
+
+let bodyRo: ResizeObserver | null = null
+let stageRo: ResizeObserver | null = null
+
+function recomputeFit() {
+  if (!previewBodyEl.value) return
+  const cs = getComputedStyle(previewBodyEl.value)
+  const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0)
+  const avail = previewBodyEl.value.clientWidth - pad
+  if (avail > 0) fitScale.value = Math.max(0.1, +(avail / A4_W).toFixed(3))
+}
+
+function measureStage() {
+  if (previewStageEl.value) stageH.value = previewStageEl.value.scrollHeight
+}
+
+async function openPreview() {
+  showPreview.value = true
+  zoomManual.value = 1
+  await nextTick()
+  if (document.fonts?.ready) {
+    try { await document.fonts.ready } catch { /* ignore */ }
+  }
+  await nextTick()
+  recomputeFit()
+  measureStage()
+  bodyRo?.disconnect()
+  stageRo?.disconnect()
+  if (previewBodyEl.value) {
+    bodyRo = new ResizeObserver(recomputeFit)
+    bodyRo.observe(previewBodyEl.value)
+  }
+  if (previewStageEl.value) {
+    stageRo = new ResizeObserver(measureStage)
+    stageRo.observe(previewStageEl.value)
+  }
+}
+
+function closePreview() {
+  showPreview.value = false
+  bodyRo?.disconnect(); bodyRo = null
+  stageRo?.disconnect(); stageRo = null
+}
+
+function zoomIn()  { zoomManual.value = Math.min(ZOOM_MAX, +(zoomManual.value + ZOOM_STEP).toFixed(2)) }
+function zoomOut() { zoomManual.value = Math.max(ZOOM_MIN, +(zoomManual.value - ZOOM_STEP).toFixed(2)) }
+function zoomReset() { zoomManual.value = 1 }
+
+// 用户确认：关弹窗 → 复用 exportPdf()（内部已有 notify / try-catch / exporting，仍用 printRoot）
+async function confirmDownload() {
+  if (exporting.value) return
+  closePreview()
+  await nextTick()
+  await exportPdf()
+}
+
 onMounted(load)
-onUnmounted(() => { if (saveTimer) clearTimeout(saveTimer) })
+onUnmounted(() => {
+  bodyRo?.disconnect()
+  stageRo?.disconnect()
+  if (saveTimer) clearTimeout(saveTimer)
+})
 </script>
 
 <template>
@@ -368,7 +452,7 @@ onUnmounted(() => { if (saveTimer) clearTimeout(saveTimer) })
       <span class="rev" v-if="resume">已存档 · r{{ resume.revision }}</span>
       <span class="spacer"></span>
       <button class="tbtn" @click="showVersions = true">▤ 版本历史</button>
-      <button class="tbtn tbtn--gold" @click="exportPdf">⤓ 导出 PDF</button>
+      <button class="tbtn tbtn--gold" @click="openPreview">⤓ 导出 PDF</button>
     </header>
 
     <div class="dossier" v-if="resume">
@@ -595,6 +679,47 @@ onUnmounted(() => { if (saveTimer) clearTimeout(saveTimer) })
         </div>
       </div>
     </div>
+
+    <!-- PDF 导出预览 -->
+    <div class="veil" :class="{ 'is-open': showPreview }" @click.self="closePreview">
+      <div class="preview-modal pixel-border">
+        <div class="preview-modal__head">
+          <span>⤓ 导出预览 · A4 (210 × 297 mm)</span>
+          <button class="x" @click="closePreview" aria-label="关闭">✕</button>
+        </div>
+
+        <div class="preview-modal__body" ref="previewBodyEl">
+          <div class="preview-scaler" :style="{ '--scale': scale, height: (stageH * scale) + 'px' }">
+            <div class="preview-stage" ref="previewStageEl" :style="{ transform: `scale(${scale})` }">
+              <component :is="templateComp" :data="data" :labels="labels" :lang="lang" :print="true" />
+              <div class="preview-page-lines" aria-hidden="true">
+                <div
+                  v-for="i in pageBreaks"
+                  :key="i"
+                  class="page-line"
+                  :style="{ top: (i * A4_H) + 'px' }"
+                ><span class="page-line__tag">— page {{ i }} / {{ i + 1 }} 分页 —</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-modal__foot">
+          <div class="zoom-ctrl">
+            <button class="zbtn" @click="zoomOut" :disabled="zoomManual <= ZOOM_MIN" aria-label="缩小">−</button>
+            <button class="zpct" @click="zoomReset" title="点击恢复适应宽度">{{ zoomPercent }}%</button>
+            <button class="zbtn" @click="zoomIn" :disabled="zoomManual >= ZOOM_MAX" aria-label="放大">+</button>
+          </div>
+          <div class="foot-acts">
+            <button class="tbtn" @click="closePreview">取消</button>
+            <button class="tbtn tbtn--gold" :disabled="exporting" @click="confirmDownload">
+              <span v-if="exporting" class="pixel-loading inline"></span>
+              <span v-else>⤓ 下载 PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -800,4 +925,82 @@ textarea.inp { resize: vertical; min-height: 48px; }
 .ver__time { font-size: 8px; color: var(--pixel-text-secondary); }
 .revert { font-size: 9px; color: var(--pixel-warning, #f5d976); background: transparent; border: 1px solid var(--pixel-border); padding: 5px 9px; cursor: pointer; }
 .revert:hover { border-color: var(--pixel-warning, #f5d976); }
+
+/* ═══ 导出预览弹窗 ════════════════════════════════════════════ */
+.preview-modal {
+  width: min(1100px, 94vw); height: min(88vh, 900px);
+  background: var(--pixel-card-bg);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.preview-modal__head {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: var(--pixel-bg-secondary); border-bottom: 2px solid var(--pixel-border);
+  font-size: 11px; letter-spacing: 1px; color: var(--pixel-info);
+}
+.preview-modal__head .x {
+  margin-left: auto; cursor: pointer; color: var(--pixel-text-secondary);
+  background: none; border: none; font-size: 16px;
+}
+.preview-modal__head .x:hover { color: var(--pixel-accent); }
+
+/* body：弹性填充 + 滚动 + 居中 + 像素网格底 */
+.preview-modal__body {
+  flex: 1; overflow: auto; padding: 16px;
+  display: flex; justify-content: center;
+  background-color: #141a36;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+/* scaler：占缩放后视觉尺寸撑开滚动区；width 由 --scale 计算，height 内联设定 */
+.preview-scaler {
+  position: relative;
+  width: calc(794px * var(--scale, 1));
+  min-height: calc(1123px * var(--scale, 1));
+}
+/* stage：absolute 在 scaler 内，固定 794 宽，transform 缩放；与 PDF 白底一致 */
+.preview-stage {
+  position: absolute; top: 0; left: 0; width: 794px;
+  background: #ffffff;
+  transform-origin: top left;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 4px 4px 0 var(--pixel-shadow);
+}
+
+/* 分页虚线 overlay：坐标在未缩放原始空间，随 stage 一起 scale，不参与交互与抓图 */
+.preview-page-lines { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; z-index: 2; }
+.page-line { position: absolute; left: 0; right: 0; height: 0; border-top: 2px dashed rgba(115, 239, 247, 0.55); }
+.page-line__tag {
+  position: absolute; right: 6px; top: -8px;
+  font-family: var(--font-pixel-en), ui-monospace, monospace;
+  font-size: 8px; letter-spacing: 0.5px; color: var(--pixel-info);
+  background: rgba(20, 26, 54, 0.85); padding: 1px 6px; white-space: nowrap;
+}
+
+/* 底部操作栏 */
+.preview-modal__foot {
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  background: var(--pixel-bg-secondary); border-top: 2px solid var(--pixel-border);
+}
+.zoom-ctrl { display: flex; align-items: center; gap: 6px; }
+.zbtn {
+  font-family: var(--font-pixel-en), ui-monospace, monospace;
+  font-size: 14px; line-height: 1; width: 26px; height: 26px;
+  display: grid; place-items: center;
+  background: var(--pixel-bg); color: var(--pixel-text);
+  border: 2px solid var(--pixel-border); cursor: pointer;
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+}
+.zbtn:hover:not(:disabled) { color: var(--pixel-warning, #f5d976); border-color: var(--pixel-warning, #f5d976); }
+.zbtn:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--pixel-shadow); }
+.zbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.zpct {
+  font-family: var(--font-pixel-en), ui-monospace, monospace;
+  font-size: 11px; color: var(--pixel-text-secondary);
+  min-width: 48px; text-align: center;
+  background: transparent; border: 1px dashed transparent; cursor: pointer; padding: 3px 4px;
+}
+.zpct:hover { color: var(--pixel-info); border-color: var(--pixel-border); }
+.foot-acts { margin-left: auto; display: flex; gap: 8px; }
 </style>
