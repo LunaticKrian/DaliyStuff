@@ -19,6 +19,7 @@ from app.schemas.resume import (
     InlinePolishResponse,
     ResumeCreate,
     ResumeListItem,
+    ResumeMetaUpdate,
     ResumeResponse,
     ResumeUpdate,
     ThreadCreate,
@@ -65,7 +66,7 @@ async def create_resume(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> ResumeResponse:
-    r = await svc.create_resume(db, current_user.id, body.title, body.lang)
+    r = await svc.create_resume(db, current_user.id, body.title, body.lang, body.template)
     return await svc.read_full(db, r)
 
 
@@ -96,6 +97,19 @@ async def update_resume(
 ) -> ResumeResponse:
     r = await _require_resume(db, resume_id, current_user)
     await svc.update_resume(db, r, body.data, body.summary)
+    return await svc.read_full(db, r)
+
+
+@router.patch("/{resume_id}/meta", response_model=ResumeResponse)
+async def update_meta(
+    resume_id: int,
+    body: ResumeMetaUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ResumeResponse:
+    """切换模板 / 当前语言。不生成快照、不前进 revision。"""
+    r = await _require_resume(db, resume_id, current_user)
+    await svc.update_meta(db, r, body.lang, body.template)
     return await svc.read_full(db, r)
 
 

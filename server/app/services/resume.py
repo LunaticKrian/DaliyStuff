@@ -67,31 +67,63 @@ async def list_mine(db: AsyncSession, user_id: int) -> list[ResumeListItem]:
         select(Resume).where(Resume.user_id == user_id).order_by(Resume.updated_at.desc())
     )).scalars().all()
     return [
-        ResumeListItem(id=r.id, title=r.title, lang=r.lang,
+        ResumeListItem(id=r.id, title=r.title, lang=r.lang, template=r.template,
                        revision=r.current_revision, updatedAt=r.updated_at)
         for r in rows
     ]
 
 
 async def _get_snapshot(db: AsyncSession, resume_id: int, revision: int) -> ResumeSnapshot | None:
+    # 取最新一条（按 id），容忍历史可能存在的重复 (resume_id, revision) —— 不用 scalar_one_or_none 以免 500。
     return (await db.execute(
         select(ResumeSnapshot).where(
             ResumeSnapshot.resume_id == resume_id,
             ResumeSnapshot.revision == revision,
-        )
+        ).order_by(ResumeSnapshot.id.desc()).limit(1)
     )).scalar_one_or_none()
 
 
+def _split_snapshot_data(raw) -> dict[str, ResumeData]:
+    """把快照原始 JSON 归一化为 {zh, en} 两份 ResumeData。
+
+    兼容历史单份 ResumeData（顶层是 profile/timeline/...、无 zh 键）：视为 zh，en 置空。
+    """
+    if not isinstance(raw, dict):
+        return {"zh": ResumeData(), "en": ResumeData()}
+    if "zh" in raw or "en" in raw:
+        zh = raw.get("zh") or {}
+        en = raw.get("en") or {}
+        return {
+            "zh": ResumeData.model_validate(zh) if zh else ResumeData(),
+            "en": ResumeData.model_validate(en) if en else ResumeData(),
+        }
+    # legacy：整份就是一份 ResumeData → 归为 zh
+    return {"zh": ResumeData.model_validate(raw), "en": ResumeData()}
+
+
+def _dump_both(both: dict[str, ResumeData]) -> dict:
+    return {"zh": both["zh"].model_dump(mode="json"), "en": both["en"].model_dump(mode="json")}
+
+
 async def get_current_data(db: AsyncSession, resume: Resume) -> ResumeData:
+    """当前显示+编辑语言（resume.lang）侧的 ResumeData。"""
     snap = await _get_snapshot(db, resume.id, resume.current_revision)
     if snap is None:
         return ResumeData()
-    return ResumeData.model_validate(snap.data)
+    both = _split_snapshot_data(snap.data)
+    return both.get(resume.lang) or both["zh"]
+
+
+async def get_both_data(db: AsyncSession, resume: Resume) -> dict[str, ResumeData]:
+    snap = await _get_snapshot(db, resume.id, resume.current_revision)
+    if snap is None:
+        return {"zh": ResumeData(), "en": ResumeData()}
+    return _split_snapshot_data(snap.data)
 
 
 def to_resume_response(resume: Resume, data: ResumeData) -> ResumeResponse:
     return ResumeResponse(
-        id=resume.id, title=resume.title, lang=resume.lang,
+        id=resume.id, title=resume.title, lang=resume.lang, template=resume.template,
         revision=resume.current_revision, data=data, updatedAt=resume.updated_at,
     )
 
@@ -104,15 +136,16 @@ async def read_full(db: AsyncSession, resume: Resume) -> ResumeResponse:
 async def apply_and_snapshot(
     db: AsyncSession,
     resume: Resume,
-    data: ResumeData,
+    both: dict[str, ResumeData],
     summary: str,
     source: str = "manual",
 ) -> ResumeSnapshot:
+    """落库两份语言内容。手动保存 / AI 接受都先构造好 {zh, en} 再调用。"""
     resume.current_revision += 1
     snap = ResumeSnapshot(
         resume_id=resume.id,
         revision=resume.current_revision,
-        data=data.model_dump(mode="json"),
+        data=_dump_both(both),
         summary=(summary or "")[:160],
         source=source,
     )
@@ -126,18 +159,39 @@ async def apply_and_snapshot(
 
 async def create_resume(
     db: AsyncSession, user_id: int, title: str | None = None, lang: str = "zh",
+    template: str = "pixel",
 ) -> Resume:
-    r = Resume(user_id=user_id, title=title or "我的简历", lang=lang, current_revision=0)
+    r = Resume(user_id=user_id, title=title or "我的简历", lang=lang,
+               template=template, current_revision=0)
     db.add(r)
     await db.flush()
-    await apply_and_snapshot(db, r, ResumeData(), summary="初始创建", source="manual")
+    await apply_and_snapshot(db, r, {"zh": ResumeData(), "en": ResumeData()},
+                             summary="初始创建", source="manual")
     return r
 
 
 async def update_resume(
     db: AsyncSession, resume: Resume, data: ResumeData, summary: str = "手动编辑",
 ) -> Resume:
-    await apply_and_snapshot(db, resume, data, summary, source="manual")
+    """手动整体保存：只替换当前语言侧，另一侧保留。"""
+    both = await get_both_data(db, resume)
+    both[resume.lang] = data
+    await apply_and_snapshot(db, resume, both, summary, source="manual")
+    return resume
+
+
+async def update_meta(
+    db: AsyncSession, resume: Resume,
+    lang: str | None = None, template: str | None = None,
+) -> Resume:
+    """切换模板 / 当前语言。直接改列，不生成快照、不前进 revision。"""
+    if lang in ("zh", "en"):
+        resume.lang = lang
+    if template:
+        resume.template = template
+    db.add(resume)
+    await db.flush()
+    await db.refresh(resume)
     return resume
 
 
@@ -206,7 +260,7 @@ def _summarize(tool: str, diff: dict) -> str:
 def to_pending_response(p: PendingChange) -> PendingChangeResponse:
     return PendingChangeResponse(
         id=p.id, groupId=p.group_id, tool=p.tool, args=p.args, diff=p.diff,
-        baseRevision=p.base_revision, status=p.status, createdAt=p.created_at,
+        baseRevision=p.base_revision, lang=p.lang, status=p.status, createdAt=p.created_at,
     )
 
 
@@ -243,9 +297,11 @@ async def accept_one(db: AsyncSession, resume: Resume, pending: PendingChange) -
         raise ResumeConflict(
             f"版本冲突：变更基于 r{pending.base_revision}，当前已 r{resume.current_revision}"
         )
-    data = await get_current_data(db, resume)
-    new_data, diff = compute_and_apply(data, pending.tool, pending.args)
-    await apply_and_snapshot(db, resume, new_data, _summarize(pending.tool, diff), source="nexa")
+    both = await get_both_data(db, resume)
+    lang = pending.lang or resume.lang
+    new_data, diff = compute_and_apply(both[lang], pending.tool, pending.args)
+    both[lang] = new_data
+    await apply_and_snapshot(db, resume, both, _summarize(pending.tool, diff), source="nexa")
     pending.status = "applied"
     db.add(pending)
     await _mark_others_stale(db, resume.id, exclude_id=pending.id)
@@ -260,14 +316,15 @@ async def accept_group(db: AsyncSession, resume: Resume, group_id: str) -> Resum
         raise ResumeConflict(
             f"版本冲突：变更基于 r{pendings[0].base_revision}，当前已 r{resume.current_revision}"
         )
-    data = await get_current_data(db, resume)
+    both = await get_both_data(db, resume)
     summaries: list[str] = []
     for p in pendings:
-        data, diff = compute_and_apply(data, p.tool, p.args)
+        lang = p.lang or resume.lang
+        both[lang], diff = compute_and_apply(both[lang], p.tool, p.args)
         summaries.append(_summarize(p.tool, diff))
         p.status = "applied"
         db.add(p)
-    await apply_and_snapshot(db, resume, data, "；".join(summaries)[:160], source="nexa")
+    await apply_and_snapshot(db, resume, both, "；".join(summaries)[:160], source="nexa")
     await _mark_others_stale(db, resume.id, group_ids=[group_id])
     return resume
 
@@ -334,8 +391,8 @@ async def revert(db: AsyncSession, resume: Resume, target_revision: int) -> Resu
     snap = await _get_snapshot(db, resume.id, target_revision)
     if snap is None:
         raise ResumeNotFound(f"版本 r{target_revision} 不存在")
-    data = ResumeData.model_validate(snap.data)
-    await apply_and_snapshot(db, resume, data, summary=f"回滚到 r{target_revision}", source="manual")
+    both = _split_snapshot_data(snap.data)
+    await apply_and_snapshot(db, resume, both, summary=f"回滚到 r{target_revision}", source="manual")
     await _mark_others_stale(db, resume.id)  # 回滚后所有 pending 作废
     return resume
 
@@ -347,8 +404,10 @@ async def diff_versions(
     sb = await _get_snapshot(db, resume_id, b)
     if sa is None or sb is None:
         raise ResumeNotFound("版本不存在")
-    da = ResumeData.model_validate(sa.data)
-    db_ = ResumeData.model_validate(sb.data)
+    r = await db.get(Resume, resume_id)
+    lang = r.lang if r else "zh"
+    da = _split_snapshot_data(sa.data).get(lang) or ResumeData()
+    db_ = _split_snapshot_data(sb.data).get(lang) or ResumeData()
     out: list[dict] = []
     sections = ("profile", "timeline", "project", "skill", "award")
     for sec in sections:

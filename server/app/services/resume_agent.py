@@ -182,13 +182,14 @@ async def _emit_change(tool: str, args, resume_id: int, group_id: str, created: 
             if r is None:
                 return _err("resume not found")
             base_revision = r.current_revision
+            lang = r.lang
             data = await resume_svc.get_current_data(db, r)
             # 校验 + 算 diff（在副本上，不落库）
             _, diff = resume_svc.compute_and_apply(data, tool, a)
             pending = PendingChange(
                 resume_id=resume_id, thread_id=0, group_id=group_id,
                 tool=tool, args=a, diff=diff, base_revision=base_revision,
-                status="pending",
+                lang=lang, status="pending",
             )
             db.add(pending)
             await db.flush()
@@ -196,7 +197,7 @@ async def _emit_change(tool: str, args, resume_id: int, group_id: str, created: 
             await db.commit()
         created.append({
             "pending_id": pid, "group_id": group_id, "tool": tool,
-            "args": a, "diff": diff, "base_revision": base_revision,
+            "args": a, "diff": diff, "base_revision": base_revision, "lang": lang,
         })
         logger.info("[resume-agent·pending] id=%s tool=%s section=%s base=r%s",
                     pid, tool, diff.get("section"), base_revision)
@@ -211,9 +212,14 @@ def _err(msg: str):
     return {"content": [{"type": "text", "text": json.dumps({"error": msg}, ensure_ascii=False)}]}
 
 
-def _build_options(server) -> ClaudeAgentOptions:
+def _build_options(server, lang: str = "zh") -> ClaudeAgentOptions:
+    lang_label = "中文" if lang == "zh" else "English"
+    system_prompt = (
+        SYSTEM_PROMPT
+        + f"\n\n当前简历语言：{lang_label}。所有文案改写、新增条目内容必须使用{lang_label}输出。"
+    )
     return ClaudeAgentOptions(
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system_prompt,
         mcp_servers={"resumekit": server},
         allowed_tools=["get_resume", "get_section", "update_profile", "add_entry", "update_entry", "delete_entry"],
         permission_mode="bypassPermissions",
@@ -237,8 +243,12 @@ async def run_agent(
       {type: error, message}
     """
     created: list[dict] = []
+    # 取当前语言，注入 system_prompt，让模型用对应语言产出文案
+    async with async_session_factory() as _db:
+        _r = await _db.get(Resume, resume_id)
+        lang = _r.lang if _r else "zh"
     server = _build_tools(resume_id, group_id, created)
-    options = _build_options(server)
+    options = _build_options(server, lang)
 
     logger.info("[resume-agent] start user=%s resume=%s group=%s turns=%s",
                 user_id, resume_id, group_id, settings.RESUME_AGENT_MAX_TURNS)

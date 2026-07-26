@@ -3,11 +3,14 @@ import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useNotifyStore } from '../stores/notification'
 import { useTypewriter } from '../composables/useTypewriter'
 import {
-  listResumes, getResume, createResume, saveResume,
+  listResumes, getResume, createResume, saveResume, updateResumeMeta,
   createThread, listMessages, chat, inlinePolish,
   listPending, acceptPending, acceptGroup, denyPending,
   listVersions, revertResume, emptyResumeData,
 } from '../api/resume'
+import { useResumeI18n } from '../composables/useResumeI18n'
+import { exportElementToPdf } from '../utils/exportPdf'
+import { TEMPLATE_DEFS, templateComponent } from '../components/resume-templates'
 import type {
   Resume, ResumeData, Profile,
   PendingChange, PendingGroup, ResumeMessage, ResumeStreamEvent, ChangeDiff, VersionItem,
@@ -19,6 +22,15 @@ const resume = ref<Resume | null>(null)
 const data = ref<ResumeData>(emptyResumeData())
 const threadId = ref<number | null>(null)
 
+// 模板 + 当前语言（持久化在 Resume 上；data 始终是当前语言侧的内容）
+const lang = ref<'zh' | 'en'>('zh')
+const template = ref<string>('pixel')
+const labels = useResumeI18n(lang)
+const templateOptions = computed(() =>
+  TEMPLATE_DEFS.map((t) => ({ key: t.key, label: labels.value.templates[t.key] ?? t.key })),
+)
+const templateComp = computed(() => templateComponent(template.value))
+
 interface ThreadMsg { role: 'user' | 'assistant'; content: string; streaming?: boolean }
 const messages = ref<ThreadMsg[]>([])
 const pendingGroups = ref<PendingGroup[]>([])
@@ -29,6 +41,7 @@ const composer = ref('')
 const streaming = ref(false)
 const thinking = ref(false) // tool_read 读取简历中
 const threadEl = ref<HTMLElement | null>(null)
+const printRoot = ref<HTMLElement | null>(null)
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -44,6 +57,8 @@ async function load() {
     }
     resume.value = r
     data.value = r.data
+    lang.value = (r.lang === 'en' ? 'en' : 'zh')
+    template.value = r.template || 'pixel'
     // 线程
     const t = await createThread(r.id)
     threadId.value = t.id
@@ -94,6 +109,47 @@ function scheduleSave() {
 function setProfile(field: keyof Profile, value: string) {
   data.value.profile[field] = value
   scheduleSave()
+}
+
+/** 立即落盘当前编辑（取消防抖，同步等待完成）。仅当有未保存改动时才写，避免空保存污染版本历史。 */
+async function flushSave() {
+  if (!saveTimer || !resume.value) return
+  clearTimeout(saveTimer)
+  saveTimer = null
+  try {
+    const r = await saveResume(resume.value.id, data.value, '手动编辑')
+    resume.value = r
+    await reloadVersions()
+  } catch (e) {
+    notify.error('保存失败：' + (e as Error).message)
+  }
+}
+
+/** 切模板：轻量持久化，不重载 data、不前进版本。 */
+async function changeTemplate(key: string) {
+  if (!resume.value || key === template.value) return
+  template.value = key
+  try {
+    const r = await updateResumeMeta(resume.value.id, { template: key })
+    resume.value = r
+  } catch (e) {
+    notify.error('切换模板失败：' + (e as Error).message)
+  }
+}
+
+/** 切语言：先把当前语言侧落盘，再持久化 lang，最后重载为另一侧内容。 */
+async function changeLang(next: 'zh' | 'en') {
+  if (!resume.value || next === lang.value || streaming.value) return
+  await flushSave()
+  try {
+    const r = await updateResumeMeta(resume.value.id, { lang: next })
+    resume.value = r
+    lang.value = next
+    data.value = r.data // 后端返回新当前语言侧
+    await reloadPending()
+  } catch (e) {
+    notify.error('切换语言失败：' + (e as Error).message)
+  }
 }
 
 // 通用板块增删（timeline/project/award/skill）
@@ -156,7 +212,7 @@ async function send(text?: string) {
         thinking.value = false
         pushPending({
           id: e.pending_id, groupId: e.group_id, tool: e.tool, args: e.args,
-          diff: e.diff, baseRevision: e.base_revision, status: 'pending', createdAt: '',
+          diff: e.diff, baseRevision: e.base_revision, lang: e.lang, status: 'pending', createdAt: '',
         })
       } else if (e.type === 'error') {
         typewriter.push(`\n[错误] ${e.message}`)
@@ -255,9 +311,6 @@ async function doRevert(revision: number) {
 }
 
 // ── 渲染辅助 ──────────────────────────────────────────────────────────
-function descLines(s: string): string[] {
-  return (s || '').split('\n').map((l) => l.trim()).filter(Boolean)
-}
 function summarize(val: unknown): string {
   if (val == null) return '(空)'
   if (typeof val === 'string') return val
@@ -285,9 +338,22 @@ async function scrollThread() {
   if (threadEl.value) threadEl.value.scrollTop = threadEl.value.scrollHeight
 }
 
-function exportPdf() {
-  notify.info('使用浏览器打印对话框，目标改为「另存为 PDF」')
-  setTimeout(() => window.print(), 400)
+// 导出 PDF：把当前模板的打印渲染（.resume-print）转成满版 A4 PDF（html2canvas + jsPDF），
+// 不再走浏览器打印（打印路径无法保证满版无白边）。
+const exporting = ref(false)
+async function exportPdf() {
+  if (exporting.value || !printRoot.value) return
+  exporting.value = true
+  notify.info('正在生成 PDF…')
+  try {
+    const name = data.value.profile.name?.trim() || 'resume'
+    await exportElementToPdf(printRoot.value, `${name}.pdf`)
+    notify.success('PDF 已生成')
+  } catch (e) {
+    notify.error('导出 PDF 失败：' + (e as Error).message)
+  } finally {
+    exporting.value = false
+  }
 }
 
 onMounted(load)
@@ -418,64 +484,30 @@ onUnmounted(() => { if (saveTimer) clearTimeout(saveTimer) })
           <span><i class="dot"></i> 实时预览</span>
           <span v-if="pendingCount">修订 <b>{{ pendingCount }} 待确认</b></span>
           <span v-else class="ok">已同步</span>
-          <span class="muted">手动编辑自动存档</span>
+          <div class="stage__tools">
+            <div class="tpl-switch">
+              <button
+                v-for="opt in templateOptions"
+                :key="opt.key"
+                class="tpl-chip"
+                :class="{ active: opt.key === template }"
+                @click="changeTemplate(opt.key)"
+              >◆ {{ opt.label }}</button>
+            </div>
+            <div class="lang-switch">
+              <button :class="{ active: lang === 'zh' }" @click="changeLang('zh')">中</button>
+              <button :class="{ active: lang === 'en' }" @click="changeLang('en')">EN</button>
+            </div>
+          </div>
         </div>
-        <article class="paper">
-          <header class="r-head">
-            <div>
-              <h1 class="r-name">{{ data.profile.name || '姓名' }}</h1>
-              <div class="r-title">{{ data.profile.title }}</div>
-            </div>
-            <div class="r-contact">
-              <span v-if="data.profile.location">⚲ {{ data.profile.location }}<template v-if="data.profile.years"> · {{ data.profile.years }}</template></span>
-              <span v-if="data.profile.phone">☏ {{ data.profile.phone }}</span>
-              <span v-if="data.profile.email">✉ {{ data.profile.email }}</span>
-              <span v-if="data.profile.site">↗ {{ data.profile.site }}</span>
-              <span v-if="data.profile.github">⌥ {{ data.profile.github }}</span>
-            </div>
-          </header>
+        <div class="paper">
+          <component :is="templateComp" :data="data" :labels="labels" :lang="lang" />
+        </div>
+      </div>
 
-          <section class="r-sec" v-if="data.timeline.length">
-            <h2 class="r-sec__title"><span class="mark">§</span> 教育 &amp; 经历</h2>
-            <div class="r-item" v-for="(it, i) in data.timeline" :key="i">
-              <div class="r-item__top">
-                <div class="r-item__role">{{ it.role }}<span class="at" v-if="it.org"> · {{ it.org }}</span></div>
-                <div class="r-item__date">{{ it.date }}</div>
-              </div>
-              <ul><li v-for="(l, li) in descLines(it.desc)" :key="li">{{ l }}</li></ul>
-            </div>
-          </section>
-
-          <section class="r-sec" v-if="data.project.length">
-            <h2 class="r-sec__title"><span class="mark">§</span> 项目战绩</h2>
-            <div class="r-proj" v-for="(it, i) in data.project" :key="i">
-              <div class="r-proj__top">
-                <div class="r-proj__name">{{ it.name }}</div>
-                <div class="r-proj__stack">{{ it.stack }}</div>
-              </div>
-              <ul><li v-for="(l, li) in descLines(it.desc)" :key="li">{{ l }}</li></ul>
-            </div>
-          </section>
-
-          <section class="r-sec" v-if="data.skill.length">
-            <h2 class="r-sec__title"><span class="mark">§</span> 技能</h2>
-            <div class="r-skills">
-              <div class="r-skill-row" v-for="(g, i) in data.skill" :key="i">
-                <span class="cat">{{ g.cat }}</span><span class="tags">{{ g.tags.join('、') || '—' }}</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="r-sec" v-if="data.award.length">
-            <h2 class="r-sec__title"><span class="mark">§</span> 荣誉 &amp; 证书</h2>
-            <div class="r-awards">
-              <div class="r-award" v-for="(it, i) in data.award" :key="i">
-                <span>{{ it.name }}<span class="muted" v-if="it.issuer"> · {{ it.issuer }}</span></span>
-                <span class="yr">{{ it.year }}</span>
-              </div>
-            </div>
-          </section>
-        </article>
+      <!-- 打印专用渲染：复用当前选中模板，进入 print 模式（关掉不适合纸张的修饰），仅导出 PDF 时显示 -->
+      <div ref="printRoot" class="resume-print print-root">
+        <component :is="templateComp" :data="data" :labels="labels" :lang="lang" :print="true" />
       </div>
 
       <!-- 右：AI 对话 -->
@@ -637,9 +669,28 @@ textarea.inp { resize: vertical; min-height: 48px; }
 .stage__hint .dot { width: 7px; height: 7px; background: var(--pixel-success); display: inline-block; animation: blk 1.6s steps(2) infinite; }
 @keyframes blk { 50% { opacity: 0.25; } }
 
-/* 简历纸 */
-.paper { max-width: 640px; margin: 0 auto; background: #f4eed8; color: #1d2236; padding: 38px 42px 32px;
-  font-family: 'Newsreader', Georgia, 'Songti SC', serif; box-shadow: 0 0 0 1px #c9b98a, 6px 6px 0 rgba(0,0,0,0.35); }
+/* 预览工具条：模板选择 + 语言切换 */
+.stage__tools { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.tpl-switch { display: flex; gap: 4px; flex-wrap: wrap; }
+.tpl-chip {
+  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 10px;
+  padding: 4px 8px; background: transparent; color: var(--pixel-text-secondary);
+  border: 2px solid var(--pixel-border); cursor: pointer; transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.tpl-chip:hover { color: var(--pixel-text); border-color: var(--pixel-info); }
+.tpl-chip.active { color: var(--pixel-info); border-color: var(--pixel-info); background: rgba(115, 239, 247, 0.1); box-shadow: 0 2px 0 var(--pixel-info); }
+.lang-switch { display: flex; border: 2px solid var(--pixel-border); }
+.lang-switch button {
+  font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 4px 7px;
+  background: transparent; color: var(--pixel-text-secondary); border: 0; cursor: pointer;
+}
+.lang-switch button.active { background: var(--pixel-info); color: #062a30; }
+
+/* 简历纸：中立容器，背景/字体交由各模板组件自绘 */
+.paper { margin: 0 auto; max-width: 760px; }
+
+/* 打印专用渲染：屏幕上完全不占位，仅导出 PDF 时由 print.css 显示 */
+.resume-print { display: none; }
 .r-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #1d2236; padding-bottom: 12px; }
 .r-name { font-size: 28px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
 .r-title { font-style: italic; font-size: 14px; color: #4a5470; margin-top: 3px; }

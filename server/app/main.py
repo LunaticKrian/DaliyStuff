@@ -45,6 +45,9 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
         await conn.run_sync(Base.metadata.create_all)
         # create_all 不会 ALTER 已存在的表：给 users 补 exp 列（任务系统经验持久化）
         await ensure_column(conn, "users", "exp", "INTEGER DEFAULT 0")
+        # 简历模板选择 + 双语 PendingChange 语言侧（履历模板/双语特性）
+        await ensure_column(conn, "resumes", "template", "VARCHAR(32) DEFAULT 'pixel' NOT NULL")
+        await ensure_column(conn, "resume_pending_changes", "lang", "VARCHAR(8) DEFAULT 'zh' NOT NULL")
         # 兜底：把误存成 datetime 字符串的 published_at 归一化为 'YYYY-MM-DD'，
         # 避免 SQLite Date 解析器在读取时抛 Invalid isoformat（历史/外部脏数据）。
         await conn.execute(text(

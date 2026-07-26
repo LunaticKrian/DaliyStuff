@@ -20,7 +20,8 @@ class Resume(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
     title: Mapped[str] = mapped_column(String(120), default="我的简历", nullable=False)
-    lang: Mapped[str] = mapped_column(String(8), default="zh", nullable=False)  # zh | en
+    lang: Mapped[str] = mapped_column(String(8), default="zh", nullable=False)  # zh | en（当前显示+编辑语言）
+    template: Mapped[str] = mapped_column(String(32), default="pixel", nullable=False)  # pixel | pro | minimal | academic
     current_revision: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
@@ -69,5 +70,6 @@ class PendingChange(Base):
     args: Mapped[dict] = mapped_column(JSON, nullable=False)
     diff: Mapped[dict] = mapped_column(JSON, nullable=False)
     base_revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    lang: Mapped[str] = mapped_column(String(8), default="zh", nullable=False)  # 该变更针对的语言侧（zh | en）
     status: Mapped[str] = mapped_column(String(12), default="pending", nullable=False)  # pending | applied | denied
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)

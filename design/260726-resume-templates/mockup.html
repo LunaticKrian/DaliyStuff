@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>冒险履历 · 4 模板样张</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pixel-bg:#192043; --pixel-card:#223567; --pixel-border:#3b4e7e;
+    --pixel-info:#73eff7; --pixel-primary:#41a6f6; --pixel-gold:#f5d976;
+    --pixel-success:#38b764; --pixel-text:#f4f4f4; --pixel-muted:#7b8faa;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:#0e1230; font-family:'Ark Pixel','Press Start 2P',monospace; padding:32px 16px; }
+  .cap{ color:#9fb4d8; font-family:'Press Start 2P',monospace; font-size:11px; letter-spacing:2px;
+        margin:56px auto 16px; max-width:920px; text-transform:uppercase; }
+  .cap:first-child{ margin-top:0; }
+  .cap small{ color:#5a6b8e; font-size:9px; display:block; margin-top:6px; letter-spacing:1px; }
+  .stage{ max-width:920px; margin:0 auto; }
+
+  /* shared sample wrapper */
+  .tpl{ padding:48px; }
+
+  /* ═══════════════════ 1. QUEST SCROLL (pixel) ═══════════════════ */
+  .tpl-pixel{ background:var(--pixel-bg); color:var(--pixel-text);
+    border:4px solid var(--pixel-border); position:relative;
+    box-shadow:0 0 0 4px #0b0f2a, 8px 8px 0 rgba(0,0,0,.5);
+    background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 4px); }
+  .tpl-pixel::before,.tpl-pixel::after{ content:''; position:absolute; width:14px; height:14px;
+    border:3px solid var(--pixel-info); }
+  .tpl-pixel::before{ top:8px; left:8px; border-right:0; border-bottom:0; }
+  .tpl-pixel::after{ bottom:8px; right:8px; border-left:0; border-top:0; }
+  .qs-banner{ text-align:center; font-family:'Press Start 2P',monospace; font-size:11px;
+    letter-spacing:3px; color:var(--pixel-gold); border:2px dashed var(--pixel-border);
+    padding:10px; margin-bottom:26px; text-shadow:0 0 8px rgba(245,217,118,.4); }
+  .qs-hp{ display:flex; gap:3px; justify-content:center; margin-top:8px; }
+  .qs-hp i{ width:18px; height:8px; background:var(--pixel-success); display:inline-block;
+    box-shadow:0 0 5px rgba(56,183,100,.5); }
+  .qs-hp i.off{ background:#2a3358; box-shadow:none; }
+  .qs-name{ font-family:'Press Start 2P',monospace; font-size:30px; color:var(--pixel-info);
+    text-shadow:0 0 10px rgba(115,239,247,.45); margin:0 0 6px; letter-spacing:1px; }
+  .qs-title{ font-family:'VT323',monospace; font-size:22px; color:var(--pixel-gold); letter-spacing:2px; }
+  .qs-title b{ color:var(--pixel-text); }
+  .qs-comms{ display:flex; flex-wrap:wrap; gap:6px 18px; margin:18px 0 8px; font-family:'VT323',monospace;
+    font-size:18px; color:var(--pixel-muted); }
+  .qs-comms span b{ color:var(--pixel-info); margin-right:4px; }
+  .qs-panel{ background:var(--pixel-card); border:2px solid var(--pixel-border); margin-top:16px;
+    box-shadow:3px 3px 0 rgba(0,0,0,.4); }
+  .qs-panel>h2{ margin:0; padding:8px 12px; font-family:'Press Start 2P',monospace; font-size:11px;
+    color:var(--pixel-gold); border-bottom:2px solid var(--pixel-border); letter-spacing:2px;
+    background:rgba(0,0,0,.18); display:flex; align-items:center; gap:8px; }
+  .qs-panel>h2 .g{ color:var(--pixel-info); }
+  .qs-panel>div{ padding:10px 14px; }
+  .qs-entry{ display:flex; gap:12px; padding:8px 0; border-top:1px dashed var(--pixel-border); }
+  .qs-entry:first-child{ border-top:0; }
+  .qs-q{ font-family:'Press Start 2P',monospace; font-size:9px; color:var(--pixel-primary); flex:0 0 42px; padding-top:3px; }
+  .qs-entry .body{ flex:1; }
+  .qs-entry .top{ display:flex; justify-content:space-between; gap:12px; }
+  .qs-entry .role{ color:var(--pixel-text); font-size:15px; }
+  .qs-entry .role .at{ color:var(--pixel-muted); }
+  .qs-entry .date{ color:var(--pixel-gold); font-family:'VT323',monospace; font-size:18px; }
+  .qs-entry ul{ margin:4px 0 0; padding-left:18px; color:var(--pixel-muted); font-size:13px; line-height:1.5; }
+  .qs-entry li::marker{ color:var(--pixel-success); }
+  .qs-skills{ display:grid; grid-template-columns:1fr 1fr; gap:6px 18px; }
+  .qs-skills .row{ font-size:13px; }
+  .qs-skills .row b{ color:var(--pixel-info); }
+  .qs-skills .row span{ color:var(--pixel-muted); }
+  .qs-awards{ display:flex; flex-direction:column; gap:4px; }
+  .qs-awards .a{ font-size:13px; }
+  .qs-awards .a .yr{ color:var(--pixel-gold); font-family:'VT323',monospace; font-size:18px; float:right; }
+
+  /* ═══════════════════ 2. FIELD REPORT (pro) ═══════════════════ */
+  .tpl-pro{ background:#fbfaf7; color:#1d2236; font-family:'Inter',system-ui,sans-serif;
+    border:1px solid #d9d4c7; display:grid; grid-template-columns:32% 1fr; gap:0; padding:0; }
+  .fr-side{ background:#f3efe6; padding:34px 26px; border-right:1px solid #d9d4c7; }
+  .fr-main{ padding:34px 36px; }
+  .fr-fileno{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px;
+    color:#5a6b7e; border:1px solid #b08442; color:#b08442; display:inline-block; padding:3px 8px; margin-bottom:18px; }
+  .fr-name{ font-family:'Newsreader',serif; font-weight:700; font-size:34px; margin:0; letter-spacing:-.5px; line-height:1.05; }
+  .fr-title{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:#284b63; margin:6px 0 0; }
+  .fr-side h3{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px;
+    text-transform:uppercase; color:#5a6b7e; margin:22px 0 8px; }
+  .fr-contact{ font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.9; color:#1d2236; }
+  .fr-contact div b{ color:#5a6b7e; font-weight:500; display:inline-block; width:54px; }
+  .fr-skillrow{ margin:6px 0; }
+  .fr-skillrow .cat{ font-size:11px; font-weight:600; color:#284b63; }
+  .fr-bar{ height:5px; background:#e3ddcf; margin-top:3px; position:relative; }
+  .fr-bar i{ position:absolute; left:0; top:0; bottom:0; background:#b08442; }
+  .fr-tags{ font-size:11px; color:#5a6b7e; margin-top:2px; }
+  .fr-sec{ margin-top:24px; }
+  .fr-sec>h2{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:#1d2236; margin:0 0 12px; padding-bottom:6px; border-bottom:1.5px solid #1d2236;
+    display:flex; gap:10px; align-items:baseline; }
+  .fr-sec>h2 .n{ color:#b08442; font-weight:600; }
+  .fr-item{ display:grid; grid-template-columns:96px 1fr; gap:14px; margin-bottom:14px; }
+  .fr-item .date{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a6b7e; padding-top:2px; }
+  .fr-item .role{ font-weight:600; font-size:14px; }
+  .fr-item .role .at{ color:#5a6b7e; font-weight:400; }
+  .fr-item ul{ margin:5px 0 0; padding-left:16px; font-size:12.5px; line-height:1.55; color:#34404e; }
+  .fr-proj{ margin-bottom:12px; }
+  .fr-proj .pn{ font-weight:600; font-size:14px; } .fr-proj .pn small{ color:#b08442; font-weight:400; font-family:'JetBrains Mono',monospace; font-size:11px; margin-left:6px;}
+  .fr-proj ul{ margin:4px 0 0; padding-left:16px; font-size:12.5px; line-height:1.55; color:#34404e; }
+
+  /* ═══════════════════ 3. EXPEDITION LOG (minimal) ═══════════════════ */
+  .tpl-minimal{ background:#fff; color:#111; font-family:'Inter',system-ui,sans-serif;
+    padding:72px 64px; border:1px solid #e5e7eb; }
+  .el-wrap{ max-width:600px; margin:0 auto; }
+  .el-name{ font-family:'Newsreader',serif; font-weight:600; font-size:52px; line-height:1; margin:0;
+    letter-spacing:-1px; }
+  .el-underline{ width:54px; height:3px; background:#0f766e; margin:18px 0 14px; }
+  .el-title{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:4px;
+    text-transform:uppercase; color:#6b7280; }
+  .el-contact{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#6b7280; margin:22px 0 0;
+    letter-spacing:.5px; }
+  .el-contact span{ margin:0 8px; color:#d1d5db; }
+  .el-sec{ margin-top:46px; }
+  .el-sec>h2{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px;
+    text-transform:uppercase; color:#111; margin:0 0 4px; display:flex; gap:10px; align-items:baseline; }
+  .el-sec>h2 .n{ color:#0f766e; }
+  .el-rule{ border:0; border-top:1px solid #e5e7eb; margin:6px 0 18px; }
+  .el-item{ margin-bottom:22px; }
+  .el-item .top{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; }
+  .el-item .role{ font-family:'Newsreader',serif; font-size:18px; font-weight:600; }
+  .el-item .role .at{ color:#6b7280; font-weight:400; font-size:15px; }
+  .el-item .date{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#9ca3af; white-space:nowrap; }
+  .el-item p{ margin:6px 0 0; font-size:13px; line-height:1.65; color:#374151; }
+  .el-skills{ font-size:13px; line-height:1.9; color:#374151; }
+  .el-skills b{ color:#111; font-weight:600; }
+
+  /* ═══════════════════ 4. CITATION (academic) ═══════════════════ */
+  .tpl-academic{ background:#faf9f6; color:#1a1a1a; font-family:'Newsreader',Georgia,serif;
+    border:1px solid #e6e3da; padding:48px 60px; }
+  .ac-masthead{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:3px;
+    text-transform:uppercase; color:#666; border-bottom:1px solid #333; padding-bottom:6px;
+    display:flex; justify-content:space-between; }
+  .ac-name{ text-align:center; font-weight:700; font-size:30px; margin:24px 0 2px; letter-spacing:.5px; }
+  .ac-affil{ text-align:center; font-size:13px; color:#444; }
+  .ac-contact{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:#666;
+    margin:8px 0 0; }
+  .ac-contact span{ margin:0 7px; color:#bbb; }
+  .ac-sep{ border:0; border-top:2px solid #333; margin:18px 0; }
+  .ac-sep.thin{ border-top:1px solid #333; margin:14px 0; }
+  .ac-sec{ margin-top:18px; }
+  .ac-sec>h2{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin:0 0 10px; }
+  .ac-sec>h2 .s{ color:#1a3a5c; font-weight:700; margin-right:8px; }
+  .ac-entry{ display:grid; grid-template-columns:108px 1fr; gap:8px 16px; margin-bottom:10px;
+    font-size:13px; line-height:1.5; }
+  .ac-entry .meta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#555; }
+  .ac-entry .role{ font-weight:600; }
+  .ac-entry .role .at{ color:#555; font-weight:400; }
+  .ac-entry .desc{ color:#222; }
+  .ac-refs{ font-size:13px; line-height:1.6; counter-reset:ref; }
+  .ac-ref{ display:grid; grid-template-columns:24px 1fr; margin-bottom:5px; }
+  .ac-ref .n{ font-family:'JetBrains Mono',monospace; font-size:11px; color:#1a3a5c; }
+  .ac-ref .t span{ color:#888; }
+  .ac-skills{ font-size:13px; line-height:1.7; }
+  .ac-skills b{ font-weight:700; } .ac-skills span{ color:#444; }
+</style>
+</head>
+<body>
+
+<div class="cap">◆ Template 01 · Quest Scroll <small>pixel · on-brand 招牌</small></div>
+<div class="stage">
+<section class="tpl tpl-pixel" lang="zh">
+  <div class="qs-banner">◆ ADVENTURER DOSSIER ◆
+    <div class="qs-hp"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
+  </div>
+  <h1 class="qs-name">林墨白</h1>
+  <div class="qs-title"><b>CLASS</b> 全栈冒险者 · <b>LV</b> 5</div>
+  <div class="qs-comms">
+    <span><b>◷ 据点</b>上海</span>
+    <span><b>✦ 资历</b>5 年</span>
+    <span><b>☏ 联络</b>138-0000-0000</span>
+    <span><b>✉ 邮箱</b>lin@pixelpack.io</span>
+    <span><b>⌥ 代码库</b>github.com/lin</span>
+  </div>
+
+  <div class="qs-panel">
+    <h2><span class="g">◆</span> 教育与经历</h2>
+    <div>
+      <div class="qs-entry"><div class="qs-q">Q.01</div><div class="body">
+        <div class="top"><div class="role">高级前端工程师 <span class="at">· 星图科技</span></div><div class="date">2022 — 至今</div></div>
+        <ul><li>主导设计系统从 0 到 1，组件复用率提升 60%</li><li>性能优化首屏 LCP 从 3.8s 降至 1.2s</li></ul>
+      </div></div>
+      <div class="qs-entry"><div class="qs-q">Q.02</div><div class="body">
+        <div class="top"><div class="role">前端工程师 <span class="at">· 蓝鲸工作室</span></div><div class="date">2020 — 2022</div></div>
+        <ul><li>负责 SaaS 控制台全链路开发</li></ul>
+      </div></div>
+      <div class="qs-entry"><div class="qs-q">Q.03</div><div class="body">
+        <div class="top"><div class="role">计算机科学 学士 <span class="at">· 华东大学</span></div><div class="date">2016 — 2020</div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="qs-panel">
+    <h2><span class="g">◆</span> 项目战绩</h2>
+    <div>
+      <div class="qs-entry"><div class="qs-q">P.01</div><div class="body">
+        <div class="top"><div class="role">PixelPack <span class="at">· Vue3 / FastAPI</span></div></div>
+        <ul><li>像素风个人管理系统，含 AI 对话与简历军师</li></ul>
+      </div></div>
+      <div class="qs-entry"><div class="qs-q">P.02</div><div class="body">
+        <div class="top"><div class="role">星图设计系统 <span class="at">· React / TS</span></div></div>
+        <ul><li>60+ 组件，覆盖 5 条业务线</li></ul>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="qs-panel">
+    <h2><span class="g">◆</span> 技能</h2>
+    <div class="qs-skills">
+      <div class="row"><b>前端</b> · <span>Vue / React / TypeScript</span></div>
+      <div class="row"><b>后端</b> · <span>FastAPI / Node / Python</span></div>
+      <div class="row"><b>工程</b> · <span>Vite / Docker / CI</span></div>
+      <div class="row"><b>设计</b> · <span>Figma / 动效</span></div>
+    </div>
+  </div>
+
+  <div class="qs-panel">
+    <h2><span class="g">◆</span> 荣誉与证书</h2>
+    <div class="qs-awards">
+      <div class="a">年度极客奖 · 星图科技<span class="yr">2024</span></div>
+      <div class="a">AWS 解决方案架构师 · AWS<span class="yr">2023</span></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="cap">▣ Template 02 · Field Report <small>pro · 双栏 · 招聘者友好</small></div>
+<div class="stage">
+<section class="tpl tpl-pro" lang="zh">
+  <aside class="fr-side">
+    <div class="fr-fileno">FILE NO. 0001 · CLASSIFIED</div>
+    <h1 class="fr-name">林墨白</h1>
+    <div class="fr-title">Full-Stack Adventurer</div>
+
+    <h3>// Contact</h3>
+    <div class="fr-contact">
+      <div><b>据点</b>上海</div>
+      <div><b>资历</b>5 年</div>
+      <div><b>联络</b>138-0000-0000</div>
+      <div><b>邮箱</b>lin@pixelpack.io</div>
+      <div><b>站点</b>lin.dev</div>
+      <div><b>代码库</b>github.com/lin</div>
+    </div>
+
+    <h3>// Skills</h3>
+    <div class="fr-skillrow"><div class="cat">前端 Frontend</div><div class="fr-bar"><i style="width:92%"></i></div><div class="fr-tags">Vue · React · TypeScript</div></div>
+    <div class="fr-skillrow"><div class="cat">后端 Backend</div><div class="fr-bar"><i style="width:78%"></i></div><div class="fr-tags">FastAPI · Node · Python</div></div>
+    <div class="fr-skillrow"><div class="cat">工程 DevOps</div><div class="fr-bar"><i style="width:70%"></i></div><div class="fr-tags">Vite · Docker · CI</div></div>
+  </aside>
+
+  <main class="fr-main">
+    <div class="fr-sec">
+      <h2><span class="n">01</span> 经历 Experience</h2>
+      <div class="fr-item"><div class="date">2022 — 至今</div><div>
+        <div class="role">高级前端工程师 <span class="at">· 星图科技</span></div>
+        <ul><li>主导设计系统从 0 到 1，组件复用率提升 60%</li><li>性能优化首屏 LCP 从 3.8s 降至 1.2s</li></ul>
+      </div></div>
+      <div class="fr-item"><div class="date">2020 — 2022</div><div>
+        <div class="role">前端工程师 <span class="at">· 蓝鲸工作室</span></div>
+        <ul><li>负责 SaaS 控制台全链路开发</li></ul>
+      </div></div>
+    </div>
+
+    <div class="fr-sec">
+      <h2><span class="n">02</span> 教育 Education</h2>
+      <div class="fr-item"><div class="date">2016 — 2020</div><div>
+        <div class="role">计算机科学 学士 <span class="at">· 华东大学</span></div>
+      </div></div>
+    </div>
+
+    <div class="fr-sec">
+      <h2><span class="n">03</span> 项目 Projects</h2>
+      <div class="fr-proj"><div class="pn">PixelPack<small>Vue3 · FastAPI</small></div>
+        <ul><li>像素风个人管理系统，含 AI 对话与简历军师</li></ul></div>
+      <div class="fr-proj"><div class="pn">星图设计系统<small>React · TS</small></div>
+        <ul><li>60+ 组件，覆盖 5 条业务线</li></ul></div>
+    </div>
+
+    <div class="fr-sec">
+      <h2><span class="n">04</span> 荣誉 Honors</h2>
+      <div class="fr-item"><div class="date">2024</div><div><div class="role">年度极客奖 <span class="at">· 星图科技</span></div></div></div>
+      <div class="fr-item"><div class="date">2023</div><div><div class="role">AWS 解决方案架构师 <span class="at">· AWS</span></div></div></div>
+    </div>
+  </main>
+</section>
+</div>
+
+<div class="cap">▏ Template 03 · Expedition Log <small>minimal · 单栏 · 极致留白</small></div>
+<div class="stage">
+<section class="tpl tpl-minimal" lang="zh">
+  <div class="el-wrap">
+    <h1 class="el-name">林墨白</h1>
+    <div class="el-underline"></div>
+    <div class="el-title">Full-Stack Adventurer</div>
+    <div class="el-contact">上海<span>·</span>5 年经验<span>·</span>lin@pixelpack.io<span>·</span>github.com/lin</div>
+
+    <div class="el-sec">
+      <h2><span class="n">01</span> 经历 Experience</h2><hr class="el-rule" />
+      <div class="el-item"><div class="top"><div class="role">高级前端工程师 <span class="at">· 星图科技</span></div><div class="date">2022 — NOW</div></div>
+        <p>主导设计系统从 0 到 1，组件复用率提升 60%；性能优化首屏 LCP 从 3.8s 降至 1.2s。</p></div>
+      <div class="el-item"><div class="top"><div class="role">前端工程师 <span class="at">· 蓝鲸工作室</span></div><div class="date">2020 — 2022</div></div>
+        <p>负责 SaaS 控制台全链路开发。</p></div>
+    </div>
+
+    <div class="el-sec">
+      <h2><span class="n">02</span> 项目 Projects</h2><hr class="el-rule" />
+      <div class="el-item"><div class="top"><div class="role">PixelPack <span class="at">· Vue3 / FastAPI</span></div></div>
+        <p>像素风个人管理系统，含 AI 对话与简历军师。</p></div>
+      <div class="el-item"><div class="top"><div class="role">星图设计系统 <span class="at">· React / TS</span></div></div>
+        <p>60+ 组件，覆盖 5 条业务线。</p></div>
+    </div>
+
+    <div class="el-sec">
+      <h2><span class="n">03</span> 技能 Skills</h2><hr class="el-rule" />
+      <div class="el-skills"><b>前端</b> — Vue · React · TypeScript &nbsp;&nbsp; <b>后端</b> — FastAPI · Node · Python &nbsp;&nbsp; <b>工程</b> — Vite · Docker · CI</div>
+    </div>
+
+    <div class="el-sec">
+      <h2><span class="n">04</span> 荣誉 Honors</h2><hr class="el-rule" />
+      <div class="el-item"><div class="top"><div class="role">年度极客奖 <span class="at">· 星图科技</span></div><div class="date">2024</div></div></div>
+      <div class="el-item"><div class="top"><div class="role">AWS 解决方案架构师 <span class="at">· AWS</span></div><div class="date">2023</div></div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="cap">§ Template 04 · Citation <small>academic · 编号 · 出版物风</small></div>
+<div class="stage">
+<section class="tpl tpl-academic" lang="zh">
+  <div class="ac-masthead"><span>Adventurer Dossier</span><span>林墨白 · 2026</span><span>Vol. I</span></div>
+  <h1 class="ac-name">林墨白</h1>
+  <div class="ac-affil">全栈冒险者 · 上海 · 5 年经验</div>
+  <div class="ac-contact">lin@pixelpack.io<span>·</span>github.com/lin<span>·</span>138-0000-0000</div>
+  <hr class="ac-sep" />
+
+  <div class="ac-sec"><h2><span class="s">§1</span>教育与经历</h2>
+    <div class="ac-entry"><div class="meta">2022 — 至今</div><div><div class="role">高级前端工程师 <span class="at">· 星图科技</span></div><div class="desc">主导设计系统从 0 到 1，组件复用率提升 60%；LCP 3.8s→1.2s。</div></div></div>
+    <div class="ac-entry"><div class="meta">2020 — 2022</div><div><div class="role">前端工程师 <span class="at">· 蓝鲸工作室</span></div><div class="desc">负责 SaaS 控制台全链路开发。</div></div></div>
+    <div class="ac-entry"><div class="meta">2016 — 2020</div><div><div class="role">计算机科学 学士 <span class="at">· 华东大学</span></div></div></div>
+  </div>
+  <hr class="ac-sep thin" />
+
+  <div class="ac-sec"><h2><span class="s">§2</span>项目</h2>
+    <div class="ac-entry"><div class="meta">2025</div><div><div class="role">PixelPack <span class="at">· Vue3 / FastAPI</span></div><div class="desc">像素风个人管理系统，含 AI 对话与简历军师。</div></div></div>
+    <div class="ac-entry"><div class="meta">2023</div><div><div class="role">星图设计系统 <span class="at">· React / TS</span></div><div class="desc">60+ 组件，覆盖 5 条业务线。</div></div></div>
+  </div>
+  <hr class="ac-sep thin" />
+
+  <div class="ac-sec"><h2><span class="s">§3</span>技能</h2>
+    <div class="ac-skills"><b>前端</b> <span>Vue · React · TypeScript</span> &nbsp;<b>后端</b> <span>FastAPI · Node · Python</span> &nbsp;<b>工程</b> <span>Vite · Docker · CI</span></div>
+  </div>
+  <hr class="ac-sep thin" />
+
+  <div class="ac-sec"><h2><span class="s">§4</span>荣誉与证书</h2>
+    <div class="ac-refs">
+      <div class="ac-ref"><div class="n">[1]</div><div class="t">年度极客奖 · 星图科技 <span>(2024)</span></div></div>
+      <div class="ac-ref"><div class="n">[2]</div><div class="t">AWS 解决方案架构师 · AWS <span>(2023)</span></div></div>
+    </div>
+  </div>
+</section>
+</div>
+
+</body>
+</html>

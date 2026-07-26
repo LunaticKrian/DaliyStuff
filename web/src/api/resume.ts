@@ -33,12 +33,23 @@ export function getResume(id: number): Promise<Resume> {
   return api<Resume>(`/resume/${id}`)
 }
 
-export function createResume(title?: string, lang: 'zh' | 'en' = 'zh'): Promise<Resume> {
-  return api<Resume>('/resume', { method: 'POST', body: { title: title ?? null, lang } })
+export function createResume(
+  title?: string,
+  lang: 'zh' | 'en' = 'zh',
+  template = 'pixel',
+): Promise<Resume> {
+  return api<Resume>('/resume', { method: 'POST', body: { title: title ?? null, lang, template } })
 }
 
 export function saveResume(id: number, data: ResumeData, summary = '手动编辑'): Promise<Resume> {
   return api<Resume>(`/resume/${id}`, { method: 'PUT', body: { data, summary } })
+}
+
+export function updateResumeMeta(
+  id: number,
+  meta: { lang?: 'zh' | 'en'; template?: string },
+): Promise<Resume> {
+  return api<Resume>(`/resume/${id}/meta`, { method: 'PATCH', body: meta })
 }
 
 export function deleteResume(id: number): Promise<void> {

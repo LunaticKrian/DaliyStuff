@@ -53,6 +53,7 @@ export interface Resume {
   id: number
   title: string
   lang: string
+  template: string
   revision: number
   data: ResumeData
   updatedAt: string
@@ -62,6 +63,7 @@ export interface ResumeListItem {
   id: number
   title: string
   lang: string
+  template: string
   revision: number
   updatedAt: string
 }
@@ -83,6 +85,7 @@ export interface PendingChange {
   args: Record<string, unknown>
   diff: ChangeDiff
   baseRevision: number
+  lang: string
   status: 'pending' | 'applied' | 'denied'
   createdAt: string
 }
@@ -134,6 +137,7 @@ export type ResumeStreamEvent =
       args: Record<string, unknown>
       diff: ChangeDiff
       base_revision: number
+      lang: string
     }
   | { type: 'done'; text: string; subtype: string; count: number }
   | { type: 'error'; message: string }

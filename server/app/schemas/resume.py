@@ -82,15 +82,25 @@ class DeleteEntryArgs(BaseModel):
 
 
 # ── API 请求 ────────────────────────────────────────────────────────────
+RESUME_TEMPLATES = ("pixel", "pro", "minimal", "academic")
+
+
 class ResumeCreate(BaseModel):
     title: str | None = Field(None, max_length=120)
     lang: Literal["zh", "en"] = "zh"
+    template: str = "pixel"
 
 
 class ResumeUpdate(BaseModel):
-    """整体手动保存。可选 summary 记录本次变更一句话。"""
+    """整体手动保存。可选 summary 记录本次变更一句话。data 为当前语言侧内容。"""
     data: ResumeData
     summary: str = Field("手动编辑", max_length=160)
+
+
+class ResumeMetaUpdate(BaseModel):
+    """轻量更新：切换模板 / 当前语言。不生成快照、不前进 revision。"""
+    lang: Literal["zh", "en"] | None = None
+    template: str | None = None
 
 
 class ThreadCreate(BaseModel):
@@ -116,6 +126,7 @@ class ResumeResponse(BaseModel):
     id: int
     title: str
     lang: str
+    template: str
     revision: int
     data: ResumeData
     updatedAt: datetime
@@ -125,6 +136,7 @@ class ResumeListItem(BaseModel):
     id: int
     title: str
     lang: str
+    template: str
     revision: int
     updatedAt: datetime
 
@@ -146,6 +158,7 @@ class PendingChangeResponse(BaseModel):
     args: dict[str, Any]
     diff: dict[str, Any]
     baseRevision: int
+    lang: str
     status: str
     createdAt: datetime
 
