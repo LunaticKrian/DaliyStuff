@@ -1,5 +1,5 @@
 import { api } from './client'
-import type { LoginRequest, ProfileUpdate, RegisterRequest, TokenResponse, User, UserUpdate, PasswordChange } from '../types/user'
+import type { AuthSession, LoginRequest, ProfileUpdate, RegisterRequest, TokenResponse, User, UserUpdate, PasswordChange } from '../types/user'
 
 export function login(data: LoginRequest) {
   return api<TokenResponse>('/auth/login', { method: 'POST', body: data })
@@ -9,12 +9,23 @@ export function register(data: RegisterRequest) {
   return api<TokenResponse>('/auth/register', { method: 'POST', body: data })
 }
 
-export function refreshToken(refresh_token: string) {
-  return api<TokenResponse>('/auth/refresh', { method: 'POST', body: { refresh_token } })
-}
-
 export function getMe() {
   return api<User>('/auth/me')
+}
+
+/** 登出：服务端吊销当前会话。 */
+export function logoutServer() {
+  return api<{ message: string }>('/auth/logout', { method: 'POST' })
+}
+
+/** 列出当前用户的活跃会话（设备）。 */
+export function listSessions() {
+  return api<AuthSession[]>('/auth/sessions')
+}
+
+/** 吊销指定会话（踢某设备）。 */
+export function revokeSession(id: number) {
+  return api<{ message: string }>(`/auth/sessions/${id}`, { method: 'DELETE' })
 }
 
 export function updateMe(data: UserUpdate) {

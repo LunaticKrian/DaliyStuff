@@ -23,8 +23,8 @@ const stars = Array.from({ length: 40 }, () => ({
   duration: `${1.5 + Math.random() * 2}s`,
 }))
 
-function handleLogout() {
-  auth.logout()
+async function handleLogout() {
+  await auth.logout()
   router.push('/login')
 }
 </script>

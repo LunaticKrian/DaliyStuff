@@ -1,31 +1,14 @@
 import type { ChatStreamEvent } from '../types/chat'
 import type { ResumeStreamEvent } from '../types/resume'
 import { getOrigin, tokenStore, redirect } from './platform'
+import { refreshTokens } from './refresh'
 
 /** 带 JWT 的 SSE 客户端（EventSource 不能带 Authorization 头，故用 fetch + ReadableStream）。
- *  解析 `text/event-stream`：以空行分隔事件，取 `data:` 行拼成 JSON。 */
+ *  解析 `text/event-stream`：以空行分隔事件，取 `data:` 行拼成 JSON。
+ *  401 刷新复用统一 worker（refreshTokens），与 HTTP 路径共享去重，避免并发双刷触发复用检测。 */
 
 function apiBase(): string {
   return getOrigin() + '/api'
-}
-
-async function refreshToken(): Promise<boolean> {
-  const rt = tokenStore.get('refresh_token')
-  if (!rt) return false
-  try {
-    const res = await fetch(`${apiBase()}/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh_token: rt }),
-    })
-    if (!res.ok) return false
-    const data = await res.json()
-    tokenStore.set('access_token', data.access_token)
-    tokenStore.set('refresh_token', data.refresh_token)
-    return true
-  } catch {
-    return false
-  }
 }
 
 function authHeader(): string | null {
@@ -62,7 +45,7 @@ export async function streamChatMessage(
 
   // 401 → 刷新一次重试
   if (res.status === 401) {
-    const ok = await refreshToken()
+    const ok = await refreshTokens()
     if (!ok) {
       redirect('/login')
       return
@@ -134,7 +117,7 @@ export async function streamResumeChat(
 
   let res = await doFetch(token)
   if (res.status === 401) {
-    const ok = await refreshToken()
+    const ok = await refreshTokens()
     if (!ok) {
       redirect('/login')
       return

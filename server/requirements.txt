@@ -15,3 +15,6 @@ apscheduler
 feedparser
 html2text
 httpx
+# ── 测试 ──
+pytest
+pytest-asyncio

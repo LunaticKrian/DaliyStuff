@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { login as apiLogin, register as apiRegister, refreshToken as apiRefresh, getMe } from '../api/auth'
+import { login as apiLogin, register as apiRegister, logoutServer, getMe } from '../api/auth'
 import { tokenStore } from '../utils/platform'
 import type { User, LoginRequest, RegisterRequest } from '../types/user'
 
@@ -45,19 +45,13 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function refresh() {
-    const token = tokenStore.get('refresh_token')
-    if (!token) return
+  /** 登出：先通知服务端吊销当前会话（best-effort），再清本地令牌。 */
+  async function logout() {
     try {
-      const tokens = await apiRefresh(token)
-      saveTokens(tokens)
+      await logoutServer()
     } catch {
-      clearTokens()
-      user.value = null
+      /* 即使服务端调用失败也清本地 */
     }
-  }
-
-  function logout() {
     clearTokens()
     user.value = null
   }
@@ -72,5 +66,5 @@ export const useAuthStore = defineStore('auth', () => {
     tokenStore.del('refresh_token')
   }
 
-  return { user, loading, isAuthenticated, initialize, login, register, refresh, logout }
+  return { user, loading, isAuthenticated, initialize, login, register, logout }
 })

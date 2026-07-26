@@ -43,3 +43,13 @@ export interface ProfileUpdate {
   character_class?: string
   birthday?: string
 }
+
+/** 鉴权会话（设备）—— GET /auth/sessions。 */
+export interface AuthSession {
+  id: number
+  device_name: string | null
+  device_platform: string | null
+  created_at: string
+  last_seen_at: string
+  is_current: boolean
+}

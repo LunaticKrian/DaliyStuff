@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import { createBlog, updateBlog, listBlogs } from '../api/journals'
+import { api } from '../api/client'
 import type { Blog } from '../types/journal'
 import { useNotifyStore } from '../stores/notification'
 
@@ -57,12 +58,10 @@ async function handleCoverUpload(event: Event) {
   try {
     const formData = new FormData()
     formData.append('file', file)
-    const res = await fetch('/api/journals/blog/upload', {
+    const data = await api<{ url: string }>('/journals/blog/upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       body: formData,
     })
-    const data = await res.json()
     coverUrl.value = data.url
   } catch {
     notify.error('上传失败')

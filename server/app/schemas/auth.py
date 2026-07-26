@@ -39,6 +39,15 @@ class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
 
+class SessionResponse(BaseModel):
+    id: int
+    device_name: str | None
+    device_platform: str | None
+    created_at: datetime
+    last_seen_at: datetime
+    is_current: bool
+
+
 class PasswordChange(BaseModel):
     old_password: str
     new_password: str = Field(min_length=6, max_length=100)

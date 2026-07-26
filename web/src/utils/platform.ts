@@ -40,10 +40,29 @@ async function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T
 }
 
 // ── 初始化 ──────────────────────────────────────────────────
+/** Web 跨标签同步：他 tab 写/删 token（刷新、登出、被踢）经 storage 事件同步到本 tab 内存缓存。
+ *  桌面端令牌在钥匙串、不触发 storage 事件，此监听在桌面端空转。 */
+function setupCrossTabSync(): void {
+  if (typeof window === 'undefined') return
+  window.addEventListener('storage', (e: StorageEvent) => {
+    if (e.key !== 'access_token' && e.key !== 'refresh_token') return
+    const k = e.key as TokenKey
+    if (e.newValue) {
+      _tok[k] = e.newValue
+    } else {
+      delete _tok[k]
+      // 他 tab 已清空 token（登出/会话被吊销）→ 本 tab 一并跳登录
+      if (!_tok.access_token && !_tok.refresh_token) redirect('/login')
+    }
+  })
+}
+
 export async function initPlatform(): Promise<void> {
   _tauri =
     typeof window !== 'undefined' &&
     ('__TAURI_INTERNALS__' in window || '__TAURI__' in window)
+
+  setupCrossTabSync()
 
   if (!_tauri) {
     // Web：从 localStorage 载入缓存，保持向后兼容

@@ -1,7 +1,8 @@
-import { ofetch, type FetchOptions, type $Fetch } from 'ofetch'
+import { ofetch, type FetchOptions } from 'ofetch'
 import { getOrigin, tokenStore, redirect } from '../utils/platform'
+import { refreshTokens } from '../utils/refresh'
 
-let refreshPromise: Promise<boolean> | null = null
+const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh']
 
 /** 把响应里相对的 /uploads/* 资源补全为绝对地址（桌面 origin ≠ SPA origin）。 */
 function absolutizeUploads(node: unknown, origin: string): unknown {
@@ -20,25 +21,7 @@ function absolutizeUploads(node: unknown, origin: string): unknown {
   return node
 }
 
-async function tryRefresh(): Promise<boolean> {
-  const rt = tokenStore.get('refresh_token')
-  if (!rt) return false
-  try {
-    const res = await api<{ access_token: string; refresh_token: string }>('/auth/refresh', {
-      method: 'POST',
-      body: { refresh_token: rt },
-    })
-    tokenStore.set('access_token', res.access_token)
-    tokenStore.set('refresh_token', res.refresh_token)
-    return true
-  } catch {
-    tokenStore.del('access_token')
-    tokenStore.del('refresh_token')
-    return false
-  }
-}
-
-function createClient(): $Fetch {
+function createClient() {
   return ofetch.create({
     baseURL: getOrigin() + '/api',
     onRequest({ options }) {
@@ -49,41 +32,39 @@ function createClient(): $Fetch {
       const origin = getOrigin()
       if (origin && response._data) absolutizeUploads(response._data, origin)
     },
-    async onResponseError({ response, options, request }) {
-      if (response.status !== 401) return
-
-      const url = typeof request === 'string' ? request : request.toString()
-      if (
-        url.includes('/auth/login') ||
-        url.includes('/auth/register') ||
-        url.includes('/auth/refresh')
-      ) {
-        tokenStore.del('access_token')
-        tokenStore.del('refresh_token')
-        redirect('/login')
-        return
-      }
-
-      if (!refreshPromise) refreshPromise = tryRefresh()
-      const refreshed = await refreshPromise
-      refreshPromise = null
-
-      if (!refreshed) {
-        redirect('/login')
-        return
-      }
-
-      const newToken = tokenStore.get('access_token')
-      if (newToken) options.headers.set('Authorization', `Bearer ${newToken}`)
-      // onResponseError 钩子要求 void 返回；重试交给 ofetch 再走一遍流程。
-      await api(request as string, options as FetchOptions)
-    },
+    // 401 刷新+重试交给下方 api 包装层统一处理（onResponseError 的重试返回值无法回传调用方）。
   })
 }
 
-export let api = createClient()
+let _client = createClient()
 
-/** origin 就绪后重建实例，使 baseURL 指向用户配置的服务器。在 main.ts 挂载前调用。 */
+/** origin 就绪后重建底层实例（baseURL 指向用户配置的服务器）。在 main.ts 挂载前、以及改服务器地址后调用。 */
 export function setupApiClient(): void {
-  api = createClient()
+  _client = createClient()
+}
+
+function isAuthPath(url: string): boolean {
+  return AUTH_PATHS.some((p) => url.includes(p))
+}
+
+/**
+ * 带统一 401 刷新+重试的请求封装。
+ * 在此层 catch 401 → refreshTokens → 重试并把结果回传调用方（修复原先重试结果被丢弃的问题）。
+ */
+export async function api<T = unknown>(url: string, options: FetchOptions<"json"> = {}): Promise<T> {
+  try {
+    return await _client<T>(url, options)
+  } catch (err) {
+    if (err && typeof err === 'object' && (err as { response?: { status?: number } }).response?.status !== 401) {
+      throw err
+    }
+    if (isAuthPath(url)) {
+      tokenStore.del('access_token')
+      tokenStore.del('refresh_token')
+      redirect('/login')
+      throw err
+    }
+    if (!(await refreshTokens())) throw err // worker 已 redirect
+    return await _client<T>(url, options) // onRequest 自动带新 token
+  }
 }

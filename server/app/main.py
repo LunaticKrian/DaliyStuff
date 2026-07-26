@@ -24,6 +24,7 @@ from app.models import (  # noqa: F401 – ensure tables are created
     ItemImage,
     Journal,
     PendingChange,
+    RefreshSession,
     Resume,
     ResumeChatMessage,
     ResumeChatThread,

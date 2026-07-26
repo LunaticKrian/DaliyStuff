@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { updateMe, changePassword } from '../api/auth'
+import { updateMe, changePassword, listSessions, revokeSession } from '../api/auth'
 import { useNotifyStore } from '../stores/notification'
+import type { AuthSession } from '../types/user'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -25,6 +26,40 @@ const pwForm = reactive({
 })
 const pwLoading = ref(false)
 const pwError = ref('')
+
+// Sessions（设备会话）
+const sessions = ref<AuthSession[]>([])
+const sessionsLoading = ref(false)
+const sessionsError = ref('')
+
+async function loadSessions() {
+  sessionsLoading.value = true
+  sessionsError.value = ''
+  try {
+    sessions.value = await listSessions()
+  } catch (e: any) {
+    sessionsError.value = e?.data?.detail || '加载失败'
+  } finally {
+    sessionsLoading.value = false
+  }
+}
+
+async function handleRevoke(id: number) {
+  try {
+    await revokeSession(id)
+    await loadSessions()
+    notify.success('已登出该设备')
+  } catch (e: any) {
+    notify.error(e?.data?.detail || '操作失败')
+  }
+}
+
+function formatTime(t: string | null | undefined): string {
+  if (!t) return '—'
+  return t.slice(0, 16).replace('T', ' ')
+}
+
+onMounted(loadSessions)
 
 async function handleSaveProfile() {
   profileLoading.value = true
@@ -148,6 +183,36 @@ async function handleChangePassword() {
         <div class="field-group">
           <label class="field-label">用户 ID</label>
           <div class="field-readonly">{{ auth.user?.id }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="settings-card pixel-border">
+      <div class="card-header">
+        <span class="card-icon">⬡</span>
+        <span>设备会话</span>
+      </div>
+      <div class="card-body">
+        <div v-if="sessionsLoading" class="field-readonly">加载中...</div>
+        <div v-else-if="sessionsError" class="field-error">{{ sessionsError }}</div>
+        <div v-else-if="!sessions.length" class="field-readonly">无活跃会话</div>
+        <div v-for="s in sessions" :key="s.id" class="session-row">
+          <div class="session-info">
+            <div class="session-name">
+              {{ s.device_name || '未知设备' }}
+              <span v-if="s.is_current" class="session-badge">本机</span>
+            </div>
+            <div class="session-meta">
+              {{ s.device_platform || '—' }} · {{ formatTime(s.last_seen_at) }}
+            </div>
+          </div>
+          <button
+            class="pixel-btn"
+            :disabled="s.is_current"
+            :title="s.is_current ? '当前会话，请用页面退出登录' : '登出该设备'"
+            @click="handleRevoke(s.id)"
+          >登出</button>
         </div>
       </div>
     </div>
@@ -327,5 +392,41 @@ async function handleChangePassword() {
 
 .pixel-btn.primary:hover:not(:disabled) {
   box-shadow: 3px 3px 0 var(--pixel-shadow), 0 0 6px rgba(65, 166, 246, 0.3);
+}
+
+/* Sessions */
+.session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--pixel-bg);
+  border: 2px solid var(--pixel-border);
+}
+
+.session-name {
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
+  font-size: 12px;
+  color: var(--pixel-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.session-badge {
+  font-family: var(--font-pixel-en), monospace;
+  font-size: 8px;
+  color: var(--pixel-bg);
+  background: var(--pixel-primary);
+  padding: 2px 5px;
+  letter-spacing: 0.5px;
+}
+
+.session-meta {
+  font-family: var(--font-pixel-en), monospace;
+  font-size: 9px;
+  color: var(--pixel-text-secondary);
+  margin-top: 2px;
 }
 </style>

@@ -1,4 +1,5 @@
 from app.models.user import User
+from app.models.session import RefreshSession
 from app.models.category import Category
 from app.models.tag import Tag
 from app.models.item import Item, item_tags
@@ -18,7 +19,7 @@ from app.models.resume import (
 )
 
 __all__ = [
-    "User", "Category", "Tag", "Item", "AdditionalCost", "ItemImage",
+    "User", "RefreshSession", "Category", "Tag", "Item", "AdditionalCost", "ItemImage",
     "item_tags", "DailyQuest", "UserAchievement", "Task", "ChatSession", "ChatMessage",
     "Journal", "IntelArticle",
     "Resume", "ResumeSnapshot", "ResumeChatThread", "ResumeChatMessage", "PendingChange",
