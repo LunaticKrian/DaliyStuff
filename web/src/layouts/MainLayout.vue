@@ -11,6 +11,7 @@ const navItems = [
   { path: '/chat', label: 'AI 对话', icon: '◉' },
   { path: '/transfer', label: '传送法阵', icon: '⇄' },
   { path: '/world-map', label: '世界地图', icon: '❖' },
+  { path: '/resume', label: '冒险履历', icon: '◆' },
 ]
 
 // Starfield for the CRT background. Positions are fixed once at setup so the

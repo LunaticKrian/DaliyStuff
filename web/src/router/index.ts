@@ -95,6 +95,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/resume',
+      name: 'resume',
+      component: () => import('../views/Resume.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/character/create',
       name: 'character-create',
       component: () => import('../views/CharacterCreation.vue'),

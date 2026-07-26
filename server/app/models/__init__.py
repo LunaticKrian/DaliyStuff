@@ -9,9 +9,17 @@ from app.models.task import Task
 from app.models.chat import ChatMessage, ChatSession
 from app.models.journal import Journal
 from app.models.intel import IntelArticle
+from app.models.resume import (
+    PendingChange,
+    Resume,
+    ResumeChatMessage,
+    ResumeChatThread,
+    ResumeSnapshot,
+)
 
 __all__ = [
     "User", "Category", "Tag", "Item", "AdditionalCost", "ItemImage",
     "item_tags", "DailyQuest", "UserAchievement", "Task", "ChatSession", "ChatMessage",
     "Journal", "IntelArticle",
+    "Resume", "ResumeSnapshot", "ResumeChatThread", "ResumeChatMessage", "PendingChange",
 ]

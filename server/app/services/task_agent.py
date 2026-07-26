@@ -17,6 +17,7 @@ from claude_agent_sdk import (
     AssistantMessage,
     ClaudeAgentOptions,
     ResultMessage,
+    StreamEvent,
     TextBlock,
     ToolUseBlock,
     create_sdk_mcp_server,
@@ -141,6 +142,9 @@ def _build_options(server) -> ClaudeAgentOptions:
         allowed_tools=["list_today_tasks", "create_task"],
         permission_mode="bypassPermissions",
         max_turns=settings.TASK_AGENT_MAX_TURNS,
+        # 开启逐 token 流式：SDK 额外产出 StreamEvent（Anthropic 原生 content_block_delta/text_delta），
+        # 否则每轮只发一个完整 AssistantMessage → 前端收到的是整段而非流式。
+        include_partial_messages=True,
     )
 
 
@@ -157,16 +161,30 @@ async def run_agent(user_id: int, prompt: str) -> AsyncGenerator[dict, None]:
     full_text: list[str] = []
     seen_created = 0
     result_subtype = "unknown"
+    # 当前 assistant 轮是否已通过 StreamEvent 收到逐 token 文本。
+    # 用于避免与该轮完整 TextBlock 重复推送（并保留「无 partial 时的回退」）。
+    turn_streamed = False
 
     try:
         async for msg in query(prompt=prompt, options=options):
-            if isinstance(msg, AssistantMessage):
+            # 逐 token 文本（include_partial_messages=True 时产出）
+            if isinstance(msg, StreamEvent):
+                ev = msg.event or {}
+                if ev.get("type") == "content_block_delta":
+                    delta = ev.get("delta") or {}
+                    if delta.get("type") == "text_delta" and delta.get("text"):
+                        full_text.append(delta["text"])
+                        turn_streamed = True
+                        yield {"type": "delta", "text": delta["text"]}
+            elif isinstance(msg, AssistantMessage):
                 for block in getattr(msg, "content", []) or []:
-                    if isinstance(block, TextBlock) and block.text:
+                    if isinstance(block, TextBlock) and block.text and not turn_streamed:
+                        # 回退：未收到 partial 时，按整段推一次
                         full_text.append(block.text)
                         yield {"type": "delta", "text": block.text}
                     elif isinstance(block, ToolUseBlock):
                         yield {"type": "tool", "name": block.name}
+                turn_streamed = False  # 进入下一轮
             # 工具 handler 在两条消息之间执行；这里把新创建的任务即时推送出去
             while len(created) > seen_created:
                 yield {"type": "task_created", "task": created[seen_created]}

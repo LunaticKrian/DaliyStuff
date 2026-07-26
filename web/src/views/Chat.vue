@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useNotifyStore } from '../stores/notification'
 import { listSessions, createSession, listMessages, deleteSession } from '../api/chat'
 import { streamChatMessage } from '../utils/sse'
+import { useTypewriter } from '../composables/useTypewriter'
 import type { ChatSession, ChatMessage, CreatedTask } from '../types/chat'
 import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_COLORS, type TaskCategory } from '../types/task'
 
@@ -89,12 +90,43 @@ async function send() {
   turnTasks.value = []
   await scrollDown()
 
+  // fullRaw 累积后端全部 delta（用于落库的正式消息）；
+  // 打字机驱动 streamText 做逐字显示，两者解耦。
+  let fullRaw = ''
   let errored = false
+  let finalized = false
+
+  const typewriter = useTypewriter({
+    speedMs: 30,
+    onUpdate: (full) => { streamText.value = full; scrollDown() },
+    onDone: finalize,
+  })
+
+  function finalize() {
+    if (finalized) return
+    finalized = true
+    // 把本轮助手回复落为正式消息（用完整原文，而非打字机里可能未排空的部分）
+    const finalText = fullRaw.trim() || (errored ? '(生成失败)' : '(无回复)')
+    messages.value.push({
+      id: Date.now() + 1, session_id: activeId.value!, role: 'assistant',
+      content: finalText, meta: { tasks_created: turnTasks.value.length },
+      created_at: new Date().toISOString(),
+    })
+
+    sending.value = false
+    streamText.value = ''
+    toolActive.value = false
+    turnTasks.value = []
+    scrollDown()
+    // 刷新会话列表（标题/预览/计数）
+    loadSessions().catch(() => {})
+  }
+
   await streamChatMessage(activeId.value, content, {
     onEvent(e) {
       if (e.type === 'delta') {
-        streamText.value += e.text
-        scrollDown()
+        fullRaw += e.text
+        typewriter.push(e.text)
       } else if (e.type === 'tool') {
         toolActive.value = true
       } else if (e.type === 'task_created') {
@@ -114,21 +146,8 @@ async function send() {
     },
   })
 
-  // 把本轮助手回复落为正式消息
-  const finalText = streamText.value.trim() || (errored ? '(生成失败)' : '(无回复)')
-  messages.value.push({
-    id: Date.now() + 1, session_id: activeId.value!, role: 'assistant',
-    content: finalText, meta: { tasks_created: turnTasks.value.length },
-    created_at: new Date().toISOString(),
-  })
-
-  sending.value = false
-  streamText.value = ''
-  toolActive.value = false
-  turnTasks.value = []
-  await scrollDown()
-  // 刷新会话列表（标题/预览/计数）
-  loadSessions().catch(() => {})
+  // 后端流结束 → 通知打字机：队列排空后触发 onDone 完成收尾
+  typewriter.finish()
 }
 
 function onKeydown(e: KeyboardEvent) {
@@ -219,6 +238,9 @@ onMounted(async () => {
             <div class="msg-av">◉</div>
             <div class="msg-col">
               <div class="msg-name">NEXA</div>
+              <div v-if="!toolActive && !streamText" class="think-line">
+                <span class="td"></span><span class="td"></span><span class="td"></span> 思考中 …
+              </div>
               <div v-if="toolActive && !streamText" class="tool-line"><span class="tdot"></span> 内核运行中 · 生成任务 …</div>
               <div v-if="turnTasks.length" class="summon-list">
                 <div v-for="(t, i) in turnTasks" :key="i" class="summon">
@@ -387,6 +409,20 @@ onMounted(async () => {
   display: inline-block; width: 8px; height: 14px; background: var(--pixel-info);
   vertical-align: -2px; margin-left: 2px; animation: corepulse 0.7s steps(2) infinite;
 }
+
+/* 首 token 前的「思考中」三点动画 */
+.think-line {
+  display: inline-flex; align-items: center; gap: 5px; align-self: flex-start;
+  font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-info);
+  padding: 7px 11px; border-left: 3px solid var(--pixel-info); background: var(--pixel-bg);
+}
+.think-line .td {
+  width: 6px; height: 6px; background: var(--pixel-info); display: inline-block;
+  animation: thinkblink 1.2s steps(1) infinite;
+}
+.think-line .td:nth-child(2) { animation-delay: 0.2s; }
+.think-line .td:nth-child(3) { animation-delay: 0.4s; }
+@keyframes thinkblink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
 
 /* Compose */
 .c-compose {

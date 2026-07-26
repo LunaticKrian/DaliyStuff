@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>冒险者履历 · AI 编辑 · PixelPack</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ════ 顶栏 ════ -->
+    <header class="topbar">
+      <a href="resume.html" class="topbar__back">◀ 编辑器</a>
+      <div class="topbar__title">冒险者履历 <small>AI 编辑 · DOSSIER</small></div>
+      <div class="topbar__spacer"></div>
+      <button class="toolbtn" id="btnVersions">▤ 版本历史</button>
+      <span class="toolbtn toolbtn--ghost" style="color:var(--c-success)">● 已自动存档 <b id="revTag">r7</b></span>
+    </header>
+
+    <div class="dossier dossier--3">
+
+      <!-- ════ 左：编辑器（精简） ════ -->
+      <div class="editor">
+
+        <section class="panel">
+          <div class="panel__head"><span class="gem" style="background:var(--cat-profile)"></span> 档案</div>
+          <div class="panel__body">
+            <div class="field"><label>姓名 <button class="polish" data-polish="profile.name">✨ 润色</button></label>
+              <input class="input" value="Krian" /></div>
+            <div class="field"><label>头衔 <button class="polish" data-polish="profile.title">✨ 润色</button></label>
+              <input class="input" value="全栈工程师 · 像素系统构筑师" /></div>
+            <div class="field"><label>邮箱</label><input class="input" value="krian@pixelpack.dev" /></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head"><span class="gem" style="background:var(--cat-edu)"></span> 履历 <span class="count">3</span></div>
+          <div class="panel__body">
+            <div class="entry">
+              <div class="entry__bar">
+                <span class="entry__idx">#01</span><span class="entry__type">工作</span>
+                <button class="entry__del">✕</button>
+              </div>
+              <input class="input" value="高级前端工程师 · PixelPack Studio" style="margin-bottom:6px;">
+              <textarea class="input" id="work1desc">主导 PixelPack 前端架构，落地 Vue3 全家桶。
+设计像素主题设计系统，统一 7 个子模块。</textarea>
+              <button class="polish" data-polish="timeline.0" style="margin-top:6px;">✨ 量化这条经历</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head"><span class="gem" style="background:var(--cat-skill)"></span> 技能 <span class="count">3</span></div>
+          <div class="panel__body">
+            <div class="skill-tags">
+              <span class="skill-chip">Vue<span class="x">✕</span></span>
+              <span class="skill-chip">TypeScript<span class="x">✕</span></span>
+              <span class="skill-chip">FastAPI<span class="x">✕</span></span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ════ 中：实时预览 ════ -->
+      <div class="stage">
+        <div class="stage__hint">
+          <span><span class="dot"></span> 实时预览</span>
+          <span>修订 <b id="pendingCnt">1 待确认</b></span>
+          <span style="margin-left:auto">接受变更后自动生成新版本</span>
+        </div>
+        <div class="paper-wrap">
+          <article class="paper" id="paper">
+            <header class="r-head">
+              <div>
+                <h1 class="r-name">Krian</h1>
+                <div class="r-title">全栈工程师 · 像素系统构筑师</div>
+              </div>
+              <div class="r-contact">
+                <span>⚲ 上海 · 5 年</span><span>✉ krian@pixelpack.dev</span>
+                <span><a href="#">↗ pixelpack.dev</a></span>
+              </div>
+            </header>
+
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 教育 &amp; 经历</h2>
+              <div class="r-item" id="prevWork1">
+                <div class="r-item__top">
+                  <div class="r-item__role">高级前端工程师 <span class="at">· PixelPack Studio</span></div>
+                  <div class="r-item__date">2023.03 — 至今</div>
+                </div>
+                <ul>
+                  <li>主导 PixelPack 前端架构，落地 Vue3 全家桶。</li>
+                  <li>设计像素主题设计系统，统一 7 个子模块。</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 技能</h2>
+              <div class="r-skills">
+                <div class="r-skill-row"><span class="cat">前端</span><span class="tags">Vue、TypeScript</span></div>
+                <div class="r-skill-row"><span class="cat">后端</span><span class="tags">FastAPI</span></div>
+              </div>
+            </section>
+          </article>
+        </div>
+      </div>
+
+      <!-- ════ 右：AI 对话抽屉 ════ -->
+      <aside class="chat-drawer">
+        <section class="panel">
+          <div class="chat-head">
+            <div class="chat-head__core"></div>
+            <div class="chat-head__name">NEXA · 简历军师<small>GLM · 工具调用</small></div>
+            <div class="chat-head__acts">
+              <button title="清空">清空</button>
+            </div>
+          </div>
+
+          <div class="thread" id="thread">
+            <!-- 引导语 -->
+            <div class="msg msg--ai">
+              <div class="msg__avatar">◈</div>
+              <div class="msg__col">
+                <div class="msg__name">NEXA</div>
+                <div class="msg__bubble">我是你的简历军师。说「把工作经历量化」「翻译成英文」或「精简技能」，我会产出变更供你确认——你点头才落库。</div>
+              </div>
+            </div>
+
+            <!-- 示例：一条已产生的拟变更卡片 -->
+            <div class="pending" id="pendingDemo">
+              <div class="pending__head">
+                <span>⎔ rewrite_section</span>
+                <span class="grp-tag">组 1/1</span>
+                <span class="target">履历 #01</span>
+              </div>
+              <div class="pending__body">
+                <div class="diff">
+                  <div class="diff__row diff__row--del">
+                    <div class="diff__sign">−</div>
+                    <div class="diff__txt"><span class="k">desc</span>主导 PixelPack 前端架构，落地 Vue3 全家桶。设计像素主题设计系统，统一 7 个子模块。</div>
+                  </div>
+                  <div class="diff__row diff__row--add">
+                    <div class="diff__sign">+</div>
+                    <div class="diff__txt"><span class="k">desc</span>主导 PixelPack 前端架构，从 0 到 1 落地 Vue3 + TS，首屏提速 40%。设计像素主题设计系统，统一 7 个子模块视觉语言，复用率提升至 85%。</div>
+                  </div>
+                </div>
+                <div class="pending__acts">
+                  <button class="pbtn pbtn--ok" data-apply="demo">✓ 接受</button>
+                  <button class="pbtn pbtn--no" data-deny="demo">✕ 拒绝</button>
+                  <span class="pending__meta">基于 r7 · 待确认</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quickchips">
+            <span class="qchip">把工作经历量化</span>
+            <span class="qchip">翻译成英文</span>
+            <span class="qchip">精简到一页</span>
+            <span class="qchip">补一段自我评价</span>
+          </div>
+
+          <div class="composer">
+            <textarea id="composer" placeholder="对 NEXA 说点什么…"></textarea>
+            <button class="send" id="btnSend">发送 ▶</button>
+          </div>
+          <div class="composer__hint">Enter 发送 · NEXA 只读简历、产出待确认变更</div>
+        </section>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ════ 版本历史覆盖层 ════ -->
+  <div class="veil" id="veil">
+    <div class="versions">
+      <div class="versions__head">
+        ▤ 版本历史 · DOSSIER
+        <button class="x" id="btnCloseVeil">✕</button>
+      </div>
+      <div class="ver-item cur">
+        <div class="ver-item__rev">r7<small>CURRENT</small></div>
+        <div class="ver-item__info">
+          <div class="ver-item__title">量化工作经历描述</div>
+          <div class="ver-item__time">2026-07-26 14:51</div>
+        </div>
+        <div class="ver-item__by">NEXA</div>
+        <button class="revert">当前</button>
+      </div>
+      <div class="ver-item">
+        <div class="ver-item__rev">r6</div>
+        <div class="ver-item__info">
+          <div class="ver-item__title">新增 airise-gateway 项目</div>
+          <div class="ver-item__time">2026-07-25 21:08</div>
+        </div>
+        <div class="ver-item__by">手动</div>
+        <button class="revert">回滚</button>
+      </div>
+      <div class="ver-item">
+        <div class="ver-item__rev">r5</div>
+        <div class="ver-item__info">
+          <div class="ver-item__title">技能分类调整</div>
+          <div class="ver-item__time">2026-07-24 09:30</div>
+        </div>
+        <div class="ver-item__by">NEXA</div>
+        <button class="revert">回滚</button>
+      </div>
+      <div class="ver-item">
+        <div class="ver-item__rev">r4</div>
+        <div class="ver-item__info">
+          <div class="ver-item__title">初始导入</div>
+          <div class="ver-item__time">2026-07-20 18:02</div>
+        </div>
+        <div class="ver-item__by">手动</div>
+        <button class="revert">回滚</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="chat.js"></script>
+</body>
+</html>

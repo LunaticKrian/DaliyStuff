@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     TASK_CATEGORIES: str = "study,work,life,health,other"
     TASK_AGENT_MAX_TURNS: int = 12          # 对话生成任务 Agent 单次最大轮数
 
+    # ── 简历 / AI 编辑（冒险者履历 DOSSIER）──
+    RESUME_AGENT_MAX_TURNS: int = 12        # 简历编辑 Agent 单次最大轮数
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
