@@ -1,0 +1,330 @@
+/* =====================================================================
+   PixelPack · 冒险者履历 DOSSIER V1.0 设计稿
+   简历管理后台 (Editor) + 实时预览 (A4 简历纸)
+   ─ 外壳：像素/RPG 终端，复用 PixelPack --c-* / theme.css --pixel-*
+   ─ 简历纸：专业衬线排版 (Newsreader + JetBrains Mono)，投递可用
+   ─ 字体：Chakra Petch + Cubic 11/Ark Pixel(像素) / Newsreader(简历衬线)
+   签名设计：像素 UI 与衬线简历纸的双字体对比 —— 终端桌上的一张公会登记纸
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@font-face {
+  font-family: 'Cubic 11';
+  src: url('https://cdn.jsdelivr.net/gh/Cubic-11/Cubic-11@main/fonts/Cubic11-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  /* ── 颜色（== theme.css --pixel-*）── */
+  --c-primary:   #41a6f6;
+  --c-accent:    #b13e53;
+  --c-warning:   #ef7d57;
+  --c-success:   #38b764;
+  --c-info:      #73eff7;
+  --c-gold:      #f5d976;
+  --c-bg:        #192043;
+  --c-bg-2:      #1f2d56;
+  --c-card:      #223567;
+  --c-card-2:    #2a3f78;
+  --c-inset:     #141a36;
+  --c-border:    #3b4e7e;
+  --c-border-2:  #5570b0;
+  --c-text:      #f4f4f4;
+  --c-text-dim:  #7b8faa;
+  --c-shadow:    rgba(0, 0, 0, 0.5);
+
+  /* ── 简历纸专用（专业排版层）── */
+  --paper:       #f4eed8;          /* 羊皮纸：终端桌上的一张登记纸 */
+  --paper-2:     #ece4c8;
+  --ink:         #1d2236;          /* 深海军蓝墨色，呼应外壳 --c-bg */
+  --ink-soft:    #4a5470;
+  --ink-rule:    #c9b98a;          /* 纸上分隔线 */
+  --ink-accent:  #8a2f3f;          /* 印章红，呼应 --c-accent 但更沉 */
+
+  /* ── 分类色（板块 gem 用）── */
+  --cat-profile:  #41a6f6;
+  --cat-edu:      #73eff7;
+  --cat-work:     #f5d976;
+  --cat-project:  #38b764;
+  --cat-skill:    #b48cff;
+  --cat-award:    #ef7d57;
+
+  /* ── 字体角色 ── */
+  --f-body: 'Chakra Petch', 'Cubic 11', 'Ark Pixel', ui-monospace, monospace;
+  --f-en:   'Chakra Petch', system-ui, sans-serif;
+  --f-num:  'Chakra Petch', system-ui, sans-serif;
+  --f-serif:'Newsreader', Georgia, 'Songti SC', serif;   /* 简历纸正文 */
+  --f-paper:'JetBrains Mono', 'Share Tech Mono', ui-monospace, monospace; /* 简历纸日期/链接 */
+
+  /* ── 像素边框 ── */
+  --pix-bd: 3px solid var(--c-border);
+  --pix-bd-2: 2px solid var(--c-border);
+  --pix-sh: 3px 3px 0 var(--c-shadow);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--f-body);
+  font-size: 14px;
+  line-height: 1.5;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
+
+/* CRT 扫描线 + 暗角 */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0,0,0,0.18) 2px 3px);
+  mix-blend-mode: multiply; opacity: 0.45;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  box-shadow: inset 0 0 180px rgba(0,0,0,0.7);
+}
+
+/* ─────────────────────────────────────────────
+   布局骨架
+   ───────────────────────────────────────────── */
+.app { max-width: 1500px; margin: 0 auto; padding: 14px 16px 60px; }
+
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; margin-bottom: 16px;
+  background: var(--c-card); border: var(--pix-bd); box-shadow: var(--pix-sh);
+}
+.topbar__back {
+  font-family: var(--f-en); font-size: 9px; color: var(--c-text-dim);
+  text-decoration: none; padding: 6px 9px; border: 2px solid var(--c-border);
+  background: var(--c-inset);
+}
+.topbar__back:hover { color: var(--c-info); border-color: var(--c-info); }
+.topbar__title {
+  font-family: var(--f-en); font-size: 13px; letter-spacing: 1.5px; color: var(--c-gold);
+}
+.topbar__title small {
+  display: inline-block; margin-left: 8px; padding: 2px 6px;
+  font-size: 8px; color: var(--c-info); border: 1px solid var(--c-border); background: var(--c-inset);
+}
+.topbar__spacer { flex: 1; }
+
+/* 顶栏按钮组 */
+.toolbtn {
+  font-family: var(--f-en); font-size: 9px; letter-spacing: 0.5px;
+  color: var(--c-text); background: var(--c-card-2);
+  border: 2px solid var(--c-border-2); box-shadow: 2px 2px 0 var(--c-shadow);
+  padding: 7px 11px; cursor: pointer; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.toolbtn:hover { background: var(--c-border-2); color: var(--c-gold); }
+.toolbtn:active { transform: translate(2px, 2px); box-shadow: none; }
+.toolbtn--gold {
+  color: #20180a; background: var(--c-gold); border-color: #c9a93f;
+}
+.toolbtn--gold:hover { background: #ffe89a; color: #20180a; }
+.toolbtn--ghost { background: transparent; box-shadow: none; }
+.toolbtn .seg { display: inline-flex; border: 2px solid var(--c-border-2); }
+.toolbtn .seg button {
+  font: inherit; color: var(--c-text-dim); background: var(--c-inset);
+  border: none; padding: 5px 9px; cursor: pointer; letter-spacing: 0.5px;
+}
+.toolbtn .seg button.is-on { color: var(--c-gold); background: var(--c-card-2); }
+
+/* ── 主布局：编辑器 | 预览 ── */
+.dossier { display: grid; grid-template-columns: 400px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .dossier { grid-template-columns: 1fr; } }
+
+/* ─────────────────────────────────────────────
+   通用面板（像素卡）
+   ───────────────────────────────────────────── */
+.panel { background: var(--c-card); border: var(--pix-bd); box-shadow: var(--pix-sh); }
+.panel__head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-bottom: var(--pix-bd); background: var(--c-bg-2);
+  font-family: var(--f-en); font-size: 9px; letter-spacing: 1px; color: var(--c-info);
+  text-transform: uppercase;
+}
+.panel__head .gem { width: 12px; height: 12px; display: inline-block; transform: rotate(45deg); }
+.panel__head .count { margin-left: auto; color: var(--c-text-dim); font-size: 8px; }
+.panel__body { padding: 12px; }
+
+/* ─────────────────────────────────────────────
+   编辑器表单
+   ───────────────────────────────────────────── */
+.editor { display: flex; flex-direction: column; gap: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 9px; }
+.field:last-child { margin-bottom: 0; }
+.field--row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.field--row .field { margin-bottom: 0; }
+.field label {
+  font-family: var(--f-en); font-size: 8px; letter-spacing: 0.5px;
+  color: var(--c-text-dim); text-transform: uppercase;
+}
+.field label .req { color: var(--c-accent); }
+
+.input, textarea.input, select.input {
+  width: 100%; font-family: var(--f-body); font-size: 12px;
+  color: var(--c-text); background: var(--c-inset);
+  border: 2px solid var(--c-border); padding: 7px 9px; outline: none;
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.4);
+}
+.input:focus, textarea.input:focus, select.input:focus {
+  border-color: var(--c-info); background: #1a2148;
+}
+textarea.input { resize: vertical; min-height: 54px; line-height: 1.45; }
+.input::placeholder { color: #5a6c8c; }
+
+/* 重复条目卡（履历/项目/技能） */
+.entry {
+  background: var(--c-inset); border: var(--pix-bd-2); margin-bottom: 8px;
+  padding: 9px; position: relative;
+}
+.entry__bar {
+  display: flex; align-items: center; gap: 7px; margin-bottom: 7px;
+}
+.entry__idx {
+  font-family: var(--f-en); font-size: 8px; color: var(--c-gold);
+  background: var(--c-bg-2); border: 1px solid var(--c-border); padding: 2px 5px;
+}
+.entry__type {
+  font-family: var(--f-en); font-size: 8px; color: var(--c-info); letter-spacing: 0.5px;
+}
+.entry__del {
+  margin-left: auto; font-family: var(--f-en); font-size: 9px; color: var(--c-text-dim);
+  background: transparent; border: 1px solid var(--c-border); padding: 2px 6px; cursor: pointer;
+}
+.entry__del:hover { color: var(--c-accent); border-color: var(--c-accent); }
+
+/* 添加按钮 */
+.addbtn {
+  width: 100%; font-family: var(--f-en); font-size: 9px; letter-spacing: 0.5px;
+  color: var(--c-success); background: var(--c-inset); border: 2px dashed var(--c-border-2);
+  padding: 8px; cursor: pointer; text-transform: uppercase;
+}
+.addbtn:hover { color: var(--c-info); border-color: var(--c-info); border-style: solid; }
+
+/* 技能编辑：分类 + 标签 */
+.skill-cat { margin-bottom: 8px; }
+.skill-cat__head { display: flex; gap: 6px; margin-bottom: 5px; }
+.skill-tags { display: flex; flex-wrap: wrap; gap: 5px; min-height: 26px;
+  background: var(--c-inset); border: 2px solid var(--c-border); padding: 5px; }
+.skill-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--c-text); background: var(--c-card-2);
+  border: 1px solid var(--c-border-2); padding: 2px 4px 2px 7px;
+}
+.skill-chip .lv { font-family: var(--f-en); font-size: 7px; color: var(--c-gold); }
+.skill-chip .x { color: var(--c-text-dim); cursor: pointer; padding: 0 3px; border-left: 1px solid var(--c-border); margin-left: 2px; }
+.skill-chip .x:hover { color: var(--c-accent); }
+
+/* ─────────────────────────────────────────────
+   预览舞台
+   ───────────────────────────────────────────── */
+.stage {
+  background: var(--c-inset); border: var(--pix-bd); box-shadow: var(--pix-sh);
+  padding: 26px; position: sticky; top: 14px;
+  min-height: 600px;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+.stage__hint {
+  font-family: var(--f-en); font-size: 8px; letter-spacing: 0.5px; color: var(--c-text-dim);
+  text-transform: uppercase; margin-bottom: 14px; display: flex; gap: 14px; align-items: center;
+}
+.stage__hint b { color: var(--c-info); }
+.stage__hint .dot { width: 7px; height: 7px; background: var(--c-success); display: inline-block; animation: blink 1.6s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.25; } }
+
+/* ── A4 简历纸 ── */
+.paper-wrap { display: flex; justify-content: center; }
+.paper {
+  width: 100%; max-width: 720px; background: var(--paper); color: var(--ink);
+  font-family: var(--f-serif); padding: 46px 50px 40px;
+  box-shadow: 0 0 0 1px var(--ink-rule), 6px 6px 0 rgba(0,0,0,0.35), 14px 14px 0 rgba(0,0,0,0.18);
+  position: relative;
+  background-image:
+    radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+/* 纸张右上角公会印章（签名元素之一）*/
+.paper::after {
+  content: 'GUILD\A VERIFIED'; white-space: pre; text-align: center;
+  position: absolute; top: 34px; right: 38px;
+  font-family: var(--f-paper); font-size: 7px; letter-spacing: 1px; line-height: 1.5;
+  color: var(--ink-accent); border: 2px solid var(--ink-accent);
+  padding: 7px 9px; transform: rotate(-8deg); opacity: 0.78;
+  border-radius: 2px;
+}
+
+.paper--pro { background: #fbf9f4; background-image: none; }
+.paper--pro::after { display: none; }
+
+/* 简历纸排版 */
+.r-head { display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 2px solid var(--ink); padding-bottom: 14px; }
+.r-name { font-family: var(--f-serif); font-weight: 700; font-size: 34px; line-height: 1.05; letter-spacing: -0.5px; margin: 0; }
+.r-title { font-family: var(--f-serif); font-style: italic; font-size: 15px; color: var(--ink-soft); margin-top: 4px; }
+.r-contact { font-family: var(--f-paper); font-size: 9.5px; line-height: 1.7; color: var(--ink-soft); text-align: right; }
+.r-contact span { display: block; }
+.r-contact a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px dotted var(--ink-rule); }
+
+.r-sec { margin-top: 22px; }
+.r-sec__title {
+  font-family: var(--f-serif); font-weight: 700; font-size: 13px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--ink);
+  display: flex; align-items: center; gap: 8px; margin: 0 0 11px;
+}
+.r-sec__title::after { content: ''; flex: 1; height: 1px; background: var(--ink-rule); }
+.r-sec__title .mark { color: var(--ink-accent); font-family: var(--f-paper); font-size: 11px; }
+
+/* 履历条目 */
+.r-item { margin-bottom: 13px; }
+.r-item__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.r-item__role { font-family: var(--f-serif); font-weight: 600; font-size: 14.5px; color: var(--ink); }
+.r-item__role .at { color: var(--ink-soft); font-weight: 400; }
+.r-item__date { font-family: var(--f-paper); font-size: 9.5px; color: var(--ink-soft); white-space: nowrap; }
+.r-item__org { font-family: var(--f-paper); font-size: 10px; color: var(--ink-soft); margin: 1px 0 5px; letter-spacing: 0.3px; }
+.r-item ul { margin: 4px 0 0; padding-left: 16px; }
+.r-item li { font-family: var(--f-serif); font-size: 12.5px; line-height: 1.5; color: #2a3050; margin-bottom: 2px; }
+
+/* 技能 */
+.r-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 26px; }
+.r-skill-row { display: flex; align-items: baseline; gap: 8px; font-family: var(--f-serif); font-size: 12.5px; }
+.r-skill-row .cat { font-weight: 600; min-width: 86px; color: var(--ink); }
+.r-skill-row .tags { color: #2a3050; }
+
+/* 项目 */
+.r-proj { margin-bottom: 12px; }
+.r-proj__top { display: flex; justify-content: space-between; align-items: baseline; }
+.r-proj__name { font-family: var(--f-serif); font-weight: 600; font-size: 14px; }
+.r-proj__stack { font-family: var(--f-paper); font-size: 9px; color: var(--ink-soft); }
+
+/* 荣誉证书 */
+.r-awards { font-family: var(--f-serif); font-size: 12.5px; }
+.r-award { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0;
+  border-bottom: 1px dotted var(--ink-rule); }
+.r-award:last-child { border-bottom: none; }
+.r-award .yr { font-family: var(--f-paper); font-size: 10px; color: var(--ink-soft); }
+
+.r-empty { font-family: var(--f-serif); font-style: italic; color: var(--ink-soft); font-size: 12px; }
+
+/* ─────────────────────────────────────────────
+   打印 / PDF 导出：只留简历纸，A4
+   ───────────────────────────────────────────── */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body::before, body::after { display: none; }
+  body { background: #fff; }
+  .app { padding: 0; max-width: none; }
+  .topbar, .editor, .stage__hint { display: none !important; }
+  .dossier { display: block; }
+  .stage { position: static; background: #fff; border: none; box-shadow: none; padding: 0; }
+  .paper { box-shadow: none; max-width: none; width: 100%; padding: 0; }
+}

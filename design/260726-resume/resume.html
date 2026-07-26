@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>冒险者履历 DOSSIER · PixelPack</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ════ 顶栏 ════ -->
+    <header class="topbar">
+      <a href="#" class="topbar__back">◀ 返回</a>
+      <div class="topbar__title">冒险者履历 <small>DOSSIER · CV MANAGE</small></div>
+      <div class="topbar__spacer"></div>
+
+      <span class="toolbtn toolbtn--ghost">
+        模式
+        <span class="seg" id="modeSeg">
+          <button data-mode="pro" class="is-on">PRO</button>
+          <button data-mode="dossier">公會</button>
+        </span>
+      </span>
+      <button class="toolbtn" id="btnReset">↺ 重置</button>
+      <button class="toolbtn toolbtn--gold" id="btnPrint">⤓ 导出 PDF</button>
+    </header>
+
+    <div class="dossier">
+
+      <!-- ════ 左：编辑器 ════ -->
+      <div class="editor">
+
+        <!-- 冒险者档案 / 基本信息 -->
+        <section class="panel">
+          <div class="panel__head">
+            <span class="gem" style="background:var(--cat-profile)"></span> 冒险者档案 · Profile
+            <span class="count">基本信息</span>
+          </div>
+          <div class="panel__body">
+            <div class="field--row">
+              <div class="field"><label>姓名 <span class="req">*</span></label>
+                <input class="input" data-bind="profile.name" /></div>
+              <div class="field"><label>头衔 / 职业</label>
+                <input class="input" data-bind="profile.title" placeholder="全栈工程师" /></div>
+            </div>
+            <div class="field--row">
+              <div class="field"><label>所在地</label>
+                <input class="input" data-bind="profile.location" /></div>
+              <div class="field"><label>从业年限</label>
+                <input class="input" data-bind="profile.years" placeholder="5 年" /></div>
+            </div>
+            <div class="field--row">
+              <div class="field"><label>电话</label>
+                <input class="input" data-bind="profile.phone" /></div>
+              <div class="field"><label>邮箱</label>
+                <input class="input" data-bind="profile.email" /></div>
+            </div>
+            <div class="field--row">
+              <div class="field"><label>个人站点</label>
+                <input class="input" data-bind="profile.site" /></div>
+              <div class="field"><label>GitHub</label>
+                <input class="input" data-bind="profile.github" /></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 履历：教育 + 工作 -->
+        <section class="panel">
+          <div class="panel__head">
+            <span class="gem" style="background:var(--cat-edu)"></span> 履历时间线 · Timeline
+            <span class="count" id="cntTimeline">0</span>
+          </div>
+          <div class="panel__body">
+            <div id="listTimeline"></div>
+            <button class="addbtn" data-add="timeline">+ 新增履历（教育 / 工作）</button>
+          </div>
+        </section>
+
+        <!-- 项目经历 -->
+        <section class="panel">
+          <div class="panel__head">
+            <span class="gem" style="background:var(--cat-project)"></span> 任务战绩 · Projects
+            <span class="count" id="cntProject">0</span>
+          </div>
+          <div class="panel__body">
+            <div id="listProject"></div>
+            <button class="addbtn" data-add="project">+ 新增项目</button>
+          </div>
+        </section>
+
+        <!-- 技能盘 -->
+        <section class="panel">
+          <div class="panel__head">
+            <span class="gem" style="background:var(--cat-skill)"></span> 技能盘 · Skills
+            <span class="count" id="cntSkill">0</span>
+          </div>
+          <div class="panel__body">
+            <div id="listSkill"></div>
+          </div>
+        </section>
+
+        <!-- 荣誉与证书 -->
+        <section class="panel">
+          <div class="panel__head">
+            <span class="gem" style="background:var(--cat-award)"></span> 荣誉与证 · Awards
+            <span class="count" id="cntAward">0</span>
+          </div>
+          <div class="panel__body">
+            <div id="listAward"></div>
+            <button class="addbtn" data-add="award">+ 新增荣誉 / 证书</button>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ════ 右：实时预览 ════ -->
+      <div class="stage">
+        <div class="stage__hint">
+          <span><span class="dot"></span> 实时预览</span>
+          <span>纸张 <b id="hintMode">PRO · A4</b></span>
+          <span style="margin-left:auto">编辑左侧表单即时同步</span>
+        </div>
+
+        <div class="paper-wrap">
+          <article class="paper" id="paper">
+            <!-- 头部 -->
+            <header class="r-head">
+              <div>
+                <h1 class="r-name" data-view="profile.name">Krian</h1>
+                <div class="r-title" data-view="profile.title">全栈工程师 · 像素系统构筑师</div>
+              </div>
+              <div class="r-contact" id="rContact"></div>
+            </header>
+
+            <!-- 履历 -->
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 教育 &amp; 经历</h2>
+              <div id="rTimeline"></div>
+            </section>
+
+            <!-- 项目 -->
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 项目战绩</h2>
+              <div id="rProject"></div>
+            </section>
+
+            <!-- 技能 -->
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 技能</h2>
+              <div class="r-skills" id="rSkills"></div>
+            </section>
+
+            <!-- 荣誉证书 -->
+            <section class="r-sec">
+              <h2 class="r-sec__title"><span class="mark">§</span> 荣誉 &amp; 证书</h2>
+              <div class="r-awards" id="rAwards"></div>
+            </section>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
