@@ -68,13 +68,19 @@ export async function exportElementToPdf(
     console.log('[exportPdf] canvas:', canvas.width, 'x', canvas.height)
 
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
-    const pxPerMm = canvas.width / PDF_W
-    const pageHeightPx = PDF_H * pxPerMm // 单页对应的 canvas 像素高
+    // 一页 A4 对应的 canvas 像素高：用「A4 像素高 × html2canvas scale」取整，得到精确整数。
+    // 不能用 PDF_H * (canvas.width / PDF_W)：A4_W/A4_H 是 96dpi 下的取整近似，794/210 ≠ 1123/297，
+    // 会算出 2245.88 这样的浮点；而 canvas.height 是整数（如 2246），二者差零点几像素就让
+    // while 多切一刀，产出一张几乎空白的尾页。
+    const dpr = canvas.width / A4_W
+    const pageHeightPx = Math.round(A4_H * dpr)
 
     let y = 0
     let page = 0
     while (y < canvas.height) {
-      const slicePx = Math.min(pageHeightPx, canvas.height - y)
+      const remaining = canvas.height - y
+      if (remaining < 1) break // 渲染/浮点残余，不再生成空白尾页
+      const slicePx = Math.min(pageHeightPx, remaining)
       const pageCanvas = document.createElement('canvas')
       pageCanvas.width = canvas.width
       pageCanvas.height = slicePx
@@ -85,7 +91,8 @@ export async function exportElementToPdf(
         ctx.drawImage(canvas, 0, y, canvas.width, slicePx, 0, 0, pageCanvas.width, slicePx)
       }
       if (page > 0) pdf.addPage()
-      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.98), 'JPEG', 0, 0, PDF_W, slicePx / pxPerMm)
+      // 高度按切片占一页 A4 的比例换算（满页=297mm，尾页按比例），与宽度比例一致
+      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.98), 'JPEG', 0, 0, PDF_W, (slicePx / pageHeightPx) * PDF_H)
       y += slicePx
       page += 1
     }
