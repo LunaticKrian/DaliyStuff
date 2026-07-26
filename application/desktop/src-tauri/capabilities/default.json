@@ -1,0 +1,14 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "PixelPack 桌面端默认权限：仅放行实际使用的插件命令 + 核心 IPC/事件。",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "store:default",
+    "notification:default",
+    "global-shortcut:default",
+    "autostart:default",
+    "os:default"
+  ]
+}

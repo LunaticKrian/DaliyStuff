@@ -12,7 +12,7 @@ build/
 *.db
 
 # Node
-node_modules/
+*node_modules/
 
 # Uploads
 server/uploads/
@@ -22,3 +22,5 @@ server/uploads/
 .env.local
 
 .DS_store
+
+application/desktop/src-tauri/target

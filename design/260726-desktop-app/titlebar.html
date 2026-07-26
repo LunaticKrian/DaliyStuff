@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PixelPack · 标题栏 (Titlebar)</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .gallery { display: flex; flex-direction: column; gap: 22px; }
+  .gallery h3 {
+    font-family: var(--f-display); font-size: 9px; letter-spacing: 1px;
+    color: var(--c-info); margin: 0 0 10px;
+  }
+  .anatomy { position: relative; }
+  .anatomy .lbl {
+    position: absolute; font-family: var(--f-mono); font-size: 11px; color: var(--c-warning);
+    background: var(--c-inset); border: 2px solid var(--c-warning);
+    padding: 2px 6px; white-space: nowrap;
+  }
+  .anatomy .lbl::after { content: ''; position: absolute; }
+  .states { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .state-card { background: var(--c-card); border: var(--pix-bd2); }
+  .state-card .tb { border-bottom: var(--pix-bd); }
+  .state-card .body { padding: 16px; }
+  .state-card .name { font-family: var(--f-display); font-size: 8px; letter-spacing: 1px; margin-bottom: 4px; }
+  .state-card .dsc { font-size: 12px; color: var(--c-text-dim); font-family: var(--f-mono); }
+  .fake-body {
+    height: 200px; padding: 16px;
+    background:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 12px 12px; background-color: var(--c-bg);
+    display: grid; place-items: center; color: var(--c-text-dim); font-family: var(--f-mono); font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="desktop-bg">
+  <div class="win">
+    <div class="titlebar">
+      <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+      <div class="titlebar__crumb">桌面端外壳 · <b>TITLEBAR</b></div>
+      <div class="titlebar__spacer"></div>
+      <div class="link link--linked"><span class="link__dot"></span><span class="link__txt">LINKED · 41ms</span></div>
+      <div class="win-ctrls">
+        <button class="win-ctrl">─</button>
+        <button class="win-ctrl">▿</button>
+        <button class="win-ctrl win-ctrl--close">✕</button>
+      </div>
+    </div>
+
+    <div style="padding:24px" class="gallery">
+      <p class="settings__desc">自定义像素标题栏 —— 整个桌面端「TERMINAL LINK」签名的载体：常驻一颗<b style="color:var(--c-success)">链路信号 LED</b>，反映客户端↔服务器的实时连接状态。可拖拽（中间空白区 = drag region）。</p>
+
+      <!-- 1. 标题栏解剖 -->
+      <div>
+        <h3>01 · 标题栏解剖 (ANATOMY)</h3>
+        <div class="anatomy">
+          <div class="titlebar">
+            <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+            <div class="titlebar__crumb">物品 · <b>ItemList</b></div>
+            <div class="titlebar__spacer"></div>
+            <div class="link link--linked"><span class="link__dot"></span><span class="link__txt">LINKED · 41ms</span></div>
+            <div class="win-ctrls">
+              <button class="win-ctrl">─</button>
+              <button class="win-ctrl">▿</button>
+              <button class="win-ctrl win-ctrl--close">✕</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:14px" class="hint">
+            <span><span class="kbd">BRAND</span> 像素 logo 方块 + PIXELPACK 字标（多色像素 mark，对应四主色）</span>
+            <span><span class="kbd">CRUMB</span> 当前模块面包屑（与 vue-router 路由同步）</span>
+            <span><span class="kbd">DRAG</span> 可拖拽区 (−webkit-app-region: drag)</span>
+            <span><span class="kbd">LINK LED</span> ★ 链路状态（见 02）</span>
+            <span><span class="kbd">CTRLS</span> 最小化 / 最小化到托盘 / 关闭（关闭=隐藏到托盘常驻）</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="pixel-divider" />
+
+      <!-- 2. LED 三态 -->
+      <div>
+        <h3>02 · 链路信号 LED 三态 (STATES)</h3>
+        <div class="states">
+          <div class="state-card">
+            <div class="titlebar tb">
+              <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+              <div class="titlebar__spacer"></div>
+              <div class="link link--linked"><span class="link__dot"></span><span class="link__txt">LINKED · 41ms</span></div>
+            </div>
+            <div class="body">
+              <div class="name" style="color:var(--c-success)">● LINKED</div>
+              <div class="dsc">在线 · 绿色脉冲。含 RTT 数值（来自 /api/health）。</div>
+            </div>
+          </div>
+
+          <div class="state-card">
+            <div class="titlebar tb">
+              <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+              <div class="titlebar__spacer"></div>
+              <div class="link link--syncing"><span class="link__dot"></span><span class="link__txt">SYNC…</span></div>
+            </div>
+            <div class="body">
+              <div class="name" style="color:var(--c-info)">● SYNCING</div>
+              <div class="dsc">同步中 · 青色加速旋转。请求进行 / 握手 / 刷新缓存。</div>
+            </div>
+          </div>
+
+          <div class="state-card">
+            <div class="titlebar tb">
+              <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+              <div class="titlebar__spacer"></div>
+              <div class="link link--offline"><span class="link__dot"></span><span class="link__txt">OFFLINE</span></div>
+            </div>
+            <div class="body">
+              <div class="name" style="color:var(--c-text-dim)">● OFFLINE</div>
+              <div class="dsc">离线 · 熄灭。读取本地只读缓存，UI 标记「离线数据」。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="pixel-divider" />
+
+      <!-- 3. 标题栏在真实窗口中 -->
+      <div>
+        <h3>03 · 窗口实景 (IN CONTEXT)</h3>
+        <div class="titlebar" style="border:var(--pix-bd); border-bottom:none">
+          <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+          <div class="titlebar__crumb">每日任务 · <b>Quests</b></div>
+          <div class="titlebar__spacer"></div>
+          <div class="link link--syncing"><span class="link__dot"></span><span class="link__txt">SYNC…</span></div>
+          <div class="win-ctrls">
+            <button class="win-ctrl">─</button>
+            <button class="win-ctrl">▿</button>
+            <button class="win-ctrl win-ctrl--close">✕</button>
+          </div>
+        </div>
+        <div class="fake-body">— 复用的 Vue SPA 页面内容区（Quests 等）—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mock-note">设计稿 · titlebar.html · 自定义标题栏 + 链路 LED</div>
+</div>
+</body>
+</html>

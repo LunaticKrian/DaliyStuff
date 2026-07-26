@@ -1,24 +1,27 @@
 import type { ChatStreamEvent } from '../types/chat'
 import type { ResumeStreamEvent } from '../types/resume'
+import { getOrigin, tokenStore, redirect } from './platform'
 
-/**
- * 带 JWT 的 SSE 客户端（EventSource 不能带 Authorization 头，故用 fetch + ReadableStream）。
- * 解析 `text/event-stream`：以空行分隔事件，取 `data:` 行拼成 JSON。
- */
+/** 带 JWT 的 SSE 客户端（EventSource 不能带 Authorization 头，故用 fetch + ReadableStream）。
+ *  解析 `text/event-stream`：以空行分隔事件，取 `data:` 行拼成 JSON。 */
+
+function apiBase(): string {
+  return getOrigin() + '/api'
+}
 
 async function refreshToken(): Promise<boolean> {
-  const rt = localStorage.getItem('refresh_token')
+  const rt = tokenStore.get('refresh_token')
   if (!rt) return false
   try {
-    const res = await fetch('/api/auth/refresh', {
+    const res = await fetch(`${apiBase()}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: rt }),
     })
     if (!res.ok) return false
     const data = await res.json()
-    localStorage.setItem('access_token', data.access_token)
-    localStorage.setItem('refresh_token', data.refresh_token)
+    tokenStore.set('access_token', data.access_token)
+    tokenStore.set('refresh_token', data.refresh_token)
     return true
   } catch {
     return false
@@ -26,7 +29,7 @@ async function refreshToken(): Promise<boolean> {
 }
 
 function authHeader(): string | null {
-  const t = localStorage.getItem('access_token')
+  const t = tokenStore.get('access_token')
   return t ? `Bearer ${t}` : null
 }
 
@@ -43,7 +46,7 @@ export async function streamChatMessage(
   { signal, onEvent, onError }: StreamOptions,
 ): Promise<void> {
   const doFetch = (token: string) =>
-    fetch(`/api/chat/sessions/${sessionId}/messages`, {
+    fetch(`${apiBase()}/chat/sessions/${sessionId}/messages`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: token },
       body: JSON.stringify({ content }),
@@ -61,7 +64,7 @@ export async function streamChatMessage(
   if (res.status === 401) {
     const ok = await refreshToken()
     if (!ok) {
-      window.location.href = '/login'
+      redirect('/login')
       return
     }
     token = authHeader()!
@@ -119,7 +122,7 @@ export async function streamResumeChat(
   { signal, onEvent, onError }: ResumeStreamOptions,
 ): Promise<void> {
   const doFetch = (token: string) =>
-    fetch(`/api/resume/${resumeId}/threads/${threadId}/chat`, {
+    fetch(`${apiBase()}/resume/${resumeId}/threads/${threadId}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: token },
       body: JSON.stringify({ content }),
@@ -133,7 +136,7 @@ export async function streamResumeChat(
   if (res.status === 401) {
     const ok = await refreshToken()
     if (!ok) {
-      window.location.href = '/login'
+      redirect('/login')
       return
     }
     token = authHeader()!

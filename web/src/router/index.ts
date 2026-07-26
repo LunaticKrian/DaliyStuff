@@ -1,9 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { isTauri, isServerConfigured } from '../utils/platform'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: '/setup',
+      name: 'setup',
+      component: () => import('../views/desktop/Setup.vue'),
+      meta: { desktop: true },
+    },
+    {
+      path: '/desktop-settings',
+      name: 'desktop-settings',
+      component: () => import('../views/desktop/DesktopSettings.vue'),
+      meta: { desktop: true, requiresAuth: true },
+    },
     {
       path: '/login',
       name: 'login',
@@ -140,6 +153,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  // 桌面端：未配置服务器地址 → 强制走首屏接驳
+  if (isTauri() && !isServerConfigured() && to.name !== 'setup') {
+    return { name: 'setup' }
+  }
+
   const auth = useAuthStore()
 
   if (!auth.user && !auth.loading) {

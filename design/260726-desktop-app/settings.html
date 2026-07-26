@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PixelPack · 桌面设置 (DesktopSettings)</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="desktop-bg">
+  <div class="win">
+    <div class="titlebar">
+      <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+      <div class="titlebar__crumb">桌面设置 · <b>SYSTEM TUNE</b></div>
+      <div class="titlebar__spacer"></div>
+      <div class="link link--linked"><span class="link__dot"></span><span class="link__txt">LINKED · 41ms</span></div>
+      <div class="win-ctrls">
+        <button class="win-ctrl">─</button><button class="win-ctrl">▿</button>
+        <button class="win-ctrl win-ctrl--close">✕</button>
+      </div>
+    </div>
+
+    <div class="settings">
+      <!-- 左导航 -->
+      <nav class="settings__nav">
+        <div class="nav-item active" data-panel="server"><span class="nav-item__ico">⇄</span>接驳服务器</div>
+        <div class="nav-item" data-panel="shortcut"><span class="nav-item__ico">⌨</span>快捷键与启动</div>
+        <div class="nav-item" data-panel="notify"><span class="nav-item__ico">✦</span>通知</div>
+        <div class="nav-item" data-panel="cache"><span class="nav-item__ico">▣</span>数据与缓存</div>
+        <div class="nav-item" data-panel="about"><span class="nav-item__ico">ⓘ</span>关于</div>
+      </nav>
+
+      <!-- 右面板 -->
+      <main class="settings__main">
+
+        <!-- 1. 接驳服务器 -->
+        <section class="panel active" data-panel="server">
+          <h2 class="settings__h2">接驳服务器 · TERMINAL LINK</h2>
+          <p class="settings__desc">指定公会大厅地址。修改后将重新握手并刷新链路。</p>
+
+          <div class="section">
+            <div class="row">
+              <div>
+                <div class="row__title">当前服务器</div>
+                <div class="row__sub" style="margin-top:2px">https://pixelpack.airise.site</div>
+              </div>
+              <span class="tag tag--ok">● LINKED · 41ms</span>
+            </div>
+            <div class="row">
+              <div style="flex:1">
+                <div class="field__label" style="margin-bottom:6px">◈ 更换地址</div>
+                <input class="input" value="https://pixelpack.airise.site" />
+              </div>
+              <button class="btn btn--sm">测试接驳</button>
+            </div>
+            <div class="row">
+              <div>
+                <div class="row__title">启动时自动接驳</div>
+                <div class="row__sub">跳过首屏，直接进入上次的公会大厅</div>
+              </div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. 快捷键与启动 -->
+        <section class="panel" data-panel="shortcut">
+          <h2 class="settings__h2">快捷键与启动 · HOTKEY & AUTOSTART</h2>
+          <p class="settings__desc">全局快捷键可在任意界面唤出窗口；开机自启让公会大厅随系统常驻。</p>
+
+          <div class="section">
+            <div class="row">
+              <div>
+                <div class="row__title">全局唤起快捷键</div>
+                <div class="row__sub">点击右侧重新捕获</div>
+              </div>
+              <div class="hotkey-cell" data-hotkey>
+                <span class="keycap">⌘</span><span class="keycap">⇧</span><span class="keycap">P</span>
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <div class="row__title">开机自启动</div>
+                <div class="row__sub">登录系统时启动并最小化到托盘</div>
+              </div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div>
+                <div class="row__title">关闭窗口时最小化到托盘</div>
+                <div class="row__sub">关闭 = 后台常驻，而非退出进程</div>
+              </div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div>
+                <div class="row__title">单实例运行</div>
+                <div class="row__sub">再次启动时唤起已运行窗口，而非开第二个</div>
+              </div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. 通知 -->
+        <section class="panel" data-panel="notify">
+          <h2 class="settings__h2">通知 · NOTIFICATIONS</h2>
+          <p class="settings__desc">走操作系统通知中心（macOS 通知中心 / Windows 通知），首版由 SSE 驱动。</p>
+          <div class="section">
+            <div class="row">
+              <div><div class="row__title">启用系统通知</div></div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div><div class="row__title">每日任务提醒</div><div class="row__sub">每日 08:00 推送待办</div></div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div><div class="row__title">AI 资讯推送</div><div class="row__sub">世界地图新情报上线时</div></div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div><div class="row__title">保修到期提醒</div><div class="row__sub">物品保修临近时</div></div>
+              <div class="toggle" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 数据与缓存 -->
+        <section class="panel" data-panel="cache">
+          <h2 class="settings__h2">数据与缓存 · OFFLINE CACHE</h2>
+          <p class="settings__desc">在线优先：最近响应在本地只读缓存，断网时回源缓存供查阅（不写入、不同步）。</p>
+          <div class="section">
+            <div class="row" style="flex-direction:column; align-items:stretch; gap:10px">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <div class="row__title">缓存占用</div>
+                <div class="row__sub"><b id="cacheSize">18.4</b> MB / 50 MB</div>
+              </div>
+              <div class="meter"><div class="meter__fill" id="cacheFill" style="width:37%"></div></div>
+              <div class="hint">≈ 412 条响应 · LRU 自动淘汰 · TTL 24h</div>
+            </div>
+            <div class="row">
+              <div><div class="row__title">离线只读模式</div><div class="row__sub">断网时自动启用，UI 标记「离线数据」</div></div>
+              <span class="tag tag--info">已启用</span>
+            </div>
+            <div class="row">
+              <div><div class="row__title">清空缓存</div><div class="row__sub">下次访问会重新从服务器拉取</div></div>
+              <button class="btn btn--sm btn--danger" id="clearCache">清空</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. 关于 -->
+        <section class="panel" data-panel="about">
+          <h2 class="settings__h2">关于 · ABOUT</h2>
+          <p class="settings__desc">PixelPack Desktop · 终端接驳客户端</p>
+          <div class="section">
+            <div class="row">
+              <div><div class="row__title">版本</div><div class="row__sub">PixelPack Desktop 1.0.0 · Tauri 2</div></div>
+              <span class="tag tag--ok">最新</span>
+            </div>
+            <div class="row">
+              <div><div class="row__title">自动更新</div><div class="row__sub">启动时检查，签名校验后安装</div></div>
+              <div class="toggle toggle--on" data-toggle><span class="toggle__track"></span><span class="toggle__knob"></span></div>
+            </div>
+            <div class="row">
+              <div><div class="row__title">检查更新</div><div class="row__sub">从更新源拉取 latest.json</div></div>
+              <button class="btn btn--sm">立即检查</button>
+            </div>
+            <div class="row">
+              <div><div class="row__title">开源仓库</div><div class="row__sub">github.com/LunaticKrian/PixelPack</div></div>
+              <button class="btn btn--sm btn--ghost">打开 ↗</button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <div class="mock-note">设计稿 · settings.html · 桌面设置 SYSTEM TUNE</div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

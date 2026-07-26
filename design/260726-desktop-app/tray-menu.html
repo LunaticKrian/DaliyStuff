@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PixelPack · 托盘菜单 (Tray)</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .stage {
+    position: relative;
+    height: 560px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(65,166,246,0.08), transparent 60%),
+      var(--c-bg);
+    border: var(--pix-bd);
+    overflow: hidden;
+  }
+  .stage::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+  /* 任务栏（系统托盘条）*/
+  .taskbar {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 40px;
+    background: linear-gradient(180deg, var(--c-card-2), var(--c-card));
+    border-top: var(--pix-bd);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding: 0 10px; gap: 8px; z-index: 5;
+  }
+  .taskbar .clock { font-family: var(--f-mono); font-size: 12px; color: var(--c-text-dim); margin-left: 10px; }
+  .tray-ico {
+    width: 24px; height: 24px; display: grid; place-items: center;
+    color: var(--c-text-dim); font-size: 14px;
+  }
+  .tray-ico--app {
+    position: relative;
+    background: var(--c-primary);
+    box-shadow:
+      inset 6px 0 0 var(--c-warning), inset 0 6px 0 var(--c-success), inset 6px 6px 0 var(--c-gold);
+  }
+  .tray-ico--app::after {   /* 微型在线 LED */
+    content: ''; position: absolute; right: -2px; bottom: -2px;
+    width: 6px; height: 6px; background: var(--c-success);
+    box-shadow: 0 0 4px var(--c-success);
+    animation: blink 1.4s steps(2) infinite;
+  }
+
+  /* 弹出菜单 */
+  .menu-pop {
+    position: absolute; right: 14px; bottom: 52px; z-index: 10;
+    animation: fade-up 160ms steps(3);
+  }
+
+  /* 标注区 */
+  .legend { padding: 18px 22px; }
+  .legend h3 { font-family: var(--f-display); font-size: 9px; letter-spacing: 1px; color: var(--c-info); margin: 14px 0 8px; }
+</style>
+</head>
+<body>
+<div class="desktop-bg">
+  <div class="win">
+    <div class="titlebar">
+      <div class="titlebar__brand"><span class="titlebar__mark"></span>PIXELPACK</div>
+      <div class="titlebar__crumb">系统托盘 · <b>TRAY</b></div>
+      <div class="titlebar__spacer"></div>
+      <div class="link link--linked"><span class="link__dot"></span><span class="link__txt">LINKED · 41ms</span></div>
+      <div class="win-ctrls">
+        <button class="win-ctrl">─</button><button class="win-ctrl">▿</button>
+        <button class="win-ctrl win-ctrl--close">✕</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <!-- 桌面占位文案 -->
+      <div style="position:absolute; top:24px; left:24px; font-family:var(--f-mono); font-size:12px; color:var(--c-text-dim)">
+        ▸ 窗口已最小化到托盘（常驻后台）<br>
+        ▸ 右键托盘图标唤出菜单：
+      </div>
+
+      <!-- 右键弹出的托盘菜单 -->
+      <div class="menu-pop">
+        <div class="menu">
+          <div class="menu__head">
+            <div>
+              <div class="menu__head-title">PIXELPACK</div>
+              <div class="hint" style="margin-top:2px">pixelpack.airise.site</div>
+            </div>
+            <div class="link link--linked" style="padding:0"><span class="link__dot"></span></div>
+          </div>
+
+          <div class="menu__item">▸ 显示窗口<span class="menu__kbd">⌘⇧P</span></div>
+          <hr class="menu__sep" />
+          <div class="menu__item">↻ 立即同步</div>
+          <div class="menu__item">✎ 每日任务 (3)</div>
+          <div class="menu__item">✉ 资讯未读 (2)</div>
+          <hr class="menu__sep" />
+          <div class="menu__item">⚙ 桌面设置…</div>
+          <div class="menu__item">⤓ 检查更新</div>
+          <hr class="menu__sep" />
+          <div class="menu__item menu__item--danger">⏻ 退出 PixelPack</div>
+        </div>
+      </div>
+
+      <!-- 任务栏 / 系统托盘 -->
+      <div class="taskbar">
+        <div class="tray-ico">▤</div>
+        <div class="tray-ico">ixel</div>
+        <div class="tray-ico">▲</div>
+        <div class="tray-ico tray-ico--app" title="PixelPack"></div>
+        <div class="clock">23:41</div>
+      </div>
+    </div>
+
+    <!-- 说明 -->
+    <div class="legend">
+      <h3>托盘菜单设计要点</h3>
+      <div class="hint" style="line-height:1.9">
+        • <b>头部</b> = 应用名 + 当前服务器 + 链路 LED（与标题栏同一签名元素，离线/同步时同步变化）。<br>
+        • <b>显示窗口</b> 附全局快捷键（默认 ⌘/Ctrl+Shift+P，可在设置页改键）。<br>
+        • <b>立即同步</b> 触发一次 GET 拉取并刷新只读缓存；LED 切到 SYNC…。<br>
+        • <b>数字徽标</b>（任务 3 / 资讯 2）来自后端轮询或推送；首版可由 SSE 驱动。<br>
+        • <b>退出</b> 是唯一真正结束进程的入口；关闭窗口默认只是隐藏到托盘（常驻）。
+      </div>
+    </div>
+  </div>
+
+  <div class="mock-note">设计稿 · tray-menu.html · 托盘菜单</div>
+</div>
+</body>
+</html>

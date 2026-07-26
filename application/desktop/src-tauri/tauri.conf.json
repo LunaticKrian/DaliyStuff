@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PixelPack",
+  "version": "1.0.0",
+  "identifier": "site.airise.pixelpack.desktop",
+  "build": {
+    "frontendDist": "../../../web/dist",
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "npm --prefix ../../web run dev",
+    "beforeBuildCommand": "npm --prefix ../../web run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "PixelPack",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 600,
+        "resizable": true,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' https: data: blob:; connect-src 'self' https: wss:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; object-src 'none'; base-uri 'self'"
+    },
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Productivity",
+    "publisher": "PixelPack"
+  }
+}

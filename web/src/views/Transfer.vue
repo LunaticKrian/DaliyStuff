@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { getOrigin, tokenStore } from '../utils/platform'
 
 // ── 局部设计令牌（补齐 theme.css 未覆盖的几色，与设计稿对齐）──────────
 // gold / card-2 / inset / border-2
@@ -46,12 +47,15 @@ const peerText = computed(() =>
 )
 
 function wsUrl(): string {
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-  return `${proto}://${location.host}/api/rtc/signal`
+  const origin = getOrigin()
+  // Web：origin 为 ''，用当前页面协议/主机；桌面：用配置的服务器 origin
+  const base = origin || `${location.protocol}//${location.host}`
+  const proto = base.startsWith('https') ? 'wss' : 'ws'
+  return `${proto}://${base.replace(/^https?:\/\//, '')}/api/rtc/signal`
 }
 
 function connectSignal() {
-  const token = localStorage.getItem('access_token')
+  const token = tokenStore.get('access_token')
   if (!token) {
     statusMsg.value = '未登录'
     return
