@@ -121,7 +121,7 @@ onMounted(loadBlog)
 }
 
 .back-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 6px 12px;
   border: 2px solid var(--pixel-border);
@@ -138,7 +138,7 @@ onMounted(loadBlog)
 }
 
 .action-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 6px 12px;
   border: 2px solid var(--pixel-border);
@@ -223,7 +223,7 @@ onMounted(loadBlog)
 }
 
 .detail-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 20px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -303,7 +303,7 @@ onMounted(loadBlog)
 
   background: transparent !important;
   padding: 0 !important;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   font-size: 13px !important;
   line-height: 1.85 !important;
   color: var(--pixel-text) !important;
@@ -326,7 +326,7 @@ onMounted(loadBlog)
 .detail-content :deep(.md-editor-preview h4),
 .detail-content :deep(.md-editor-preview h5),
 .detail-content :deep(.md-editor-preview h6) {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   color: var(--pixel-text) !important;
   margin: 24px 0 10px !important;
   font-weight: 700 !important;
@@ -347,7 +347,7 @@ onMounted(loadBlog)
 }
 
 .detail-content :deep(.md-editor-preview code) {
-  font-family: 'VT323', var(--font-pixel), monospace !important;
+  font-family: var(--font-pixel-num), var(--font-pixel), monospace !important;
   font-size: 14px !important;
   color: var(--pixel-primary) !important;
   background: rgba(65, 166, 246, 0.12) !important;
@@ -403,7 +403,7 @@ onMounted(loadBlog)
 
 .detail-content :deep(.md-editor-preview ol li::marker) {
   color: var(--pixel-text-secondary) !important;
-  font-family: 'VT323', monospace;
+  font-family: var(--font-pixel-num), monospace;
   font-size: 14px;
 }
 
@@ -414,7 +414,7 @@ onMounted(loadBlog)
 }
 
 .detail-content :deep(.md-editor-preview th) {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   font-size: 11px !important;
   color: var(--pixel-text) !important;
   background: var(--pixel-bg-secondary) !important;

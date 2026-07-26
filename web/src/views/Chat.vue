@@ -287,7 +287,7 @@ onMounted(async () => {
 /* ===== Sidebar ===== */
 .c-sidebar { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 .new-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px;
   padding: 9px; background: var(--pixel-info); color: #062a30;
   border: 2px solid var(--pixel-info); cursor: pointer;
   box-shadow: 2px 2px 0 var(--pixel-shadow);
@@ -303,13 +303,13 @@ onMounted(async () => {
 .session-item.active { border-color: var(--pixel-info); box-shadow: 0 0 6px rgba(115,239,247,0.25), 3px 3px 0 var(--pixel-shadow); }
 .session-item.disabled { opacity: 0.6; cursor: default; }
 .si-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px;
   color: var(--pixel-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .si-meta {
   display: flex; justify-content: space-between; align-items: center;
   margin-top: 4px; font-size: 10px; color: var(--pixel-text-secondary);
-  font-family: 'Press Start 2P', monospace; font-size: 8px;
+  font-family: var(--font-pixel-en), monospace; font-size: 8px;
 }
 .si-del {
   background: none; border: 1px solid var(--pixel-border); color: var(--pixel-text-secondary);
@@ -332,11 +332,11 @@ onMounted(async () => {
 .c-title { display: flex; align-items: center; gap: 8px; }
 .core-glyph { color: var(--pixel-info); font-size: 16px; text-shadow: 0 0 8px var(--pixel-info); animation: corepulse 2s ease-in-out infinite; }
 @keyframes corepulse { 50% { opacity: 0.55; } }
-.c-name { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--pixel-info); letter-spacing: 2px; text-shadow: 0 0 6px rgba(115,239,247,0.4); }
-.c-sub { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 10px; color: var(--pixel-text-secondary); }
-.c-status { display: flex; align-items: center; gap: 6px; font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px; color: var(--pixel-text-secondary); }
+.c-name { font-family: var(--font-pixel-en), monospace; font-size: 12px; color: var(--pixel-info); letter-spacing: 2px; text-shadow: 0 0 6px rgba(115,239,247,0.4); }
+.c-sub { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 10px; color: var(--pixel-text-secondary); }
+.c-status { display: flex; align-items: center; gap: 6px; font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px; color: var(--pixel-text-secondary); }
 .goto-quests {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px;
   background: var(--pixel-bg); border: 2px solid var(--pixel-border);
   color: var(--pixel-text-secondary); cursor: pointer; padding: 4px 10px;
 }
@@ -356,7 +356,7 @@ onMounted(async () => {
 
 .welcome { text-align: center; padding: 40px 20px; color: var(--pixel-text-secondary); }
 .welcome-glyph { font-size: 34px; color: var(--pixel-info); text-shadow: 0 0 12px var(--pixel-info); margin-bottom: 12px; }
-.welcome-text { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 13px; color: var(--pixel-text); margin-bottom: 8px; }
+.welcome-text { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 13px; color: var(--pixel-text); margin-bottom: 8px; }
 .welcome-hint { font-size: 11px; line-height: 1.5; max-width: 420px; margin: 0 auto; }
 
 .msg { display: flex; gap: 10px; max-width: 80%; }
@@ -369,11 +369,11 @@ onMounted(async () => {
 }
 .msg.assistant .msg-av { border-color: var(--pixel-info); color: var(--pixel-info); box-shadow: 0 0 6px rgba(115,239,247,0.3); }
 .msg-col { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.msg-name { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-text-secondary); }
+.msg-name { font-family: var(--font-pixel-en), monospace; font-size: 8px; color: var(--pixel-text-secondary); }
 .msg.user .msg-name { text-align: right; color: var(--pixel-primary); }
 .msg-bubble {
   padding: 9px 12px; background: var(--pixel-bg); border: 2px solid var(--pixel-border);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 13px; line-height: 1.55;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 13px; line-height: 1.55;
   word-break: break-word; white-space: pre-wrap;
   color: #ffffff;
 }
@@ -383,7 +383,7 @@ onMounted(async () => {
 
 .tool-line {
   display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
-  font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-info);
+  font-family: var(--font-pixel-en), monospace; font-size: 8px; color: var(--pixel-info);
   padding: 5px 9px; border-left: 3px solid var(--pixel-info); background: var(--pixel-bg);
 }
 .tdot { width: 6px; height: 6px; background: var(--pixel-info); animation: corepulse 0.7s steps(2) infinite; }
@@ -396,14 +396,14 @@ onMounted(async () => {
   animation: slidein 0.2s steps(5);
 }
 @keyframes slidein { from { transform: translateX(-10px); opacity: 0; } to { transform: none; opacity: 1; } }
-.s-plus { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-info); }
+.s-plus { font-family: var(--font-pixel-en), monospace; font-size: 8px; color: var(--pixel-info); }
 .s-gem {
   width: 22px; height: 22px; flex: 0 0 22px; display: flex; align-items: center; justify-content: center;
   font-size: 13px; color: #0c1530; border: 1px solid rgba(0,0,0,0.4);
   font-family: 'Chakra Petch', system-ui, sans-serif;
 }
 .s-title { font-size: 12px; color: var(--pixel-text); flex: 1; min-width: 0; }
-.s-exp { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--pixel-warning); }
+.s-exp { font-family: var(--font-pixel-en), monospace; font-size: 9px; color: var(--pixel-warning); }
 
 .cursor {
   display: inline-block; width: 8px; height: 14px; background: var(--pixel-info);
@@ -413,7 +413,7 @@ onMounted(async () => {
 /* 首 token 前的「思考中」三点动画 */
 .think-line {
   display: inline-flex; align-items: center; gap: 5px; align-self: flex-start;
-  font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-info);
+  font-family: var(--font-pixel-en), monospace; font-size: 8px; color: var(--pixel-info);
   padding: 7px 11px; border-left: 3px solid var(--pixel-info); background: var(--pixel-bg);
 }
 .think-line .td {
@@ -430,14 +430,14 @@ onMounted(async () => {
   background: var(--pixel-bg-secondary);
 }
 .c-input {
-  flex: 1; font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 13px;
+  flex: 1; font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 13px;
   background: var(--pixel-bg); border: 2px solid var(--pixel-border); color: var(--pixel-text);
   padding: 10px 12px; resize: none; outline: none; line-height: 1.5;
 }
 .c-input:focus { border-color: var(--pixel-info); }
 .c-input:disabled { opacity: 0.6; }
 .c-send {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px;
   padding: 0 18px; background: var(--pixel-info); color: #062a30;
   border: 2px solid var(--pixel-info); cursor: pointer; align-self: stretch;
   box-shadow: 2px 2px 0 var(--pixel-shadow);
@@ -446,7 +446,7 @@ onMounted(async () => {
 .c-send:disabled { opacity: 0.5; cursor: default; }
 .c-foot-hint {
   padding: 6px 14px 10px; background: var(--pixel-bg-secondary);
-  font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--pixel-text-secondary);
+  font-family: var(--font-pixel-en), monospace; font-size: 7px; color: var(--pixel-text-secondary);
   border-top: 1px solid var(--pixel-border);
 }
 

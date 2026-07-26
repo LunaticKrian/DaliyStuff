@@ -251,7 +251,7 @@ async function handleSave() {
 }
 
 .modal-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   color: var(--pixel-primary);
   letter-spacing: 1px;
@@ -271,7 +271,7 @@ async function handleSave() {
 }
 
 .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   width: 14px;
   height: 14px;
@@ -290,7 +290,7 @@ async function handleSave() {
 }
 
 .field-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;

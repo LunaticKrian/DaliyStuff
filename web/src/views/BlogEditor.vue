@@ -176,7 +176,7 @@ onMounted(loadBlog)
 }
 
 .back-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 6px 12px;
   border: 2px solid var(--pixel-border);
@@ -193,7 +193,7 @@ onMounted(loadBlog)
 }
 
 .save-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);
@@ -229,7 +229,7 @@ onMounted(loadBlog)
 }
 
 .meta-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 18px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -267,13 +267,13 @@ onMounted(loadBlog)
 }
 
 .meta-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
 
 .meta-input, .meta-textarea {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text);
   background: var(--pixel-bg);

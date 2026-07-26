@@ -1211,14 +1211,14 @@ onMounted(() => {
 }
 
 .pc-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   font-weight: 700;
   color: var(--pixel-primary);
 }
 
 .pc-level {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-warning);
   letter-spacing: 0.5px;
@@ -1235,7 +1235,7 @@ onMounted(() => {
   gap: 8px;
   padding: 10px 12px;
   cursor: pointer;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text);
   border-bottom: 2px solid var(--pixel-border);
@@ -1279,7 +1279,7 @@ onMounted(() => {
   padding: 1px 6px;
   border: 2px solid var(--pixel-primary);
   color: var(--pixel-primary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
 }
 
 .sp-badge.warn {
@@ -1308,7 +1308,7 @@ onMounted(() => {
 }
 
 .sp-stat-num {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   font-weight: 700;
 }
@@ -1318,7 +1318,7 @@ onMounted(() => {
 .sp-stat-num.success { color: var(--pixel-success); }
 
 .sp-stat-label {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
 }
@@ -1349,14 +1349,14 @@ onMounted(() => {
 }
 
 .status-label {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text);
   flex: 1;
 }
 
 .status-count {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
 }
@@ -1403,13 +1403,13 @@ onMounted(() => {
 }
 
 .pie-total {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
 }
 
 .pie-hover-percent {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   color: var(--pixel-text);
 }
@@ -1431,7 +1431,7 @@ onMounted(() => {
 }
 
 .tt-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 6px;
@@ -1442,7 +1442,7 @@ onMounted(() => {
 .tt-row {
   display: flex;
   justify-content: space-between;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   line-height: 1.8;
@@ -1479,7 +1479,7 @@ onMounted(() => {
 }
 
 .legend-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text);
   flex: 1;
@@ -1489,7 +1489,7 @@ onMounted(() => {
 }
 
 .legend-val {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   flex-shrink: 0;
@@ -1515,7 +1515,7 @@ onMounted(() => {
 }
 
 .ri-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text);
   overflow: hidden;
@@ -1559,7 +1559,7 @@ onMounted(() => {
 }
 
 .wa-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text);
   overflow: hidden;
@@ -1675,7 +1675,7 @@ onMounted(() => {
   background: var(--pixel-bg);
   border: 3px solid var(--pixel-border);
   color: var(--pixel-text);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 8px 10px;
   outline: none;
@@ -1698,7 +1698,7 @@ onMounted(() => {
   background: var(--pixel-primary);
   border: 3px solid var(--pixel-primary);
   color: var(--pixel-bg);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 6px 14px;
   cursor: pointer;
@@ -1730,7 +1730,7 @@ onMounted(() => {
   background: var(--pixel-card-bg);
   border: 3px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 6px 12px;
   cursor: pointer;
@@ -1750,7 +1750,7 @@ onMounted(() => {
 }
 
 .inv-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
   color: var(--pixel-primary);
   display: flex;
@@ -1766,7 +1766,7 @@ onMounted(() => {
 .inv-count {
   font-size: 8px;
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
 }
 
 /* Loading / Error / Empty */
@@ -1798,7 +1798,7 @@ onMounted(() => {
 }
 
 .error-state .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   width: 24px;
   height: 24px;
@@ -1813,7 +1813,7 @@ onMounted(() => {
   background: transparent;
   border: 2px solid var(--pixel-accent);
   color: var(--pixel-accent);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 6px 16px;
   cursor: pointer;
@@ -1839,7 +1839,7 @@ onMounted(() => {
 }
 
 .empty-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
@@ -1900,7 +1900,7 @@ onMounted(() => {
 }
 
 .slot-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text);
   text-align: center;
@@ -1958,7 +1958,7 @@ onMounted(() => {
 }
 
 .page-info {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
 }
@@ -2010,7 +2010,7 @@ onMounted(() => {
 }
 
 .modal-item-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 16px;
   font-weight: 700;
   color: var(--pixel-primary);
@@ -2166,7 +2166,7 @@ onMounted(() => {
 }
 
 .pixel-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);
@@ -2265,7 +2265,7 @@ onMounted(() => {
 }
 
 .sub-modal-header h3 {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   color: var(--pixel-primary);
   margin: 0;
@@ -2310,7 +2310,7 @@ onMounted(() => {
 }
 
 .trash-count {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
 }
@@ -2322,7 +2322,7 @@ onMounted(() => {
   gap: 8px;
   padding: 40px 0;
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
 }
 
@@ -2356,7 +2356,7 @@ onMounted(() => {
 }
 
 .trash-item-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text);
   overflow: hidden;
@@ -2376,7 +2376,7 @@ onMounted(() => {
 }
 
 .trash-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   padding: 4px 10px;
   border: 2px solid var(--pixel-border);
@@ -2401,7 +2401,7 @@ onMounted(() => {
   margin-top: 12px;
   padding-top: 8px;
   border-top: 2px solid var(--pixel-border);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-warning);
   text-align: center;
@@ -2416,7 +2416,7 @@ onMounted(() => {
   background: rgba(255, 107, 107, 0.1);
   border: 2px solid var(--pixel-accent);
   color: var(--pixel-accent);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 8px 12px;
   display: flex;
@@ -2432,7 +2432,7 @@ onMounted(() => {
   gap: 12px;
   padding: 40px 0;
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
 }
 
@@ -2458,7 +2458,7 @@ onMounted(() => {
 }
 
 .cf-section-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -2472,14 +2472,14 @@ onMounted(() => {
 }
 
 .cf-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
 }
 
 .cf-bracket { color: var(--pixel-border); }
-.cf-err { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px; color: var(--pixel-accent); }
+.cf-err { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px; color: var(--pixel-accent); }
 
 .cf-textarea { resize: vertical; min-height: 48px; line-height: 1.4; }
 
@@ -2487,7 +2487,7 @@ onMounted(() => {
 .cf-grow { flex: 1; min-width: 0; }
 .cf-currency { min-width: 110px; flex: 0 0 110px; }
 
-.cf-hint { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px; color: var(--pixel-text-secondary); opacity: 0.6; }
+.cf-hint { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px; color: var(--pixel-text-secondary); opacity: 0.6; }
 
 .cf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
@@ -2499,7 +2499,7 @@ onMounted(() => {
   border: 2px solid var(--pixel-border);
   background: var(--pixel-bg);
   cursor: pointer;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
   user-select: none;
@@ -2533,7 +2533,7 @@ onMounted(() => {
 }
 .cf-upload:hover { border-color: var(--pixel-primary); background: rgba(65,166,246,0.04); }
 .cf-upload-icon { font-size: 20px; color: var(--pixel-text-secondary); }
-.cf-upload-text { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px; color: var(--pixel-text-secondary); margin: 0; }
+.cf-upload-text { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px; color: var(--pixel-text-secondary); margin: 0; }
 
 .cf-actions { display: flex; gap: 10px; padding-top: 14px; }
 .cf-actions .pixel-loading.inline { display: inline-block; width: 14px; height: 14px; border-width: 2px; }

@@ -461,11 +461,11 @@ onMounted(loadAll)
 .pc-img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
 .pc-info { display: flex; flex-direction: column; gap: 4px; }
 .pc-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px; font-weight: 700; color: var(--pixel-primary);
 }
 .pc-level {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px; color: var(--pixel-warning);
 }
 
@@ -473,7 +473,7 @@ onMounted(loadAll)
 .sp-section-header {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 12px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px; color: var(--pixel-text);
   border-bottom: 2px solid var(--pixel-border);
 }
@@ -482,7 +482,7 @@ onMounted(loadAll)
 .sp-badge {
   margin-left: auto; font-size: 10px; padding: 1px 6px;
   border: 2px solid var(--pixel-primary); color: var(--pixel-primary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
 }
 .sp-badge.warn { border-color: var(--pixel-warning); color: var(--pixel-warning); }
 .sp-body { padding: 10px 12px; }
@@ -498,19 +498,19 @@ onMounted(loadAll)
   transition: width 0.4s ease-out;
 }
 .lm-label {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px; color: var(--pixel-text-secondary);
   margin-top: 6px;
 }
 
 .streak-body { display: flex; align-items: center; gap: 12px; }
 .streak-flame {
-  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  font-family: var(--font-pixel-en), monospace; font-size: 10px;
   color: var(--pixel-warning); letter-spacing: 2px;
   text-shadow: 0 0 8px rgba(239,125,87,0.5);
 }
 .streak-num {
-  font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--pixel-warning);
+  font-family: var(--font-pixel-en), monospace; font-size: 18px; color: var(--pixel-warning);
 }
 .streak-sub { font-size: 10px; color: var(--pixel-text-secondary); margin-top: 2px; }
 
@@ -550,7 +550,7 @@ onMounted(loadAll)
   display: flex; align-items: center; gap: 6px;
   background: var(--pixel-card-bg); border: 3px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px;
   padding: 6px 12px; cursor: pointer;
   box-shadow: 2px 2px 0 var(--pixel-shadow); white-space: nowrap;
   transition: border-color 0.12s ease, color 0.12s ease;
@@ -559,18 +559,18 @@ onMounted(loadAll)
 .back-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pixel-shadow); }
 
 .q-title {
-  font-family: 'Press Start 2P', monospace; font-size: 13px;
+  font-family: var(--font-pixel-en), monospace; font-size: 13px;
   color: var(--pixel-primary);
   display: flex; align-items: center; gap: 10px; margin: 0;
 }
 .title-icon { font-size: 16px; }
 .q-date {
   font-size: 8px; color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
 }
 
 .tab-btn, .add-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px;
   padding: 6px 14px; background: var(--pixel-bg);
   border: 3px solid var(--pixel-border); color: var(--pixel-text-secondary);
   cursor: pointer; white-space: nowrap;
@@ -587,7 +587,7 @@ onMounted(loadAll)
 /* ===== Add / Edit panel ===== */
 .add-panel { background: var(--pixel-card-bg); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
 .pixel-input, .pixel-select {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px;
   background: var(--pixel-bg); border: 2px solid var(--pixel-border);
   color: var(--pixel-text); padding: 8px 10px; outline: none;
 }
@@ -598,7 +598,7 @@ onMounted(loadAll)
 .add-field .pixel-input.num, .add-field .pixel-select { width: 90px; }
 .add-actions { display: flex; gap: 8px; margin-left: auto; }
 .btn-primary, .btn-ghost {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 11px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 11px;
   padding: 8px 14px; cursor: pointer; border: 2px solid;
 }
 .btn-primary { background: var(--pixel-primary); color: var(--pixel-bg); border-color: var(--pixel-primary); }
@@ -634,14 +634,14 @@ onMounted(loadAll)
 
 .task-main { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .task-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 14px; font-weight: 700; color: var(--pixel-text);
 }
 .task-card.completed .task-title { color: var(--pixel-text-secondary); text-decoration: line-through; text-decoration-color: var(--pixel-accent); }
 .task-desc { font-size: 12px; color: var(--pixel-text-secondary); line-height: 1.4; }
 .task-meta {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--pixel-text-secondary);
+  font-family: var(--font-pixel-en), monospace; font-size: 8px; color: var(--pixel-text-secondary);
 }
 .meta-stars { color: var(--pixel-warning); letter-spacing: 1px; }
 .meta-cat { color: var(--pixel-info); }
@@ -658,7 +658,7 @@ onMounted(loadAll)
 .step-val { font-size: 9px; }
 
 .task-exp {
-  font-family: 'Press Start 2P', monospace; font-size: 11px;
+  font-family: var(--font-pixel-en), monospace; font-size: 11px;
   color: var(--pixel-warning); min-width: 36px; text-align: right;
 }
 .task-actions { display: flex; flex-direction: column; gap: 4px; }
@@ -683,14 +683,14 @@ onMounted(loadAll)
 }
 .task-check .stamp {
   position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-12deg);
-  font-family: 'Press Start 2P', monospace; font-size: 7px; color: var(--pixel-accent);
+  font-family: var(--font-pixel-en), monospace; font-size: 7px; color: var(--pixel-accent);
   white-space: nowrap; text-shadow: 1px 1px 0 #000;
 }
 
 .loading-state { display: flex; flex-direction: column; align-items: center; padding: 60px 0; gap: 16px; }
-.loading-text { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--pixel-text-secondary); }
+.loading-text { font-family: var(--font-pixel-en), monospace; font-size: 11px; color: var(--pixel-text-secondary); }
 .empty-hint {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px;
   color: var(--pixel-text-secondary); text-align: center; padding: 40px 0;
 }
 
@@ -708,11 +708,11 @@ onMounted(loadAll)
 .ac-icon { font-size: 26px; width: 36px; text-align: center; flex-shrink: 0; color: var(--pixel-border); }
 .ach-card.unlocked .ac-icon { color: var(--pixel-warning); }
 .ac-content { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.ac-name { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 13px; font-weight: 700; color: var(--pixel-text); }
+.ac-name { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 13px; font-weight: 700; color: var(--pixel-text); }
 .ach-card.unlocked .ac-name { color: var(--pixel-warning); }
 .ac-desc { font-size: 11px; color: var(--pixel-text-secondary); line-height: 1.3; }
 .ac-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
-.ac-exp { font-size: 9px; color: var(--pixel-primary); font-family: 'Press Start 2P', monospace; }
+.ac-exp { font-size: 9px; color: var(--pixel-primary); font-family: var(--font-pixel-en), monospace; }
 .ac-date { font-size: 10px; color: var(--pixel-text-secondary); }
 
 /* Tooltip */
@@ -722,9 +722,9 @@ onMounted(loadAll)
   min-width: 140px; pointer-events: none; animation: tt-in 0.1s ease-out;
 }
 @keyframes tt-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-.at-name { font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 12px; font-weight: 700; color: var(--pixel-warning); margin-bottom: 4px; }
+.at-name { font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 12px; font-weight: 700; color: var(--pixel-warning); margin-bottom: 4px; }
 .at-desc { font-size: 11px; color: var(--pixel-text); line-height: 1.4; margin-bottom: 4px; }
-.at-exp { font-size: 10px; color: var(--pixel-primary); font-family: 'Press Start 2P', monospace; }
+.at-exp { font-size: 10px; color: var(--pixel-primary); font-family: var(--font-pixel-en), monospace; }
 .at-date { font-size: 9px; color: var(--pixel-text-secondary); margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--pixel-border); }
 
 /* ===== Responsive ===== */

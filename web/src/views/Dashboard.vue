@@ -676,7 +676,7 @@ onUnmounted(() => {
 }
 
 .loading-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
@@ -781,7 +781,7 @@ onUnmounted(() => {
 }
 
 .char-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 18px;
   font-weight: 700;
   color: var(--pixel-primary);
@@ -789,14 +789,14 @@ onUnmounted(() => {
 }
 
 .char-level {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   color: var(--pixel-warning);
   letter-spacing: 1px;
 }
 
 .char-class {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   color: var(--pixel-text-secondary);
   border: 2px solid var(--pixel-border);
@@ -826,21 +826,21 @@ onUnmounted(() => {
 .stat-icon-cost { color: var(--pixel-success); font-size: 14px; width: 18px; text-align: center; }
 
 .stat-label {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
   width: 36px;
 }
 
 .stat-value {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   color: var(--pixel-text);
   font-weight: 600;
 }
 
 .stat-value-gold {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   color: var(--pixel-warning);
   font-weight: 700;
@@ -866,7 +866,7 @@ onUnmounted(() => {
 }
 
 .bar-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   letter-spacing: 1px;
 }
@@ -876,7 +876,7 @@ onUnmounted(() => {
 .bar-group:nth-child(3) .bar-label { color: var(--pixel-warning); }
 
 .bar-value {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
 }
@@ -915,7 +915,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
 }
@@ -953,7 +953,7 @@ onUnmounted(() => {
 }
 
 .qc-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -996,13 +996,13 @@ onUnmounted(() => {
 .qc-progress {
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
 }
 
 .qc-exp {
   font-size: 9px;
   color: var(--pixel-warning);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
 }
 
 .qc-exp.earned {
@@ -1023,13 +1023,13 @@ onUnmounted(() => {
 }
 
 .ach-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
 
 .ach-count {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
@@ -1090,7 +1090,7 @@ onUnmounted(() => {
 }
 
 .at-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   font-weight: 700;
   color: var(--pixel-warning);
@@ -1107,7 +1107,7 @@ onUnmounted(() => {
 .at-exp {
   font-size: 10px;
   color: var(--pixel-primary);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
 }
 
 .at-date {
@@ -1146,7 +1146,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
@@ -1155,7 +1155,7 @@ onUnmounted(() => {
 .jh-icon { color: var(--pixel-primary); font-size: 12px; }
 
 .journal-add-btn {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   width: 26px;
   height: 26px;
@@ -1186,7 +1186,7 @@ onUnmounted(() => {
 
 .journal-form-input,
 .journal-form-textarea {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text);
   background: var(--pixel-bg-secondary);
@@ -1273,7 +1273,7 @@ onUnmounted(() => {
 }
 
 .je-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   font-weight: 600;
   color: var(--pixel-text);
@@ -1299,7 +1299,7 @@ onUnmounted(() => {
 }
 
 .je-time {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   opacity: 0.5;
@@ -1320,7 +1320,7 @@ onUnmounted(() => {
 .je-delete:hover { color: var(--pixel-accent); }
 
 .je-content {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   line-height: 1.5;
@@ -1363,7 +1363,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
@@ -1424,7 +1424,7 @@ onUnmounted(() => {
 }
 
 .menu-label {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 14px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -1437,7 +1437,7 @@ onUnmounted(() => {
 
 /* Recent Items */
 .empty-hint {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-border);
   text-align: center;
@@ -1540,7 +1540,7 @@ onUnmounted(() => {
 }
 
 .alert-days {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-warning);
   flex-shrink: 0;
@@ -1567,7 +1567,7 @@ onUnmounted(() => {
   transform: translateY(-4px) scale(0.95);
   transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: none;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text);
   line-height: 1.6;
@@ -1660,7 +1660,7 @@ onUnmounted(() => {
 }
 
 .modal-item-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 16px;
   font-weight: 700;
   color: var(--pixel-primary);
@@ -1735,7 +1735,7 @@ onUnmounted(() => {
 }
 
 .stat-hero-value {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 20px;
   font-weight: 700;
   color: var(--pixel-primary);
@@ -1809,7 +1809,7 @@ onUnmounted(() => {
 }
 
 .pixel-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);

@@ -242,7 +242,7 @@ watch(() => props.modelValue, (v) => {
 <style scoped>
 .px-datepicker {
   position: relative;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
 }
 
@@ -319,7 +319,7 @@ watch(() => props.modelValue, (v) => {
   font-size: 10px;
   padding: 2px 8px;
   cursor: pointer;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   transition: border-color 0.1s, color 0.1s;
 }
 
@@ -330,7 +330,7 @@ watch(() => props.modelValue, (v) => {
   background: none;
   border: 2px solid transparent;
   color: var(--pixel-text);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   font-weight: 600;
   padding: 2px 6px;
@@ -416,7 +416,7 @@ watch(() => props.modelValue, (v) => {
   background: var(--pixel-bg);
   border: 2px solid var(--pixel-border);
   color: var(--pixel-text);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 6px 2px;
   text-align: center;
@@ -461,7 +461,7 @@ watch(() => props.modelValue, (v) => {
   background: none;
   border: 2px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   padding: 3px 10px;
   cursor: pointer;

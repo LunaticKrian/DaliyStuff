@@ -522,7 +522,7 @@ onMounted(async () => {
 }
 
 .loading-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   animation: pixel-blink 1s step-end infinite;
@@ -534,7 +534,7 @@ onMounted(async () => {
 }
 
 .form-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
   color: var(--pixel-primary);
   display: flex;
@@ -561,7 +561,7 @@ onMounted(async () => {
 }
 
 .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   width: 18px;
   height: 18px;
@@ -602,7 +602,7 @@ onMounted(async () => {
 }
 
 .section-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -617,7 +617,7 @@ onMounted(async () => {
 }
 
 .field-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -794,7 +794,7 @@ onMounted(async () => {
   background: var(--pixel-accent);
   color: var(--pixel-bg);
   border: none;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   cursor: pointer;
   display: flex;
@@ -831,7 +831,7 @@ onMounted(async () => {
 }
 
 .upload-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   margin: 0;
@@ -861,7 +861,7 @@ onMounted(async () => {
   background: var(--pixel-primary);
   border: 3px solid #2a8f87;
   color: var(--pixel-bg);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   padding: 14px 28px;
   cursor: pointer;
@@ -893,7 +893,7 @@ onMounted(async () => {
   background: transparent;
   border: 3px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   padding: 14px 28px;
   cursor: pointer;

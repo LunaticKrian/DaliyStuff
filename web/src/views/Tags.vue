@@ -256,7 +256,7 @@ onMounted(loadTags)
 }
 
 .page-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 16px;
   color: var(--pixel-primary);
   margin: 0;
@@ -264,7 +264,7 @@ onMounted(loadTags)
 
 /* ===== Shared Buttons ===== */
 .pixel-btn {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);
@@ -323,7 +323,7 @@ onMounted(loadTags)
 }
 
 .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   width: 24px;
   height: 24px;
@@ -360,14 +360,14 @@ onMounted(loadTags)
 }
 
 .loading-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
 
 /* ===== Pixel Input ===== */
 .pixel-input {
-  font-family: var(--font-pixel), 'Ark Pixel', 'Press Start 2P', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), var(--font-pixel-en), monospace;
   font-size: 13px;
   padding: 8px 12px;
   background: var(--pixel-bg);
@@ -411,14 +411,14 @@ onMounted(loadTags)
 }
 
 .form-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
   margin: 0;
 }
 
 .close-btn {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   width: 28px;
   height: 28px;
@@ -463,7 +463,7 @@ onMounted(loadTags)
 }
 
 .form-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
@@ -493,7 +493,7 @@ onMounted(loadTags)
 }
 
 .color-value {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
@@ -566,7 +566,7 @@ onMounted(loadTags)
 }
 
 .tag-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 14px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -576,7 +576,7 @@ onMounted(loadTags)
 }
 
 .color-hex {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
@@ -640,7 +640,7 @@ onMounted(loadTags)
 }
 
 .empty-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }

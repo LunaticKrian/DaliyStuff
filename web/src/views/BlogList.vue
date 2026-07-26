@@ -349,7 +349,7 @@ onUnmounted(() => {
 .header-ornament.bottom { margin-top: 2px; }
 
 .chronicle-title {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 16px;
   color: var(--pixel-primary);
   margin: 10px 0 6px;
@@ -366,7 +366,7 @@ onUnmounted(() => {
 }
 
 .chronicle-subtitle {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   margin: 0 0 6px;
@@ -374,7 +374,7 @@ onUnmounted(() => {
 }
 
 .quest-new-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 10px 24px;
   border: 3px solid var(--pixel-primary);
@@ -405,13 +405,13 @@ onUnmounted(() => {
 }
 
 .tab-count {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
 
 .count-num {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-pixel-num), monospace;
   font-size: 16px;
   color: var(--pixel-info);
 }
@@ -427,7 +427,7 @@ onUnmounted(() => {
 }
 
 .loading-text {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   margin: 0;
@@ -507,14 +507,14 @@ onUnmounted(() => {
   position: absolute;
   top: 8px;
   right: 12px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 18px;
   color: var(--pixel-warning);
   opacity: 0.6;
 }
 
 .empty-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -522,7 +522,7 @@ onUnmounted(() => {
 }
 
 .empty-desc {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   margin: 0;
@@ -688,7 +688,7 @@ onUnmounted(() => {
 }
 
 .quest-status {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 9px;
   padding: 2px 8px;
   border: 1px solid;
@@ -707,7 +707,7 @@ onUnmounted(() => {
 }
 
 .quest-date {
-  font-family: 'VT323', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-num), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
 }
@@ -757,7 +757,7 @@ onUnmounted(() => {
 }
 
 .quest-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -768,7 +768,7 @@ onUnmounted(() => {
 }
 
 .quest-summary {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   line-height: 1.5;
@@ -786,7 +786,7 @@ onUnmounted(() => {
 }
 
 .attr-tag {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 8px;
   padding: 1px 6px;
   border: 1px solid var(--pixel-border);
@@ -805,7 +805,7 @@ onUnmounted(() => {
 }
 
 .chapter-num {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-pixel-num), monospace;
   font-size: 12px;
   color: var(--pixel-primary);
   opacity: 0.6;
@@ -859,14 +859,14 @@ onUnmounted(() => {
 }
 
 .continues-dots span {
-  font-family: 'VT323', monospace;
+  font-family: var(--font-pixel-num), monospace;
   font-size: 14px;
   color: var(--pixel-text-secondary);
   line-height: 1;
 }
 
 .continues-text {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   letter-spacing: 2px;
@@ -921,7 +921,7 @@ onUnmounted(() => {
 }
 
 .modal-close-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 4px 10px;
   border: 2px solid var(--pixel-border);
@@ -942,7 +942,7 @@ onUnmounted(() => {
 }
 
 .modal-action-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 4px 10px;
   border: 2px solid var(--pixel-border);
@@ -1009,7 +1009,7 @@ onUnmounted(() => {
 }
 
 .modal-status {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 9px;
   padding: 2px 8px;
   border: 1px solid;
@@ -1028,13 +1028,13 @@ onUnmounted(() => {
 }
 
 .modal-date {
-  font-family: 'VT323', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-num), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
 }
 
 .modal-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 18px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -1043,7 +1043,7 @@ onUnmounted(() => {
 }
 
 .modal-summary {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
   line-height: 1.6;
@@ -1057,7 +1057,7 @@ onUnmounted(() => {
 }
 
 .modal-tag {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 9px;
   padding: 2px 8px;
   border: 2px solid var(--pixel-border);
@@ -1104,7 +1104,7 @@ onUnmounted(() => {
 
   background: transparent !important;
   padding: 0 !important;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   font-size: 13px !important;
   line-height: 1.85 !important;
   color: var(--pixel-text) !important;
@@ -1127,7 +1127,7 @@ onUnmounted(() => {
 .modal-content :deep(.md-editor-preview h4),
 .modal-content :deep(.md-editor-preview h5),
 .modal-content :deep(.md-editor-preview h6) {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   color: var(--pixel-text) !important;
   margin: 24px 0 10px !important;
   font-weight: 700 !important;
@@ -1148,7 +1148,7 @@ onUnmounted(() => {
 }
 
 .modal-content :deep(.md-editor-preview code) {
-  font-family: 'VT323', var(--font-pixel), monospace !important;
+  font-family: var(--font-pixel-num), var(--font-pixel), monospace !important;
   font-size: 14px !important;
   color: var(--pixel-primary) !important;
   background: rgba(65, 166, 246, 0.12) !important;
@@ -1204,7 +1204,7 @@ onUnmounted(() => {
 }
 
 .modal-content :deep(.md-editor-preview th) {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace !important;
+  font-family: var(--font-pixel), var(--font-pixel), monospace !important;
   font-size: 11px !important;
   color: var(--pixel-text) !important;
   background: var(--pixel-bg-secondary) !important;

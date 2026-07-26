@@ -299,7 +299,7 @@ async function handleSubmit() {
 }
 
 .creation-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 16px;
   color: var(--pixel-primary);
   text-shadow: 0 0 10px rgba(65, 166, 246, 0.3);
@@ -307,7 +307,7 @@ async function handleSubmit() {
 }
 
 .header-sub {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 2px;
@@ -328,7 +328,7 @@ async function handleSubmit() {
 }
 
 .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   width: 16px;
   height: 16px;
@@ -355,7 +355,7 @@ async function handleSubmit() {
 }
 
 .step-num {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
   background: rgba(65, 166, 246, 0.1);
@@ -364,7 +364,7 @@ async function handleSubmit() {
 }
 
 .step-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -561,7 +561,7 @@ async function handleSubmit() {
   background: var(--pixel-primary);
   border: 3px solid #2a8f87;
   color: var(--pixel-bg);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   padding: 14px;
   cursor: pointer;

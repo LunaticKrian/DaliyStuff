@@ -453,7 +453,7 @@ onMounted(loadCategories)
 }
 
 .loading-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
@@ -473,7 +473,7 @@ onMounted(loadCategories)
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 24px;
   color: var(--pixel-accent);
   border: 3px solid var(--pixel-accent);
@@ -495,7 +495,7 @@ onMounted(loadCategories)
 }
 
 .page-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 16px;
   color: var(--pixel-primary);
   margin: 0;
@@ -503,7 +503,7 @@ onMounted(loadCategories)
 
 /* ===== Pixel Button ===== */
 .pixel-btn {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);
@@ -562,7 +562,7 @@ onMounted(loadCategories)
 }
 
 .pixel-btn-close {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   width: 28px;
   height: 28px;
@@ -634,7 +634,7 @@ onMounted(loadCategories)
 }
 
 .form-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
   margin: 0;
@@ -660,7 +660,7 @@ onMounted(loadCategories)
 }
 
 .form-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
@@ -745,7 +745,7 @@ onMounted(loadCategories)
 }
 
 .color-value {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
@@ -782,7 +782,7 @@ onMounted(loadCategories)
 }
 
 .empty-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
 }
@@ -844,7 +844,7 @@ onMounted(loadCategories)
 }
 
 .card-name {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-text);
   word-break: break-all;
@@ -859,7 +859,7 @@ onMounted(loadCategories)
 }
 
 .card-sort {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   padding: 2px 4px;
@@ -925,7 +925,7 @@ onMounted(loadCategories)
 }
 
 .modal-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
   color: var(--pixel-accent);
   width: 28px;
@@ -937,7 +937,7 @@ onMounted(loadCategories)
 }
 
 .modal-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-accent);
   margin: 0;

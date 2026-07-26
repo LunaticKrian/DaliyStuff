@@ -176,7 +176,7 @@ async function handleChangePassword() {
   background: var(--pixel-card-bg);
   border: 3px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 6px 12px;
   cursor: pointer;
@@ -196,7 +196,7 @@ async function handleChangePassword() {
 }
 
 .page-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
   color: var(--pixel-primary);
   display: flex;
@@ -220,7 +220,7 @@ async function handleChangePassword() {
   gap: 8px;
   padding: 10px 14px;
   border-bottom: 2px solid var(--pixel-border);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text);
   user-select: none;
@@ -248,14 +248,14 @@ async function handleChangePassword() {
 }
 
 .field-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 0.5px;
 }
 
 .field-readonly {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   color: var(--pixel-text);
   padding: 8px 10px;
@@ -268,7 +268,7 @@ async function handleChangePassword() {
   background: var(--pixel-bg);
   border: 3px solid var(--pixel-border);
   color: var(--pixel-text);
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   padding: 8px 10px;
   outline: none;
@@ -287,7 +287,7 @@ async function handleChangePassword() {
 }
 
 .field-error {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-accent);
   padding: 6px 8px;
@@ -297,7 +297,7 @@ async function handleChangePassword() {
 
 /* Button */
 .pixel-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 8px 16px;
   border: 3px solid var(--pixel-border);

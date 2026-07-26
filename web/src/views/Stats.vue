@@ -44,7 +44,7 @@ const statusColorMap: Record<string, string> = {
 }
 
 const pixelTheme = {
-  textStyle: { fontFamily: "'Press Start 2P', 'Ark Pixel', monospace", fontSize: 10, color: '#7b8faa' },
+  textStyle: { fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif", fontSize: 10, color: '#7b8faa' },
   grid: { top: 36, right: 16, bottom: 28, left: 48 },
 }
 
@@ -52,7 +52,7 @@ const tooltipStyle = {
   backgroundColor: '#182548',
   borderColor: '#2e3d62',
   borderWidth: 2,
-  textStyle: { color: '#f4f4f4', fontFamily: "'Press Start 2P', monospace", fontSize: 9 },
+  textStyle: { color: '#f4f4f4', fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif", fontSize: 9 },
 }
 
 // ── Computed: status distribution from costRank ──
@@ -158,7 +158,7 @@ function initPieChart() {
       label: {
         color: '#7b8faa',
         fontSize: 8,
-        fontFamily: "'Press Start 2P', monospace",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
         formatter: '{b}\n{d}%',
       },
       labelLine: { lineStyle: { color: '#2e3d62', width: 2 } },
@@ -192,7 +192,7 @@ function initRankChart() {
       axisLine: { show: false },
       axisLabel: {
         color: '#7b8faa', fontSize: 8,
-        fontFamily: "'Ark Pixel', monospace",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
         formatter: '¥{value}',
       },
     },
@@ -201,7 +201,7 @@ function initRankChart() {
       data: names,
       axisLine: { lineStyle: { color: '#2e3d62', width: 2 } },
       axisTick: { show: false },
-      axisLabel: { color: '#f4f4f4', fontSize: 8, fontFamily: "'Ark Pixel', monospace" },
+      axisLabel: { color: '#f4f4f4', fontSize: 8, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
     },
     series: [{
       type: 'bar',
@@ -224,7 +224,7 @@ function initRankChart() {
         position: 'right',
         color: '#f4f4f4',
         fontSize: 8,
-        fontFamily: "'Ark Pixel', monospace",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
         formatter: (p: any) => '¥' + p.value.toFixed(2),
       },
     }],
@@ -255,7 +255,7 @@ function initTrendChart() {
     legend: {
       top: 4,
       right: 16,
-      textStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "'Press Start 2P', monospace" },
+      textStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
       itemWidth: 12,
       itemHeight: 8,
     },
@@ -264,30 +264,30 @@ function initTrendChart() {
       data: months,
       axisLine: { lineStyle: { color: '#2e3d62', width: 2 } },
       axisTick: { show: false },
-      axisLabel: { color: '#7b8faa', fontSize: 8, fontFamily: "'Press Start 2P', monospace" },
+      axisLabel: { color: '#7b8faa', fontSize: 8, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
     },
     yAxis: [
       {
         type: 'value',
         name: '月消费',
-        nameTextStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "'Press Start 2P', monospace" },
+        nameTextStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
         splitLine: { lineStyle: { color: '#141d38', type: [4, 4] } },
         axisLine: { show: false },
         axisLabel: {
           color: '#7b8faa', fontSize: 8,
-          fontFamily: "'Ark Pixel', monospace",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
           formatter: '¥{value}',
         },
       },
       {
         type: 'value',
         name: '累计',
-        nameTextStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "'Press Start 2P', monospace" },
+        nameTextStyle: { color: '#7b8faa', fontSize: 8, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
         splitLine: { show: false },
         axisLine: { show: false },
         axisLabel: {
           color: '#7b8faa', fontSize: 8,
-          fontFamily: "'Ark Pixel', monospace",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
           formatter: '¥{value}',
         },
       },
@@ -564,7 +564,7 @@ onBeforeUnmount(() => {
 }
 
 .loading-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
@@ -588,7 +588,7 @@ onBeforeUnmount(() => {
 }
 
 .filter-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -598,7 +598,7 @@ onBeforeUnmount(() => {
   background: #0e1225;
   border: 3px solid var(--pixel-border);
   color: #f4f4f4;
-  font-family: 'Ark Pixel', 'Press Start 2P', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 12px;
   padding: 6px 10px;
   outline: none;
@@ -633,7 +633,7 @@ select.pixel-input option {
   background: #182548;
   border: 3px solid var(--pixel-primary);
   color: var(--pixel-primary);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   padding: 8px 16px;
   cursor: pointer;
@@ -686,7 +686,7 @@ select.pixel-input option {
 .stat-card.success .stat-icon { color: var(--pixel-success); }
 
 .stat-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 28px;
   color: var(--pixel-primary);
   width: 56px;
@@ -705,7 +705,7 @@ select.pixel-input option {
 }
 
 .stat-value {
-  font-family: 'Ark Pixel', 'Press Start 2P', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 20px;
   color: var(--pixel-text);
   font-weight: bold;
@@ -716,7 +716,7 @@ select.pixel-input option {
 }
 
 .stat-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -737,7 +737,7 @@ select.pixel-input option {
 }
 
 .section-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
   margin: 0 0 16px;
@@ -747,7 +747,7 @@ select.pixel-input option {
 }
 
 .sub-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
   margin: 0 0 12px;
@@ -787,13 +787,13 @@ select.pixel-input option {
 .pixel-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 12px;
   color: #f4f4f4;
 }
 
 .pixel-table thead th {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -863,7 +863,7 @@ select.pixel-input option {
 }
 
 .status-bar-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: #f4f4f4;
   width: 56px;
@@ -886,7 +886,7 @@ select.pixel-input option {
 }
 
 .status-bar-count {
-  font-family: 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
   white-space: nowrap;
@@ -955,13 +955,13 @@ select.pixel-input option {
 }
 
 .alert-meta {
-  font-family: 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
 }
 
 .alert-days {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-warning);
   flex-shrink: 0;
@@ -1004,7 +1004,7 @@ select.pixel-input option {
 }
 
 .lifecycle-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: #f4f4f4;
 }
@@ -1029,7 +1029,7 @@ select.pixel-input option {
 }
 
 .lifecycle-pct {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-text-secondary);
   min-width: 40px;
@@ -1037,7 +1037,7 @@ select.pixel-input option {
 }
 
 .lifecycle-count {
-  font-family: 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-text-secondary);
 }
@@ -1048,7 +1048,7 @@ select.pixel-input option {
   align-items: center;
   justify-content: center;
   height: 280px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-border);
 }
@@ -1058,7 +1058,7 @@ select.pixel-input option {
   align-items: center;
   justify-content: center;
   padding: 32px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-border);
 }

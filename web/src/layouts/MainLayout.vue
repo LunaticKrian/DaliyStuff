@@ -165,7 +165,7 @@ function handleLogout() {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
 }
 
@@ -202,7 +202,7 @@ function handleLogout() {
   padding: 6px 14px;
   color: var(--pixel-text-secondary);
   text-decoration: none;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   border: 2px solid transparent;
   position: relative;
@@ -247,7 +247,7 @@ function handleLogout() {
 }
 
 .insert-coin-mini {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 7px;
   color: var(--pixel-warning);
   animation: pixel-blink 1.5s step-end infinite;
@@ -262,7 +262,7 @@ function handleLogout() {
 }
 
 .hp-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-success);
 }
@@ -308,7 +308,7 @@ function handleLogout() {
 }
 
 .user-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   color: var(--pixel-text-secondary);
   text-decoration: none;
   transition: color 0.12s ease;
@@ -325,7 +325,7 @@ function handleLogout() {
 }
 
 .breadcrumb {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-text-secondary);
 }
@@ -343,7 +343,7 @@ function handleLogout() {
   border: 2px solid var(--pixel-accent);
   color: var(--pixel-accent);
   cursor: pointer;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 3px 10px;
   display: flex;

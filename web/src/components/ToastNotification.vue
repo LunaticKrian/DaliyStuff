@@ -55,12 +55,12 @@ const typeConfig: Record<string, { icon: string; color: string }> = {
   padding: 10px 12px;
   box-shadow: 3px 3px 0 var(--pixel-shadow);
   pointer-events: auto;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   animation: toast-in 0.2s ease-out;
 }
 
 .toast-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   flex-shrink: 0;
   width: 16px;

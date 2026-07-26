@@ -258,7 +258,7 @@
 
 /* "INSERT COIN" blink */
 .insert-coin {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   color: var(--pixel-warning);
   animation: pixel-blink 1.2s step-end infinite;

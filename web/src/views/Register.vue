@@ -134,7 +134,7 @@ async function handleRegister() {
 }
 
 .form-title {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 14px;
   color: var(--pixel-primary);
   display: flex;
@@ -163,7 +163,7 @@ async function handleRegister() {
 }
 
 .field-label {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
   letter-spacing: 1px;
@@ -217,7 +217,7 @@ async function handleRegister() {
 }
 
 .error-icon {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 10px;
   width: 16px;
   height: 16px;
@@ -232,7 +232,7 @@ async function handleRegister() {
   background: var(--pixel-primary);
   border: 3px solid #2a8f87;
   color: var(--pixel-bg);
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 12px;
   padding: 12px;
   cursor: pointer;

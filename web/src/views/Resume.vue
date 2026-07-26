@@ -673,7 +673,7 @@ textarea.inp { resize: vertical; min-height: 48px; }
 .stage__tools { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .tpl-switch { display: flex; gap: 4px; flex-wrap: wrap; }
 .tpl-chip {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace; font-size: 10px;
+  font-family: var(--font-pixel), var(--font-pixel), monospace; font-size: 10px;
   padding: 4px 8px; background: transparent; color: var(--pixel-text-secondary);
   border: 2px solid var(--pixel-border); cursor: pointer; transition: color 0.12s, border-color 0.12s, background 0.12s;
 }
@@ -681,7 +681,7 @@ textarea.inp { resize: vertical; min-height: 48px; }
 .tpl-chip.active { color: var(--pixel-info); border-color: var(--pixel-info); background: rgba(115, 239, 247, 0.1); box-shadow: 0 2px 0 var(--pixel-info); }
 .lang-switch { display: flex; border: 2px solid var(--pixel-border); }
 .lang-switch button {
-  font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 4px 7px;
+  font-family: var(--font-pixel-en), monospace; font-size: 8px; padding: 4px 7px;
   background: transparent; color: var(--pixel-text-secondary); border: 0; cursor: pointer;
 }
 .lang-switch button.active { background: var(--pixel-info); color: #062a30; }

@@ -531,7 +531,7 @@ onUnmounted(() => {
   opacity: 0.4;
 }
 .wm-title {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 15px;
   color: var(--pixel-primary);
   margin: 10px 0 6px;
@@ -543,7 +543,7 @@ onUnmounted(() => {
 }
 .title-icon { font-size: 18px; color: var(--pixel-info); }
 .wm-subtitle {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   margin: 0;
@@ -562,7 +562,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-weight: 700;
   font-size: 13px;
   color: var(--pixel-text);
@@ -574,7 +574,7 @@ onUnmounted(() => {
   margin-left: auto;
   font-size: 8px;
   color: var(--wm-faint);
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
 }
 
 .loading-state {
@@ -585,7 +585,7 @@ onUnmounted(() => {
   padding: 48px 0;
 }
 .loading-text {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
   margin: 0;
@@ -627,7 +627,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 9px;
   color: var(--pixel-accent);
 }
@@ -652,14 +652,14 @@ onUnmounted(() => {
 .sig-bars i:nth-child(3) { height: 12px; background: var(--pixel-primary); }
 .sig-bars i:nth-child(4) { height: 15px; background: var(--pixel-primary); }
 .sig-name {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 13px;
   font-weight: 700;
   color: var(--pixel-text);
 }
 .sig-date {
   margin-left: auto;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
 }
@@ -677,7 +677,7 @@ onUnmounted(() => {
 }
 .sig-prompt {
   color: var(--pixel-warning);
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 9px;
   flex-shrink: 0;
 }
@@ -708,13 +708,13 @@ onUnmounted(() => {
   border: 2px solid var(--pixel-border);
 }
 .stat-label {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
 .stat-value {
   margin-top: 6px;
-  font-family: var(--font-pixel-num), 'VT323', monospace;
+  font-family: var(--font-pixel-num), var(--font-pixel-num), monospace;
   font-size: 22px;
   color: var(--pixel-text);
   line-height: 1;
@@ -764,7 +764,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   padding: 2px 6px;
   border: 2px solid var(--pixel-bg);
@@ -773,7 +773,7 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 .intel-src {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--wm-faint);
   margin-left: auto;
@@ -796,7 +796,7 @@ onUnmounted(() => {
   margin-top: auto;
   padding-top: 9px;
   border-top: 1px solid var(--wm-line-dim);
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   color: var(--wm-faint);
 }
@@ -816,13 +816,13 @@ onUnmounted(() => {
   flex-wrap: wrap;
 }
 .voyage-name {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--pixel-primary);
 }
 .voyage-meta {
   margin-left: auto;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   color: var(--pixel-text-secondary);
 }
@@ -840,7 +840,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   padding: 5px 11px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   font-weight: 700;
   color: var(--pixel-text-secondary);
@@ -874,7 +874,7 @@ onUnmounted(() => {
   padding: 0 3px;
   display: inline-grid;
   place-items: center;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 7px;
   color: var(--pixel-bg);
   background: var(--wm-beacon);
@@ -927,13 +927,13 @@ onUnmounted(() => {
   align-self: flex-start;
 }
 .log-day {
-  font-family: var(--font-pixel-num), 'VT323', monospace;
+  font-family: var(--font-pixel-num), var(--font-pixel-num), monospace;
   font-size: 18px;
   color: var(--pixel-primary);
   line-height: 1;
 }
 .log-mon {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 6px;
   color: var(--wm-faint);
   margin-top: 3px;
@@ -949,7 +949,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 7px;
   color: var(--reg-c, var(--pixel-primary));
 }
@@ -962,7 +962,7 @@ onUnmounted(() => {
 }
 .log-time {
   margin-left: auto;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 7px;
   color: var(--wm-faint);
 }
@@ -974,7 +974,7 @@ onUnmounted(() => {
   color: var(--pixel-text);
 }
 .log-src {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 10px;
   color: var(--wm-faint);
   margin-top: 6px;
@@ -987,14 +987,14 @@ onUnmounted(() => {
   justify-content: center;
   gap: 14px;
   padding: 4px 0 14px;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 9px;
   color: var(--pixel-text-secondary);
 }
 .pager b { font-weight: 400; }
 .t-gold { color: var(--pixel-warning); }
 .pager-btn {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   padding: 4px 10px;
   color: var(--pixel-text-secondary);
@@ -1097,7 +1097,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-weight: 700;
   font-size: 13px;
   padding: 8px 16px;
@@ -1127,7 +1127,7 @@ onUnmounted(() => {
 .scan-status {
   flex: 1;
   min-width: 0;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -1135,7 +1135,7 @@ onUnmounted(() => {
 .scan-busy { color: var(--pixel-primary); }
 .scan-busy .scan-time {
   margin-left: 6px;
-  font-family: var(--font-pixel-num), 'VT323', monospace;
+  font-family: var(--font-pixel-num), var(--font-pixel-num), monospace;
   color: var(--pixel-warning);
 }
 .scan-err { color: var(--pixel-accent); }
@@ -1146,7 +1146,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 9px;
   color: var(--pixel-warning);
   letter-spacing: 1px;
@@ -1190,14 +1190,14 @@ onUnmounted(() => {
   background: var(--pixel-bg-secondary);
 }
 .reader-reg {
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   color: var(--pixel-bg);
   padding: 2px 8px;
   border: 2px solid var(--pixel-text);
 }
 .reader-date {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 11px;
   color: var(--pixel-text-secondary);
 }
@@ -1221,7 +1221,7 @@ onUnmounted(() => {
   padding: 20px 24px 24px;
 }
 .reader-title {
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 17px;
   font-weight: 700;
   color: var(--pixel-text);
@@ -1245,7 +1245,7 @@ onUnmounted(() => {
 .reader-link {
   display: inline-block;
   margin-top: 16px;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
   color: var(--pixel-primary);
   border-bottom: 1px solid color-mix(in srgb, var(--pixel-primary) 40%, transparent);
@@ -1254,7 +1254,7 @@ onUnmounted(() => {
 .reader-end {
   margin-top: 14px;
   text-align: center;
-  font-family: 'Press Start 2P', var(--font-pixel), monospace;
+  font-family: var(--font-pixel-en), var(--font-pixel), monospace;
   font-size: 8px;
   color: var(--wm-faint);
   letter-spacing: 2px;

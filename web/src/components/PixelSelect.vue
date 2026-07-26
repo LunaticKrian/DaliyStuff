@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .px-select {
   position: relative;
-  font-family: var(--font-pixel), 'Ark Pixel', monospace;
+  font-family: var(--font-pixel), var(--font-pixel), monospace;
   font-size: 12px;
 }
 

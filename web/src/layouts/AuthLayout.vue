@@ -147,7 +147,7 @@
 }
 
 .title-glow h1 {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 20px;
   color: var(--pixel-primary);
   text-shadow:
@@ -183,7 +183,7 @@
 }
 
 .insert-coin-text {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-pixel-en), monospace;
   font-size: 8px;
   color: var(--pixel-warning);
   margin-top: 16px;
