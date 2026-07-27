@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixelPack — 把生活过成一场 RPG</title>
+  <meta name="description" content="PixelPack:游戏化的个人物品管理与日常追踪系统。把你的物品、消费、任务以 RPG 的方式管理起来。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+
+    <!-- 顶栏(玻璃、slim) -->
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="#top">
+          <span class="brand-dot"></span> PixelPack
+        </a>
+        <div class="topbar-cta">
+          <a class="btn btn-ghost" data-cta="github" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.4 9.4 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+            GitHub
+          </a>
+          <a class="btn btn-primary" data-cta="demo" target="_blank" rel="noopener">在线试用 →</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+
+      <!-- ██████ HERO ██████ -->
+      <section class="hero container">
+        <div class="aurora" aria-hidden="true">
+          <span class="orb orb-1"></span>
+          <span class="orb orb-2"></span>
+          <span class="orb orb-3"></span>
+        </div>
+
+        <div class="hero-content" data-reveal>
+          <span class="eyebrow">RPG · 个人物品与日常追踪</span>
+          <h1 class="hero-title">把生活过成<br/><span class="grad">一场 RPG</span></h1>
+          <p class="hero-sub">
+            PixelPack 用游戏化的方式管理你的物品、消费与日常任务 ——
+            每件物品都是装备，每笔消费都在升级你的角色。
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg" data-cta="demo" target="_blank" rel="noopener">▶ 开启冒险</a>
+            <a class="btn btn-ghost btn-lg" data-cta="github" target="_blank" rel="noopener">查看源码</a>
+          </div>
+        </div>
+
+        <!-- 产品截图:浏览器外框 + 视差倾斜 -->
+        <div class="hero-shot" data-reveal data-tilt>
+          <div class="shot-glow" aria-hidden="true"></div>
+          <div class="shot-card">
+            <div class="shot-chrome">
+              <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+              <span class="shot-url">pixelpack · 仪表盘</span>
+            </div>
+            <div class="shot-screen">
+              <img src="../../docs/asstes/img.png" alt="PixelPack 主仪表盘:角色立绘、每日任务、HP/EXP 进度条、冒险日志与系统菜单" loading="lazy" />
+              <span class="shot-glare" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数据条 -->
+        <div class="stats" data-reveal>
+          <div class="stat"><span class="stat-num" data-count="7">0</span><span class="stat-label">核心功能</span></div>
+          <div class="stat"><span class="stat-num" data-count="10" data-suffix="+">0</span><span class="stat-label">技术栈</span></div>
+          <div class="stat"><span class="stat-num" data-count="100" data-suffix="%">0</span><span class="stat-label">开源</span></div>
+          <div class="stat"><span class="stat-num">MIT</span><span class="stat-label">协议</span></div>
+        </div>
+      </section>
+
+      <!-- ██████ FEATURES · BENTO ██████ -->
+      <section id="features" class="section container">
+        <header class="section-head" data-reveal>
+          <span class="eyebrow">FEATURES</span>
+          <h2 class="section-title">一张角色卡，装下整个日常</h2>
+          <p class="section-lead">从物品到成就，七项能力把琐碎的生活数据串成一场冒险。</p>
+        </header>
+
+        <div class="bento">
+          <article class="tile tile-lg" data-reveal>
+            <span class="tile-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+            </span>
+            <h3>物品管理</h3>
+            <p>记录价格、购买渠道、保修期与标签，自动算出每件装备的日均成本。</p>
+          </article>
+          <article class="tile tile-lg" data-reveal>
+            <span class="tile-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+            </span>
+            <h3>角色系统</h3>
+            <p>上传立绘、设置职业，记录生日与星座 —— 养出一个属于你自己的主角。</p>
+          </article>
+
+          <article class="tile" data-reveal>
+            <span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span>
+            <h3>每日任务</h3>
+            <p>自动生成的日常，完成即获 EXP。</p>
+          </article>
+          <article class="tile" data-reveal>
+            <span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M16 5h3v2a3 3 0 0 1-3 3M8 5H5v2a3 3 0 0 0 3 3M10 14h4M9 20h6M12 14v6"/></svg></span>
+            <h3>成就系统</h3>
+            <p>收集类成就解锁，写入冒险日志。</p>
+          </article>
+          <article class="tile" data-reveal>
+            <span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2 2V5z"/><path d="M18 3v18"/></svg></span>
+            <h3>冒险日志</h3>
+            <p>系统自动 + 手动记录，RPG 时间线。</p>
+          </article>
+
+          <article class="tile tile-lg" data-reveal>
+            <span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></span>
+            <h3>世界地图</h3>
+            <p>AI 技术情报每日推送，按六大知识疆域分类回溯，开拓你的认知版图。</p>
+          </article>
+          <article class="tile tile-lg" data-reveal>
+            <span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M11 20V5M17 20v-8"/></svg></span>
+            <h3>数据统计</h3>
+            <p>消费趋势、物品状态分布、保修提醒 —— 把冒险数据变成可视化图表。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ██████ TECH · 标签切换 ██████ -->
+      <section id="tech" class="section container">
+        <header class="section-head" data-reveal>
+          <span class="eyebrow">STACK</span>
+          <h2 class="section-title">一套趁手的全栈装备</h2>
+          <p class="section-lead">现代前后端 + 游戏化表现层，点击切换查看每一层。</p>
+        </header>
+
+        <div class="tech" data-reveal>
+          <div class="tech-tabs" role="tablist">
+            <button class="tech-tab is-active" role="tab" data-tab="0">前端</button>
+            <button class="tech-tab" role="tab" data-tab="1">后端</button>
+            <button class="tech-tab" role="tab" data-tab="2">数据 · 认证</button>
+            <button class="tech-tab" role="tab" data-tab="3">表现 · 风格</button>
+            <button class="tech-tab" role="tab" data-tab="4">部署</button>
+          </div>
+          <div class="tech-panel">
+            <ul class="tech-chips" data-tech="0">
+              <li>Vue 3.5</li><li>TypeScript</li><li>Pinia 3</li><li>Vue Router 4</li><li>Vite 8</li>
+            </ul>
+            <ul class="tech-chips" data-tech="1" hidden>
+              <li>FastAPI</li><li>SQLAlchemy 2.0 async</li>
+            </ul>
+            <ul class="tech-chips" data-tech="2" hidden>
+              <li>SQLite</li><li>aiosqlite</li><li>JWT · access + refresh</li>
+            </ul>
+            <ul class="tech-chips" data-tech="3" hidden>
+              <li>ECharts 6</li><li>NES.css + 像素组件</li><li>Press Start 2P / Ark Pixel</li>
+            </ul>
+            <ul class="tech-chips" data-tech="4" hidden>
+              <li>Docker</li><li>nginx</li><li>airise-gateway · TLS</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ██████ ARCH · 数据流 ██████ -->
+      <section id="arch" class="section container">
+        <header class="section-head" data-reveal>
+          <span class="eyebrow">DEPLOY</span>
+          <h2 class="section-title">一条干净的上线链路</h2>
+          <p class="section-lead">网关终结 TLS、纯路由，数据落本地卷、容器重建不丢。</p>
+        </header>
+
+        <div class="arch" data-reveal>
+          <div class="arch-flow">
+            <div class="arch-node">浏览器</div>
+            <div class="arch-link"><span class="arch-lbl">https</span><span class="arch-track"><span class="arch-dot"></span></span></div>
+            <div class="arch-node arch-gw">airise-gateway<small>TLS · 纯路由</small></div>
+            <div class="arch-link"><span class="arch-lbl">route</span><span class="arch-track"><span class="arch-dot"></span></span></div>
+            <div class="arch-stack">
+              <div class="arch-node arch-leaf">/api&nbsp;→&nbsp;<b>api</b> :8000</div>
+              <div class="arch-node arch-leaf">/&nbsp;·&nbsp;/uploads&nbsp;→&nbsp;<b>web</b> :80</div>
+            </div>
+          </div>
+          <p class="arch-note">数据落 <code>./data</code>（data.db + uploads/），密钥由 <code>.env</code> 运行时注入，镜像可安全公开。</p>
+        </div>
+      </section>
+
+      <!-- ██████ CTA ██████ -->
+      <section class="cta-final container">
+        <div class="cta-card" data-reveal>
+          <span class="cta-grad" aria-hidden="true"></span>
+          <h2 class="cta-title">你的生活，<span class="grad">值得一场冒险</span>。</h2>
+          <p class="cta-sub">开源、自托管、持续加点中。</p>
+          <div class="cta-btns">
+            <a class="btn btn-primary btn-lg" data-cta="demo" target="_blank" rel="noopener">▶ 在线试用</a>
+            <a class="btn btn-ghost btn-lg" data-cta="github" target="_blank" rel="noopener">GitHub 源码</a>
+          </div>
+        </div>
+        <footer class="page-foot">
+          <span>© 2026 Krian · PixelPack · MIT</span>
+        </footer>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
