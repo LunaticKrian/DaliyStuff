@@ -1,89 +1,94 @@
 # PixelPack
 
-一款 RPG 像素风格的个人物品管理与日常追踪系统。将你的物品、消费、任务以游戏化的方式管理起来。
+> 🌐 Languages: **English** | [简体中文](docs/readme/README.zh-CN.md)
+
+A pixel-art, RPG-styled personal-item tracker and daily-life dashboard. Manage your belongings, spending, and tasks in a gamified way.
 
 ![img.png](docs/asstes/img.png)
 
-## 功能
+## Features
 
-- **物品管理** — 记录物品信息（价格、购买渠道、保修期、标签分类），自动计算日均成本
-- **角色系统** — 上传立绘、设置角色名和职业、记录生日与星座
-- **每日任务** — 自动生成的每日任务（添加物品、记录消费等），完成后获得 EXP
-- **成就系统** — 收集类成就（首次添加、收集达人等），解锁后记录到冒险日志
-- **冒险日志** — 自动记录系统事件 + 用户手动写日志，RPG 风格时间线
-- **世界地图** — AI 技术情报的每日推送与历史回溯，按六大知识疆域（大模型/智能体/视觉/基建/研究/工具）分类（前端 + Mock，后端待接入）
-- **数据统计** — 消费趋势、物品状态分布、保修提醒等可视化图表
-- **像素风 UI** — 基于 NES.css 的像素艺术主题，Press Start 2P / Ark Pixel 字体
+- **Desktop client** — native macOS shell (Tauri 2 thin client): first-run server setup, persistent login via Keychain, tray + global shortcut, device-session management (prebuilt builds in Releases; dev/build in the *Desktop client* section below)
+- **Item management** — record item info (price, source, warranty, tags); auto daily-averaged cost
+- **Character system** — upload portrait, set name/class, record birthday & star sign
+- **Daily quests** — auto-generated daily tasks (add item, log spending, …); complete them for EXP
+- **Achievements** — collection achievements (first add, master collector, …); unlocked ones are written to the adventure log
+- **Adventure log** — auto-recorded system events + manual entries, RPG-style timeline
+- **World map** — daily AI tech-intel feed with history, organized by six domains (LLMs / agents / vision / infra / research / tools) (frontend + mock; backend pending)
+- **Stats** — spending trends, item-status breakdown, warranty reminders, and other charts
+- **Pixel UI** — NES.css-based pixel-art theme, Press Start 2P / Ark Pixel fonts
 
-## 技术栈
+## Tech stack
 
-| 层 | 技术 |
+| Layer | Tech |
 |---|------|
-| 前端 | Vue 3.5 + TypeScript + Pinia 3 + Vue Router 4 + Vite 8 |
-| 后端 | FastAPI + SQLAlchemy 2.0 (async) + SQLite (aiosqlite) |
-| 认证 | JWT (access + refresh token) |
-| 图表 | ECharts 6 |
-| 风格 | NES.css + 自定义像素风组件 |
+| Frontend | Vue 3.5 + TypeScript + Pinia 3 + Vue Router 4 + Vite 8 |
+| Backend | FastAPI + SQLAlchemy 2.0 (async) + SQLite (aiosqlite) |
+| Desktop | Tauri 2 + Rust (thin client, reuses `web/`, tokens in OS Keychain) |
+| Auth | JWT + session-based (refresh rotation / reuse detection / device sessions) |
+| Charts | ECharts 6 |
+| Styling | NES.css + custom pixel components |
 
-## 项目结构
+## Project structure
 
 ```
 PixelPack/
-├── server/                # Python 后端
+├── server/                # Python backend
 │   ├── app/
-│   │   ├── main.py        # FastAPI 入口，路由注册，静态文件
-│   │   ├── config.py      # 配置（数据库、密钥、上传目录）
-│   │   ├── database.py    # SQLAlchemy async 引擎 + Session
-│   │   ├── models/        # ORM 模型（User, Item, Journal, Quest...）
-│   │   ├── schemas/       # Pydantic 请求/响应模型
-│   │   ├── services/      # 业务逻辑层
-│   │   ├── routers/       # API 路由（REST 端点）
-│   │   └── utils/         # JWT、密码哈希、依赖注入
+│   │   ├── main.py        # FastAPI entry, router registration, static files
+│   │   ├── config.py      # config (DB, secret, upload dir)
+│   │   ├── database.py    # SQLAlchemy async engine + Session
+│   │   ├── models/        # ORM models (User, Item, Journal, Quest, ...)
+│   │   ├── schemas/       # Pydantic request/response models
+│   │   ├── services/      # business logic
+│   │   ├── routers/       # API routes (REST endpoints)
+│   │   └── utils/         # JWT, password hashing, DI
 │   └── requirements.txt
-├── web/                   # Vue 前端
+├── web/                   # Vue frontend
 │   ├── src/
-│   │   ├── api/           # ofetch API 封装
-│   │   ├── components/    # 可复用组件（PixelDatePicker 等）
-│   │   ├── layouts/       # 页面布局（AuthLayout, MainLayout）
-│   │   ├── router/        # 路由配置 + 导航守卫
-│   │   ├── stores/        # Pinia 状态管理（auth, notification）
-│   │   ├── styles/        # 全局样式（像素风主题、动画、字体）
-│   │   ├── types/         # TypeScript 类型定义
-│   │   ├── utils/         # 工具函数（格式化、导出、计算）
-│   │   └── views/         # 页面组件（Dashboard, ItemList, Quests...）
+│   │   ├── api/           # ofetch API wrappers
+│   │   ├── components/    # reusable components (PixelDatePicker, ...)
+│   │   ├── layouts/       # layouts (AuthLayout, MainLayout)
+│   │   ├── router/        # routes + navigation guards
+│   │   ├── stores/        # Pinia stores (auth, notification)
+│   │   ├── styles/        # global styles (pixel theme, animations, fonts)
+│   │   ├── types/         # TypeScript types
+│   │   ├── utils/         # helpers (format, export, calc, platform abstraction, refresh worker)
+│   │   └── views/         # pages (Dashboard, ItemList, Quests, ...) + desktop/ (Setup, ...)
 │   └── package.json
-└── uploads/               # 用户上传的图片（gitignored）
+├── application/desktop/   # Tauri 2 shell (src-tauri/ Rust + reuses web/)
+└── uploads/               # user-uploaded images (gitignored)
 ```
 
-## 快速开始
+## Quick start
 
-### 环境要求
+### Prerequisites
 
 - Python 3.10+
-- Node.js 24+（与 `web/Dockerfile` 的 `node:24-alpine` 对齐）
+- Node.js 24+ (aligned with `node:24-alpine` in `web/Dockerfile`)
 - npm 10+
 
-### 后端
+### Backend
 
-虚拟环境创建在**项目根目录**（前后端共用一个仓库，Python 仅用于后端）：
+Create the virtualenv at the **project root** (one repo for both ends; Python is backend-only):
 
 ```bash
-# 在项目根目录
+# at project root
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r server/requirements.txt
 ```
 
-启动开发服务器（⚠️ 必须在 `server/` 目录下运行，因为 `DATABASE_URL` 和 `UPLOAD_DIR` 是相对路径）：
+Start the dev server (⚠️ must run inside `server/`, since `DATABASE_URL` and `UPLOAD_DIR` are relative paths):
 
 ```bash
 cd server
 uvicorn app.main:app --reload --port 8000 --log-config app/uvicorn_log_config.json
 ```
 
-启动后访问 `http://127.0.0.1:8000/docs` 查看 API 文档。
+Then visit `http://127.0.0.1:8000/docs` for the API docs.
 
-### 前端
+### Frontend
 
 ```bash
 cd web
@@ -91,95 +96,120 @@ npm install
 npm run dev
 ```
 
-前端开发服务器运行在 `http://localhost:3000`，自动代理 `/api` 和 `/uploads` 到后端 `http://127.0.0.1:8000`。
+The frontend dev server runs at `http://localhost:3000` and proxies `/api` and `/uploads` to the backend at `http://127.0.0.1:8000`.
 
-### 生产构建（容器化）
+Backend tests (auth sessions, etc.):
 
-前端已纳入 Docker 多阶段构建（`web/Dockerfile`：`node` 构建 → `nginx` 静态服务），**生产环境无需在宿主机跑 `npm run build`**，由 `docker compose up -d --build web` 完成。本地开发仍用上面的 `npm run dev`。
+```bash
+cd server && pytest -q
+```
 
-## Docker 部署（生产推荐）
+### Desktop client (macOS · Tauri 2)
 
-通过 `docker-compose.yml` 拉起 `api`（FastAPI/uvicorn）与 `web`（多阶段 nginx 静态）两个容器，均接入共享网络 `airise-web`；外部访问由独立的 `airise-gateway` 网关统一终结 TLS 并反代。
+The desktop app is a **thin client**: it reuses the `web/` frontend, talks to the backend over HTTPS, and stores tokens in the system keychain. **Zero server-side changes.**
+
+- **Prebuilt builds**: see **Releases** (first macOS release `v1.0.0`, Apple Silicon).
+- **Local dev / build from source**: see [`application/desktop/README.md`](application/desktop/README.md).
+
+```bash
+cd application/desktop
+npm install                 # installs @tauri-apps/cli (needs Rust toolchain + Xcode CLT)
+npm run dev                 # tauri dev: first-run server setup → sign in
+npm run build               # tauri build → produces .dmg / .app
+```
+
+Design doc: [docs/technology/260726-桌面端客户端技术方案.md](docs/technology/260726-桌面端客户端技术方案.md).
+
+### Production build (containerized)
+
+The frontend is built via a Docker multi-stage build (`web/Dockerfile`: `node` build → `nginx` static serve). **No need to run `npm run build` on the host in production** — `docker compose up -d --build web` does it. For local dev, use `npm run dev` as above.
+
+## Docker deployment (recommended for production)
+
+`docker-compose.yml` brings up two containers — `api` (FastAPI/uvicorn) and `web` (multi-stage nginx static) — both on the shared `airise-web` network. External traffic is handled by the standalone `airise-gateway`, which terminates TLS and reverse-proxies.
 
 ```bash
 git clone https://github.com/LunaticKrian/PixelPack.git
 cd PixelPack
 
-# 1. 配置密钥（不进 git、不进镜像，仅运行时注入）
+# 1. Configure secrets (never in git, never in the image — injected at runtime)
 cp server/.env.example server/.env
-vi server/.env          # 填入 ANTHROPIC_AUTH_TOKEN
+vi server/.env          # fill in ANTHROPIC_AUTH_TOKEN
 
-# 2. 构建并启动 api + web（建议直接在服务器上构建，见下方说明）
+# 2. Build and start api + web (build on the server — see notes below)
 docker compose up -d --build
 ```
 
-常用命令：
+Common commands:
 
 ```bash
-docker compose ps            # 查看状态（api、web）
-docker compose logs -f api   # 后端日志
-git pull && docker compose up -d --build   # 更新代码（./data 数据不丢）
+docker compose ps            # status (api, web)
+docker compose logs -f api   # backend logs
+git pull && docker compose up -d --build   # update code (./data is preserved)
 ```
 
-**部署架构**
+**Deployment topology**
 
 ```
-浏览器 ──https──▶ airise-gateway（独立项目，独占 80/443，纯路由器）
-                    ├─ /api/      ──▶ pixelpack-api:8000   （本 compose）
-                    └─ /、/uploads/ ─▶ pixelpack-web:80    （本 compose，SPA + uploads 直发）
+Browser ──https──▶ airise-gateway (standalone project, owns 80/443, pure router)
+                       ├─ /api/       ──▶ pixelpack-api:8000   (this compose)
+                       └─ /, /uploads/ ──▶ pixelpack-web:80    (this compose, SPA + uploads served directly)
 
-┌─ docker-compose（本项目）──────────────────────────────┐
-│  web (nginx:alpine)        ← 多阶段：node build→nginx  │
-│   ├─ serve SPA（回退+gzip+缓存）                         │
-│   └─ serve /uploads（挂 ./data/uploads:ro 直发）        │
-│  api (uvicorn) :8000                                    │
-│   └─ FastAPI + APScheduler（写 ./data/uploads）         │
-│                                                          │
-│  volumes:  ./data → /app/data（api）                    │
-│            ./data/uploads → /app/data/uploads:ro（web） │
-│            ├─ data.db                                    │
-│            └─ uploads/   （api 写、web 读，同 compose）  │
-│  networks: airise-web（external，与网关互通）            │
-└──────────────────────────────────────────────────────────┘
+┌─ docker-compose (this project) ───────────────────────────┐
+│  web (nginx:alpine)         ← multi-stage: node build→nginx │
+│   ├─ serve SPA (fallback + gzip + cache)                    │
+│   └─ serve /uploads (mount ./data/uploads:ro)               │
+│  api (uvicorn) :8000                                        │
+│   └─ FastAPI + APScheduler (writes ./data/uploads)          │
+│                                                              │
+│  volumes:  ./data → /app/data (api)                         │
+│            ./data/uploads → /app/data/uploads:ro (web)      │
+│            ├─ data.db                                        │
+│            └─ uploads/   (api writes, web reads, same compose) │
+│  networks: airise-web (external, talks to the gateway)      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-**注意事项**
+**Notes**
 
-- **持久化**：`data.db` 与 `uploads/` 全部落入 `./data`（bind mount），容器重建/升级不丢数据，备份只需 `tar czf backup.tar.gz data/`。
-- **密钥**：`.env` 由 compose 的 `env_file` 注入；镜像可安全 push 到公开仓库。
-- **网关**：`airise-gateway` 是**独立项目/独立仓库**（不在本项目下），是**纯路由器**：TLS + `/api`→api + 其余→web，**不挂任何项目宿主路径**。上传文件由 `web` 容器直发（`api` 写、`web` 读同一 `./data`，零路径漂移）。网关配置见 airise-gateway 仓库 README。
-- **⚠️ 捆绑二进制平台一致性**：`claude-agent-sdk` 内含一个 glibc 原生二进制（约 240MB），故后端镜像**不能用 alpine**，且**构建平台须等于运行平台**。在 Apple Silicon 上构建、跑在 amd64 服务器时需 `docker buildx build --platform linux/amd64`，最稳妥仍是直接在服务器上 `docker compose build`。
+- **Persistence**: `data.db` and `uploads/` all live under `./data` (bind mount); rebuilding/upgrading containers won't lose data — back up with `tar czf backup.tar.gz data/`.
+- **Secrets**: `.env` is injected via compose `env_file`; images are safe to push to public registries.
+- **Gateway**: `airise-gateway` is a **separate project/repo** (not under this one) — a **pure router**: TLS + `/api`→api + everything else→web, **mounts no project host path**. Uploaded files are served directly by the `web` container (`api` writes, `web` reads the same `./data`; zero path drift). See the airise-gateway repo README for its config.
+- **⚠️ Bundled-binary platform consistency**: `claude-agent-sdk` ships a glibc native binary (~240MB), so the backend image **cannot use alpine**, and the **build platform must match the runtime platform**. Building on Apple Silicon for an amd64 server requires `docker buildx build --platform linux/amd64`; the safest option is still `docker compose build` directly on the server.
 
-完整步骤、密钥安全讨论、HTTPS/域名扩展、故障排查见 **[docs/deployment/deploy.md](docs/deployment/deploy.md)**。
+Full steps, secret-safety discussion, HTTPS/domain extension, and troubleshooting are in **[docs/deployment/deploy.md](docs/deployment/deploy.md)**.
 
-## 文档
+## Docs
 
-| 文档 | 内容 |
+| Doc | Contents |
 |------|------|
-| [docs/deployment/deploy.md](docs/deployment/deploy.md) | 完整部署流程：web 容器构建 → 后端部署 → 网关更新，含验证、日常更新、备份、故障速查 |
-| [docs/technology/260719-nginx部署架构.md](docs/technology/260719-nginx部署架构.md) | 网关托管模式架构（统一入口、共享网络、通配证书、多项目接入） |
-| [docs/technology/260719-新服务上线与网关扩展.md](docs/technology/260719-新服务上线与网关扩展.md) | 新项目接入 SOP：后端容器接入 `airise-web`、由 `_template.example` 生成站点配置、扩展网关 |
-| [docs/technology/260719-通配证书签发.md](docs/technology/260719-通配证书签发.md) | `*.airise.site` 通配证书 DNS-01 签发、自动续期 hook、单域→通配迁移、故障速查 |
-| [docs/updatelog.md](docs/updatelog.md) | 仓库更新日志 |
-| airise-gateway 仓库 README | 网关容器（`airise-gateway`，独立项目）说明 |
+| [docs/technology/260726-桌面端客户端技术方案.md](docs/technology/260726-桌面端客户端技术方案.md) | Desktop Tauri 2 thin client: architecture, platform-abstraction layer, CSP/CORS, packaging/distribution, mobile roadmap |
+| [docs/technology/260727-鉴权会话化与应用锁.md](docs/technology/260727-鉴权会话化与应用锁.md) | Refresh rotation + reuse detection + device sessions + desktop app lock (PIN/Touch ID) — design & implementation |
+| [docs/deployment/deploy.md](docs/deployment/deploy.md) | Full deployment: web container build → backend deploy → gateway update, with verification, daily updates, backup, troubleshooting |
+| [docs/technology/260719-nginx部署架构.md](docs/technology/260719-nginx部署架构.md) | Gateway-hosting architecture (unified entry, shared network, wildcard cert, multi-project onboarding) |
+| [docs/technology/260719-新服务上线与网关扩展.md](docs/technology/260719-新服务上线与网关扩展.md) | New-project onboarding SOP: backend container joins `airise-web`, site config from `_template.example`, gateway extension |
+| [docs/technology/260719-通配证书签发.md](docs/technology/260719-通配证书签发.md) | `*.airise.site` wildcard cert DNS-01 issuance, auto-renew hook, single-domain→wildcard migration, troubleshooting |
+| [docs/updatelog.md](docs/updatelog.md) | Repo changelog |
+| airise-gateway repo README | Gateway container (`airise-gateway`, standalone project) docs |
 
-## API 概览
+## API overview
 
-| 路径前缀 | 说明 |
+| Prefix | Description |
 |----------|------|
-| `/api/auth` | 注册、登录、Token 刷新、个人信息更新 |
-| `/api/items` | 物品 CRUD、图片上传、状态变更、CSV 导出 |
-| `/api/categories` | 分类管理 |
-| `/api/tags` | 标签管理 |
-| `/api/journals` | 冒险日志（系统自动 + 手动创建） |
-| `/api/quests` | 每日任务进度、成就查询 |
-| `/api/stats` | 数据总览、最近物品、保修提醒 |
+| `/api/auth` | register, login, token refresh (rotation), password change, profile update |
+| `/api/auth/sessions` | device-session list, remote sign-out of a specific device |
+| `/api/items` | item CRUD, image upload, status change, CSV export |
+| `/api/categories` | category management |
+| `/api/tags` | tag management |
+| `/api/journals` | adventure log (auto + manual) |
+| `/api/quests` | daily-quest progress, achievements |
+| `/api/stats` | overview, recent items, warranty alerts |
 
-所有需要认证的端点使用 `Authorization: Bearer <token>` 头部。
+All authenticated endpoints use the `Authorization: Bearer <token>` header.
 
-## 配置
+## Configuration
 
-后端配置通过环境变量或 `server/.env` 文件：
+Backend config via env vars or `server/.env`:
 
 ```env
 DATABASE_URL=sqlite+aiosqlite:///./data.db
