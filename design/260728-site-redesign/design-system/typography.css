@@ -1,0 +1,66 @@
+/* ════════════════════════════════════════════════════════════
+   PixelPack · 整站设计系统 · 字体与排版
+   高级正文字体(Space Grotesk/Inter/JetBrains Mono) + 像素点缀字体
+   像素字体仅用于数据/点睛，正文保持现代精致
+   ════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -.018em;
+  margin: 0;
+}
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+::selection { background: var(--cyan); color: #0a0b10; }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* —— 渐变文字 —— */
+.grad {
+  background: var(--grad-text);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* —— 排版工具类 —— */
+.t-display { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -.025em; }
+.t-h1      { font-size: clamp(1.5rem, 2.4vw, 1.9rem); }
+.t-h2      { font-size: 1.3rem; }
+.t-h3      { font-size: 1.08rem; }
+.t-body    { font-size: .95rem; color: var(--text); }
+.t-muted   { color: var(--muted); }
+.t-faint   { color: var(--faint); }
+.mono      { font-family: var(--f-mono); }
+.pixel     { font-family: var(--f-pixel); }
+.pixel-body{ font-family: var(--f-pixel-body); }
+.retro     { font-family: var(--f-retro); }
+
+/* eyebrow / 章节小标 —— mono 大写，替代旧 > 终端梗 */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: .68rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.eyebrow.muted { color: var(--faint); }

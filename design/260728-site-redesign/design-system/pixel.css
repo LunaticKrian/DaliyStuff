@@ -1,0 +1,117 @@
+/* ════════════════════════════════════════════════════════════
+   PixelPack · 整站设计系统 · 像素工艺层（pixel craft）
+   原则：像素只在"游戏 / 数据"表面出现；控件区保持现代精致。
+   设备：直角卡片 · 角标取景 · 分段像素块 · 像素徽章 · 抖动纹理 · 像素图标
+   ════════════════════════════════════════════════════════════ */
+
+/* —— 像素图标（sprite <use>）—— */
+.pi {
+  width: 18px; height: 18px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
+  flex: none;
+}
+.pi.sm { width: 15px; height: 15px; }
+.pi.lg { width: 22px; height: 22px; }
+
+/* ═════════ 像素卡片：直角 + 渐变描边 + 可选抖动底纹 ═════════ */
+.px-card {
+  position: relative;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-px);          /* 像素区直角 */
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.px-card.glass { background: var(--surface); }
+/* 渐变描边（mask 技法，直角下成立） */
+.px-card.grad-border::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  padding: 1px; opacity: .55; pointer-events: none;
+  background: var(--grad);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+/* 抖动点阵底纹（在上、半透明；内容在其上） */
+.px-card.dither {
+  background:
+    radial-gradient(circle at 1px 1px, var(--dither-dot, rgba(255,255,255,.05)) 1px, transparent 1.7px) 0 0 / 5px 5px,
+    linear-gradient(180deg, var(--surface-2), var(--surface));
+}
+[data-theme="light"] .px-card.dither { --dither-dot: rgba(17,20,40,.05); }
+
+/* —— 四角 L 形刻度（HUD 取景框）—— */
+.tick { position: absolute; width: 11px; height: 11px; z-index: 3; pointer-events: none; }
+.tick::before, .tick::after { content: ""; position: absolute; background: var(--cyan); box-shadow: 0 0 6px rgba(34,211,238,.55); }
+.tick::before { width: 11px; height: 2px; }
+.tick::after  { width: 2px; height: 11px; }
+.tick.tl { top: 7px; left: 7px; }     .tick.tl::before { top: 0; left: 0; }      .tick.tl::after { top: 0; left: 0; }
+.tick.tr { top: 7px; right: 7px; }    .tick.tr::before { top: 0; right: 0; }     .tick.tr::after { top: 0; right: 0; }
+.tick.bl { bottom: 7px; left: 7px; }  .tick.bl::before { bottom: 0; left: 0; }   .tick.bl::after { bottom: 0; left: 0; }
+.tick.br { bottom: 7px; right: 7px; } .tick.br::before { bottom: 0; right: 0; }  .tick.br::after { bottom: 0; right: 0; }
+
+/* —— 分段像素块条（经验 / 进度 / 密码强度）—— */
+.blocks {
+  display: flex; gap: 3px;
+  --bar-color: var(--grad);
+}
+.blocks > i {
+  flex: 1 1 0; min-width: 3px; height: 10px;
+  background: var(--surface-3);
+  border-radius: 1px;
+}
+.blocks > i.on { background: var(--bar-color); box-shadow: 0 0 7px rgba(34,211,238,.35); }
+.blocks.sm > i { height: 7px; }
+.blocks.lg > i { height: 14px; }
+.blocks.vbar { flex-direction: column; }            /* 竖向 */
+.blocks.vbar > i { width: 100%; height: auto; min-height: 4px; flex: 1 1 0; }
+
+/* —— 像素徽章（LV / 等级 / 数值点睛）—— */
+.px-badge {
+  display: inline-flex; align-items: center; gap: .35em;
+  font-family: var(--f-pixel); font-size: .52rem; letter-spacing: .04em;
+  color: var(--cyan); line-height: 1;
+  padding: .42em .55em;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+}
+.px-badge.solid { background: var(--cyan); color: #0a0b10; border-color: transparent; }
+.px-badge.warn { color: var(--warn); }
+.px-badge.danger { color: var(--danger); }
+.px-badge.success { color: var(--success); }
+/* 像素正文数字（Pixelify Sans，可读的像素） */
+.px-num { font-family: var(--f-pixel-body); font-weight: 600; }
+
+/* —— 像素分隔线（虚线点阵）—— */
+.px-divider {
+  border: 0; height: 2px;
+  background-image: linear-gradient(90deg, var(--border-2) 50%, transparent 0);
+  background-size: 6px 2px; background-repeat: repeat-x;
+}
+.px-divider.v { width: 2px; height: 100%; background-image: linear-gradient(var(--border-2) 50%, transparent 0); background-size: 2px 6px; background-repeat: repeat-y; }
+
+/* —— RPG 数据条（HP / MP / EXP，带 mono 标签 + 可选分段块）—— */
+.rpg-bar { display: flex; align-items: center; gap: .6rem; }
+.rpg-bar .lbl { font-family: var(--f-mono); font-size: .6rem; letter-spacing: .1em; color: var(--faint); width: 1.6em; }
+.rpg-bar .track { flex: 1; }
+.rpg-bar .val { font-family: var(--f-mono); font-size: .66rem; color: var(--muted); min-width: 4.5em; text-align: right; }
+
+/* —— 像素 chip（标签 / 分类，直角）—— */
+.px-chip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-family: var(--f-mono); font-size: .68rem; letter-spacing: .04em;
+  color: var(--muted); padding: .35em .6em;
+  border: 1px solid var(--border-2); border-radius: var(--r-px);
+  background: var(--surface);
+}
+.px-chip.active { color: var(--cyan); border-color: var(--cyan); background: rgba(34,211,238,.08); }
+.px-chip .pi { width: 12px; height: 12px; }
+
+/* —— 像素角装饰（卡片四角小方块，比 tick 更轻）—— */
+.px-corner { position: relative; }
+.px-corner::before, .px-corner::after {
+  content: ""; position: absolute; width: 5px; height: 5px; background: var(--cyan); opacity: .7;
+}
+.px-corner::before { top: -1px; left: -1px; }
+.px-corner::after  { bottom: -1px; right: -1px; }
