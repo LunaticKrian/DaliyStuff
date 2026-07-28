@@ -220,213 +220,95 @@ async function handleChangePassword() {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* ═══════ 本页令牌：--pixel-* 重映射为高级深色（浅色自适应）═══════ */
 .settings-page {
+  --pixel-bg: #0b0d14;
+  --pixel-bg-secondary: #14171f;
+  --pixel-card-bg: rgba(255, 255, 255, 0.045);
+  --pixel-border: rgba(255, 255, 255, 0.09);
+  --pixel-primary: #22d3ee;
+  --pixel-accent: #fb7185;
+  --pixel-warning: #fbbf24;
+  --pixel-success: #34d399;
+  --pixel-info: #38bdf8;
+  --pixel-text: #f4f6fb;
+  --pixel-text-secondary: #9aa3b2;
+  --pixel-shadow: rgba(0, 0, 0, 0.5);
+  --d-grad: linear-gradient(135deg, #818cf8 0%, #7c5cff 40%, #22d3ee 100%);
+  --d-radius: 14px;
+  --d-radius-sm: 10px;
+  --d-shadow-sm: 0 4px 14px -8px rgba(0, 0, 0, .6);
+  --d-shadow: 0 18px 44px -22px rgba(0, 0, 0, .7);
+  --d-f-display: 'Space Grotesk', 'PingFang SC', system-ui, sans-serif;
+  --d-f-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --d-f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
   max-width: 600px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.settings-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--pixel-card-bg);
-  border: 3px solid var(--pixel-border);
-  color: var(--pixel-text-secondary);
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 11px;
-  padding: 6px 12px;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 var(--pixel-shadow);
-  white-space: nowrap;
-  transition: border-color 0.12s ease, color 0.12s ease;
-}
-
-.back-btn:hover {
-  border-color: var(--pixel-primary);
-  color: var(--pixel-primary);
-}
-
-.back-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--pixel-shadow);
-}
-
-.page-title {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 14px;
-  color: var(--pixel-primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-}
-
-.title-icon {
-  font-size: 18px;
-}
-
-/* Card */
-.settings-card {
-  background: var(--pixel-card-bg);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-bottom: 2px solid var(--pixel-border);
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 12px;
+  font-family: var(--d-f-body);
   color: var(--pixel-text);
-  user-select: none;
+}
+[data-theme="light"] .settings-page {
+  --pixel-bg: #f4f5fa;
+  --pixel-bg-secondary: #eef0f7;
+  --pixel-card-bg: rgba(17, 20, 40, 0.04);
+  --pixel-border: rgba(17, 20, 40, 0.12);
+  --pixel-primary: #0891b2;
+  --pixel-accent: #e11d48;
+  --pixel-warning: #d97706;
+  --pixel-success: #059669;
+  --pixel-info: #0284c7;
+  --pixel-text: #0f1326;
+  --pixel-text-secondary: #4b5568;
+  --pixel-shadow: rgba(17, 20, 40, .15);
+  --d-shadow-sm: 0 4px 14px -8px rgba(17, 20, 40, .2);
+  --d-shadow: 0 18px 44px -22px rgba(17, 20, 40, .24);
 }
 
-.card-icon {
-  font-size: 14px;
-  color: var(--pixel-primary);
-  width: 18px;
-  text-align: center;
-}
+.settings-header { display: flex; align-items: center; gap: 12px; }
 
-.card-body {
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--pixel-card-bg); backdrop-filter: blur(10px); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); color: var(--pixel-text-secondary); font-family: var(--d-f-body); font-size: 13px; padding: 7px 12px; cursor: pointer; transition: color .2s ease, border-color .2s ease; }
+.back-btn:hover { color: var(--pixel-primary); border-color: var(--pixel-primary); }
 
-/* Fields */
-.field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+.page-title { font-family: var(--d-f-display); font-size: 18px; font-weight: 700; color: var(--pixel-text); display: flex; align-items: center; gap: 10px; margin: 0; letter-spacing: -.01em; }
+.title-icon { color: var(--pixel-primary); font-size: 16px; }
 
-.field-label {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 8px;
-  color: var(--pixel-text-secondary);
-  letter-spacing: 0.5px;
-}
+/* ===== Card ===== */
+.settings-card { background: var(--pixel-card-bg); backdrop-filter: blur(10px); border: 1px solid var(--pixel-border); border-radius: var(--d-radius); box-shadow: var(--d-shadow-sm); overflow: hidden; }
 
-.field-readonly {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 13px;
-  color: var(--pixel-text);
-  padding: 8px 10px;
-  background: var(--pixel-bg);
-  border: 2px solid var(--pixel-border);
-  opacity: 0.7;
-}
+.card-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--pixel-border); font-family: var(--d-f-mono); font-size: 12px; color: var(--pixel-text); letter-spacing: .02em; user-select: none; }
+.card-icon { font-size: 14px; color: var(--pixel-primary); width: 18px; text-align: center; }
+.card-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 
-.pixel-input {
-  background: var(--pixel-bg);
-  border: 3px solid var(--pixel-border);
-  color: var(--pixel-text);
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 12px;
-  padding: 8px 10px;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-}
+/* ===== Fields ===== */
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-family: var(--d-f-mono); font-size: 11px; color: var(--pixel-text-secondary); letter-spacing: .04em; }
+.field-readonly { font-family: var(--d-f-body); font-size: 13px; color: var(--pixel-text); padding: 9px 11px; background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); opacity: .85; }
 
-.pixel-input:focus {
-  border-color: var(--pixel-primary);
-  box-shadow: 0 0 0 1px var(--pixel-primary);
-}
+.pixel-input { background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); color: var(--pixel-text); font-family: var(--d-f-body); font-size: 13px; padding: 9px 11px; outline: none; width: 100%; box-sizing: border-box; transition: border-color .2s ease, box-shadow .2s ease; }
+.pixel-input:focus { border-color: var(--pixel-primary); box-shadow: 0 0 0 3px rgba(34, 211, 238, .16); }
+.pixel-input::placeholder { color: var(--pixel-text-secondary); opacity: .55; }
 
-.pixel-input::placeholder {
-  color: var(--pixel-text-secondary);
-  opacity: 0.5;
-}
+.field-error { font-family: var(--d-f-body); font-size: 12px; color: var(--pixel-accent); padding: 8px 10px; border: 1px solid var(--pixel-accent); border-radius: var(--d-radius-sm); background: rgba(251, 113, 133, .08); }
 
-.field-error {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 11px;
-  color: var(--pixel-accent);
-  padding: 6px 8px;
-  border: 2px solid var(--pixel-accent);
-  background: rgba(177, 62, 83, 0.08);
-}
+/* ===== Button ===== */
+.pixel-btn { font-family: var(--d-f-body); font-weight: 600; font-size: 13px; padding: 9px 16px; border-radius: var(--d-radius-sm); border: 1px solid var(--pixel-border); background: var(--pixel-bg-secondary); color: var(--pixel-text); cursor: pointer; align-self: flex-start; transition: color .2s ease, border-color .2s ease; }
+.pixel-btn:hover:not(:disabled) { color: var(--pixel-primary); border-color: var(--pixel-primary); }
+.pixel-btn:disabled { opacity: .5; cursor: not-allowed; }
+.pixel-btn.primary { border: 0; color: #0a0b10; background: var(--d-grad); font-weight: 700; box-shadow: 0 8px 22px -10px rgba(99, 102, 241, .8); }
+.pixel-btn.primary:hover:not(:disabled) { box-shadow: 0 12px 28px -8px rgba(99, 102, 241, .95); }
+[data-theme="light"] .pixel-btn.primary { color: #fff; }
 
-/* Button */
-.pixel-btn {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 11px;
-  padding: 8px 16px;
-  border: 3px solid var(--pixel-border);
-  background: var(--pixel-bg);
-  color: var(--pixel-text);
-  cursor: pointer;
-  box-shadow: 3px 3px 0 var(--pixel-shadow);
-  align-self: flex-start;
-  transition: transform 0.08s ease, box-shadow 0.15s ease;
-}
-
-.pixel-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--pixel-shadow);
-}
-
-.pixel-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pixel-btn.primary {
-  background: var(--pixel-primary);
-  border-color: var(--pixel-primary);
-  color: var(--pixel-bg);
-}
-
-.pixel-btn.primary:hover:not(:disabled) {
-  box-shadow: 3px 3px 0 var(--pixel-shadow), 0 0 6px rgba(65, 166, 246, 0.3);
-}
-
-/* Sessions */
-.session-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 10px;
-  background: var(--pixel-bg);
-  border: 2px solid var(--pixel-border);
-}
-
-.session-name {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 12px;
-  color: var(--pixel-text);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.session-badge {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 8px;
-  color: var(--pixel-bg);
-  background: var(--pixel-primary);
-  padding: 2px 5px;
-  letter-spacing: 0.5px;
-}
-
-.session-meta {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 9px;
-  color: var(--pixel-text-secondary);
-  margin-top: 2px;
-}
+/* ===== Sessions ===== */
+.session-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); }
+.session-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.session-name { font-family: var(--d-f-body); font-size: 13px; color: var(--pixel-text); display: flex; align-items: center; gap: 6px; }
+.session-badge { font-family: var(--d-f-mono); font-size: 10px; font-weight: 600; color: #0a0b10; background: var(--pixel-primary); padding: 2px 7px; border-radius: 999px; letter-spacing: .04em; }
+[data-theme="light"] .session-badge { color: #fff; }
+.session-meta { font-family: var(--d-f-mono); font-size: 11px; color: var(--pixel-text-secondary); }
 </style>

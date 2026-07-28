@@ -95,104 +95,36 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* 自带令牌兜底（通常继承页面；浮层用实心底） */
 .px-select {
-  position: relative;
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 12px;
+  --pixel-bg:#0b0d14; --pixel-bg-secondary:#14171f; --pixel-card-bg:#161924;
+  --pixel-border:rgba(255,255,255,.10); --pixel-primary:#22d3ee; --pixel-accent:#fb7185;
+  --pixel-text:#f4f6fb; --pixel-text-secondary:#9aa3b2;
+  --d-radius-sm:10px; --d-shadow:0 18px 44px -22px rgba(0,0,0,.7);
+  --d-f-body:'Inter','PingFang SC',system-ui,sans-serif;
+  position: relative; font-family: var(--d-f-body); font-size: 13px;
+}
+[data-theme="light"] .px-select {
+  --pixel-bg:#f4f5fa; --pixel-bg-secondary:#eef0f7; --pixel-card-bg:#ffffff;
+  --pixel-border:rgba(17,20,40,.12); --pixel-primary:#0891b2; --pixel-accent:#e11d48;
+  --pixel-text:#0f1326; --pixel-text-secondary:#4b5568; --d-shadow:0 18px 44px -22px rgba(17,20,40,.24);
 }
 
-.px-select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  background: var(--pixel-bg);
-  border: 3px solid var(--pixel-border);
-  color: var(--pixel-text);
-  padding: 8px 10px;
-  cursor: pointer;
-  user-select: none;
-  transition: border-color 0.12s ease;
-}
+.px-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); color: var(--pixel-text); padding: 9px 12px; cursor: pointer; user-select: none; transition: border-color .2s ease, box-shadow .2s ease; }
+.px-select-trigger:hover { border-color: var(--pixel-primary); }
+.px-select-trigger.active { border-color: var(--pixel-primary); box-shadow: 0 0 0 3px rgba(34,211,238,.16); }
+.px-select-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.px-select-text.placeholder { color: var(--pixel-text-secondary); opacity: .6; }
+.px-select-arrow { font-size: 9px; color: var(--pixel-text-secondary); transition: transform .2s ease; flex-shrink: 0; }
+.px-select-arrow.open { transform: rotate(180deg); }
 
-.px-select-trigger:hover {
-  border-color: var(--pixel-primary);
-}
+.px-select-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 300; background: var(--pixel-card-bg); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); box-shadow: var(--d-shadow); max-height: 240px; overflow-y: auto; padding: 4px; animation: px-select-in .14s ease-out; }
+@keyframes px-select-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-.px-select-trigger.active {
-  border-color: var(--pixel-primary);
-  box-shadow: 0 0 0 1px var(--pixel-primary);
-}
-
-.px-select-text {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.px-select-text.placeholder {
-  color: var(--pixel-text-secondary);
-  opacity: 0.5;
-}
-
-.px-select-arrow {
-  font-size: 8px;
-  color: var(--pixel-text-secondary);
-  transition: transform 0.15s ease;
-  flex-shrink: 0;
-}
-
-.px-select-arrow.open {
-  transform: rotate(180deg);
-}
-
-.px-select-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 300;
-  background: var(--pixel-card-bg);
-  border: 3px solid var(--pixel-primary);
-  border-top: none;
-  max-height: 220px;
-  overflow-y: auto;
-  animation: px-select-in 0.1s ease-out;
-}
-
-@keyframes px-select-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.px-select-option {
-  padding: 8px 10px;
-  cursor: pointer;
-  color: var(--pixel-text);
-  transition: background 0.08s ease, color 0.08s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-bottom: 1px solid var(--pixel-border);
-}
-
-.px-select-option:last-child {
-  border-bottom: none;
-}
-
-.px-select-option:hover {
-  background: rgba(65, 166, 246, 0.1);
-  color: var(--pixel-primary);
-}
-
-.px-select-option.selected {
-  background: rgba(65, 166, 246, 0.15);
-  color: var(--pixel-primary);
-}
-
-.px-select-option.selected::before {
-  content: '▶ ';
-  font-size: 8px;
-}
+.px-select-option { padding: 8px 11px; cursor: pointer; color: var(--pixel-text); border-radius: 8px; transition: background .12s ease, color .12s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.px-select-option:hover { background: rgba(34,211,238,.1); color: var(--pixel-primary); }
+.px-select-option.selected { background: rgba(34,211,238,.16); color: var(--pixel-primary); font-weight: 600; }
 </style>
+
