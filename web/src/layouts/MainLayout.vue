@@ -1,27 +1,34 @@
 <script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const auth = useAuthStore()
 
-const navItems = [
-  { path: '/', label: '角色信息', icon: '◈' },
-  { path: '/quests', label: '委托大厅', icon: '▣' },
-  { path: '/chat', label: 'AI 对话', icon: '◉' },
-  { path: '/transfer', label: '传送法阵', icon: '⇄' },
-  { path: '/world-map', label: '世界地图', icon: '❖' },
-  { path: '/resume', label: '冒险履历', icon: '◆' },
-]
+// 24 小时时间进度
+const now = ref(new Date())
+let timeTimer: ReturnType<typeof setInterval> | null = null
+const clockText = computed(() => {
+  const d = now.value
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+})
+const dayProgress = computed(() => {
+  const d = now.value
+  const secs = d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()
+  return (secs / 86400) * 100
+})
+onMounted(() => { timeTimer = setInterval(() => { now.value = new Date() }, 1000) })
+onUnmounted(() => { if (timeTimer) clearInterval(timeTimer) })
 
-// Starfield for the CRT background. Positions are fixed once at setup so the
-// stars don't reshuffle on every route change.
-const stars = Array.from({ length: 40 }, () => ({
-  left: `${Math.random() * 100}%`,
-  top: `${Math.random() * 100}%`,
-  delay: `${Math.random() * 3}s`,
-  duration: `${1.5 + Math.random() * 2}s`,
-}))
+const navItems = [
+  { path: '/', label: '角色信息', icon: 'home' },
+  { path: '/quests', label: '委托大厅', icon: 'clipboard' },
+  { path: '/chat', label: 'AI 对话', icon: 'message' },
+  { path: '/transfer', label: '传送法阵', icon: 'target' },
+  { path: '/world-map', label: '世界地图', icon: 'globe' },
+  { path: '/resume', label: '冒险履历', icon: 'notebook' },
+]
 
 async function handleLogout() {
   await auth.logout()
@@ -30,70 +37,64 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="app-shell pixel-vignette">
-    <!-- CRT background: scanlines + starfield -->
-    <div class="scanlines-crt"></div>
-    <div class="stars">
-      <span
-        v-for="(star, i) in stars"
-        :key="i"
-        class="star"
-        :style="{
-          left: star.left,
-          top: star.top,
-          animationDelay: star.delay,
-          animationDuration: star.duration,
-        }"
-      ></span>
+  <div class="app-shell">
+    <!-- 背景：极光 + 网格（去 CRT 扫描线 / 星点） -->
+    <div class="bg" aria-hidden="true">
+      <span class="orb a"></span><span class="orb b"></span><span class="grid"></span>
     </div>
-    <!-- Top HUD Bar -->
-    <header class="hud-bar">
-      <div class="hud-left">
-        <div class="logo">
-          <span class="logo-bracket">[</span>
-          <span class="logo-text">DS</span>
-          <span class="logo-bracket">]</span>
-        </div>
-        <nav class="hud-nav">
-          <router-link
-            v-for="item in navItems"
-            :key="item.path"
-            :to="item.path"
-            class="hud-tab"
-            :class="{ active: $route.path === item.path || (item.path !== '/' && $route.path.startsWith(item.path)) }"
-          >
-            <span class="tab-icon">{{ item.icon }}</span>
-            <span class="tab-label">{{ item.label }}</span>
-          </router-link>
-        </nav>
-      </div>
-      <div class="hud-right">
-        <span class="insert-coin-mini">投币</span>
-        <span class="hp-bar">
-          <span class="hp-label">HP</span>
-          <span class="hp-fill"></span>
+
+    <!-- 像素图标 sprite（Pixelarticons, MIT） -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="ml-home" viewBox="0 0 24 24" fill="currentColor"><path d="M4 20h16v2H4zm16-10h2v10h-2zM2 10h2v10H2zm2-2h2v2H4zm2-2h2v2H6zm2-2h2v2H8zm2-2h4v2h-4zm4 2h2v2h-2zm2 2h2v2h-2zm2 2h2v2h-2zM8 14h2v6H8zm2-2h4v2h-4zm4 2h2v6h-2z"/></symbol>
+      <symbol id="ml-clipboard" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h2v14H4zm2 14h12v2H6zM18 6h2v14h-2zM6 4h2v2H6zm10 0h2v2h-2zm-6-2h4v2h-4zm0 4h4v2h-4zM8 2h2v6H8zm6 0h2v6h-2z"/></symbol>
+      <symbol id="ml-message" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4v2h16zm0 14H6v2h14zm2-12h-2v12h2zM4 4H2v18h2zm2 14H4v2h2z"/></symbol>
+      <symbol id="ml-target" viewBox="0 0 24 24" fill="currentColor"><path d="M5 1h14v2H5zM3 3h2v2H3zm0 16h2v2H3zm16 0h2v2h-2zm0-16h2v2h-2zm2 2h2v14h-2zM5 21h14v2H5zM1 5h2v14H1zm8 0h6v2H9zM5 9h2v6H5zm4 8h6v2H9zm8-8h2v6h-2zm-6 0h2v2h-2zM7 7h2v2H7zm0 8h2v2H7zm8 0h2v2h-2zm0-8h2v2h-2zm-6 4h2v2H9zm2 2h2v2h-2zm2-2h2v2h-2z"/></symbol>
+      <symbol id="ml-globe" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v2H6zm0 18h12v2H6zM4 4h2v2H4zm5 0h2v2H9zm0 14h2v2H9zm4 0h2v2h-2zM7 6h2v12H7zm8 0h2v12h-2zm-2-2h2v2h-2zm7 0h-2v2h2zM2 6h2v12H2zm20 0h-2v12h2zM4 18h2v2H4zm16 0h-2v2h2z"/><path d="M3 11h18v2H3z"/></symbol>
+      <symbol id="ml-notebook" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h14v2H6zm0 18h14v2H6zM20 4h2v16h-2zM4 4h2v16H4z"/><path d="M2 7h6v2H2zm0 4h6v2H2zm0 4h6v2H2zM16 4h2v16h-2z"/></symbol>
+      <symbol id="ml-user" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6v2H9zm0 8h6v2H9zm6-6h2v6h-2zM7 4h2v6H7zM4 18h2v4H4zm14 0h2v4h-2zM8 14h8v2H8zm-2 2h2v2H6zm10 0h2v2h-2z"/></symbol>
+      <symbol id="ml-logout" viewBox="0 0 24 24" fill="currentColor"><path d="M8 11h12v2H8zm8-2h2v2h-2z"/><path d="M14 7h2v10h-2zm2 6h2v2h-2zM6 2h12v2H6zm0 18h12v2H6zM4 4h2v16H4zm14 0h2v3h-2zm0 13h2v3h-2z"/></symbol>
+      <symbol id="ml-clock" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v2H6zM2 6h2v12H2zm18 0h2v12h-2zm-2-2h2v2h-2zM4 4h2v2H4zm2 18h12v-2H6zm12-2h2v-2h-2zM4 20h2v-2H4zm7-14h2v7h-2zm2 7h2v2h-2zm2 2h2v2h-2z"/></symbol>
+    </svg>
+
+    <!-- ════════ 顶栏 ════════ -->
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot"></span>PixelPack</div>
+      <nav class="nav">
+        <router-link
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          class="nav-tab"
+          :class="{ active: $route.path === item.path || (item.path !== '/' && $route.path.startsWith(item.path)) }"
+        >
+          <svg class="nav-ico"><use :href="'#ml-' + item.icon" /></svg>
+          <span class="nav-label">{{ item.label }}</span>
+        </router-link>
+      </nav>
+      <div class="topbar-right">
+        <span class="time-pill" :title="'今日进度 ' + dayProgress.toFixed(1) + '%'">
+          <svg class="status-ico"><use href="#ml-clock" /></svg>
+          <span class="time-bar"><i :style="{ width: dayProgress + '%' }"></i></span>
+          <span class="time-num">{{ clockText }}</span>
         </span>
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- ════════ 内容 ════════ -->
     <main class="content-area">
       <slot />
     </main>
 
-    <!-- Bottom Status Bar -->
-    <footer class="hud-bottom">
-      <div class="bottom-left">
-        <span class="user-icon">☺</span>
-        <router-link to="/settings" class="user-name">{{ auth.user?.username }}</router-link>
-      </div>
-      <div class="bottom-right">
-        <span class="breadcrumb">
-          <span class="bc-prefix">~</span>
-          <span class="bc-path">/{{ $route.name }}</span>
-        </span>
+    <!-- ════════ 底部状态栏 ════════ -->
+    <footer class="statusbar">
+      <router-link to="/settings" class="status-user">
+        <svg class="status-ico"><use href="#ml-user" /></svg>
+        <span>{{ auth.user?.username }}</span>
+      </router-link>
+      <div class="status-right">
+        <span class="crumb"><span class="crumb-prefix">/</span>{{ $route.name }}</span>
         <button class="logout-btn" @click="handleLogout">
-          <span class="logout-icon">⏻</span>
+          <svg class="status-ico"><use href="#ml-logout" /></svg>
           <span>退出</span>
         </button>
       </div>
@@ -102,306 +103,128 @@ async function handleLogout() {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* —— 本外壳令牌（高级深色；浅色自适应）—— */
 .app-shell {
+  --ml-bg: #0b0d14;
+  --ml-bar: rgba(11, 13, 20, 0.6);
+  --ml-surface: rgba(255, 255, 255, 0.04);
+  --ml-surface-2: rgba(255, 255, 255, 0.065);
+  --ml-border: rgba(255, 255, 255, 0.08);
+  --ml-border-2: rgba(255, 255, 255, 0.16);
+  --ml-text: #f4f6fb;
+  --ml-muted: #9aa3b2;
+  --ml-faint: #626b7e;
+  --ml-cyan: #22d3ee;
+  --ml-rpg-hp: #fb7185;
+  --ml-grad: linear-gradient(135deg, #818cf8 0%, #7c5cff 40%, #22d3ee 100%);
+  --ml-aurora-1: rgba(99, 102, 241, 0.20);
+  --ml-aurora-2: rgba(34, 211, 238, 0.11);
+  --ml-grid: rgba(255, 255, 255, 0.022);
+  --ml-f-display: 'Space Grotesk', 'PingFang SC', system-ui, sans-serif;
+  --ml-f-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --ml-f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  background: var(--ml-bg);
+  font-family: var(--ml-f-body);
+  color: var(--ml-text);
+}
+[data-theme="light"] .app-shell {
+  --ml-bg: #f4f5fa;
+  --ml-bar: rgba(255, 255, 255, 0.7);
+  --ml-surface: rgba(17, 20, 40, 0.04);
+  --ml-surface-2: rgba(17, 20, 40, 0.065);
+  --ml-border: rgba(17, 20, 40, 0.10);
+  --ml-border-2: rgba(17, 20, 40, 0.16);
+  --ml-text: #0f1326;
+  --ml-muted: #4b5568;
+  --ml-faint: #8b94a7;
+  --ml-cyan: #0891b2;
+  --ml-rpg-hp: #e11d48;
+  --ml-grad: linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #0891b2 100%);
+  --ml-aurora-1: rgba(99, 102, 241, 0.12);
+  --ml-aurora-2: rgba(8, 145, 178, 0.08);
+  --ml-grid: rgba(17, 20, 40, 0.04);
+}
+
+/* —— 背景氛围 —— */
+.bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg .orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.bg .orb.a { width: 420px; height: 420px; left: -8%; top: -12%; background: radial-gradient(circle, var(--ml-aurora-1), transparent 65%); }
+.bg .orb.b { width: 360px; height: 360px; right: -8%; bottom: -14%; background: radial-gradient(circle, var(--ml-aurora-2), transparent 65%); }
+.bg .grid { position: absolute; inset: 0; background-image: linear-gradient(var(--ml-grid) 1px, transparent 1px), linear-gradient(90deg, var(--ml-grid) 1px, transparent 1px); background-size: 46px 46px; -webkit-mask-image: radial-gradient(80% 70% at 50% 0%, #000, transparent 85%); mask-image: radial-gradient(80% 70% at 50% 0%, #000, transparent 85%); }
+
+/* —— 像素图标 —— */
+.nav-ico, .status-ico { width: 17px; height: 17px; fill: currentColor; shape-rendering: crispEdges; flex: none; }
+
+/* —— 顶栏 —— */
+.topbar {
+  position: relative; z-index: 5; height: 60px; flex: none;
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0 clamp(0.8rem, 2vw, 1.4rem);
+  border-bottom: 1px solid var(--ml-border);
+  background: var(--ml-bar);
+  backdrop-filter: blur(14px);
+}
+.brand { display: inline-flex; align-items: center; gap: .55rem; font-family: var(--ml-f-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; color: var(--ml-text); }
+.brand-dot { width: 12px; height: 12px; background: var(--ml-grad); box-shadow: 0 0 16px -2px rgba(99, 102, 241, .6); }
+
+.nav { display: flex; align-items: center; gap: 2px; margin-left: .6rem; }
+.nav-tab {
   position: relative;
-  background: var(--pixel-bg);
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem .8rem; border-radius: 10px;
+  font-size: .88rem; font-weight: 500; color: var(--ml-muted);
+  transition: color .2s ease, background .2s ease;
 }
+.nav-tab:hover { color: var(--ml-text); background: var(--ml-surface); }
+.nav-tab.active { color: var(--ml-text); background: var(--ml-surface-2); }
+.nav-tab.active::after { content: ''; position: absolute; left: 50%; bottom: -1px; width: 22px; height: 2px; transform: translateX(-50%); background: var(--ml-grad); border-radius: 2px; }
 
-/* ===== CRT Background: scanlines + starfield ===== */
-.scanlines-crt {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 1px,
-    rgba(0, 0, 0, 0.12) 1px,
-    rgba(0, 0, 0, 0.12) 3px
-  );
-  pointer-events: none;
-  z-index: 10;
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: .6rem; }
+.time-pill { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .65rem; border: 1px solid var(--ml-border-2); border-radius: 999px; background: var(--ml-surface); color: var(--ml-muted); }
+.time-pill .status-ico { width: 14px; height: 14px; color: var(--ml-cyan); }
+.time-bar { width: 64px; height: 6px; border-radius: 3px; background: var(--ml-surface-2); overflow: hidden; }
+.time-bar > i { display: block; height: 100%; background: var(--ml-grad); transition: width 1s linear; }
+.time-num { font-family: var(--ml-f-mono); font-size: .72rem; color: var(--ml-text); font-variant-numeric: tabular-nums; }
+
+/* —— 内容区 —— */
+.content-area { position: relative; z-index: 1; flex: 1; overflow-y: auto; padding: clamp(1rem, 2.4vw, 1.8rem) clamp(1rem, 3vw, 2.2rem); }
+
+/* —— 底部状态栏 —— */
+.statusbar {
+  position: relative; z-index: 5; height: 42px; flex: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(0.8rem, 2vw, 1.4rem);
+  border-top: 1px solid var(--ml-border);
+  background: var(--ml-bar);
+  backdrop-filter: blur(14px);
+  font-size: .8rem;
 }
+.status-user { display: inline-flex; align-items: center; gap: .45rem; color: var(--ml-muted); transition: color .2s ease; }
+.status-user:hover { color: var(--ml-text); }
+.status-right { display: flex; align-items: center; gap: 1rem; }
+.crumb { font-family: var(--ml-f-mono); color: var(--ml-faint); }
+.crumb-prefix { color: var(--ml-cyan); margin-right: 1px; }
+.logout-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .7rem; border: 1px solid var(--ml-border-2); border-radius: 8px; background: var(--ml-surface); color: var(--ml-muted); cursor: pointer; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+.logout-btn:hover { color: var(--ml-rpg-hp); border-color: var(--ml-rpg-hp); background: rgba(251, 113, 133, .08); }
 
-.stars {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* —— 响应式 —— */
+@media (max-width: 860px) {
+  .nav-tab .nav-label { display: none; }
+  .nav-tab { padding: .5rem .6rem; }
+  .nav { margin-left: .3rem; }
+  .time-pill .time-num { display: none; }
+  .time-bar { width: 44px; }
 }
-
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: var(--pixel-text);
-  animation: pixel-blink 2s step-end infinite;
-  opacity: 0.4;
-}
-
-/* ===== Top HUD Bar ===== */
-.hud-bar {
-  height: 48px;
-  background: var(--pixel-bg-secondary);
-  border-bottom: 3px solid var(--pixel-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.hud-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 14px;
-}
-
-.logo-bracket {
-  color: var(--pixel-text-secondary);
-}
-
-.logo-text {
-  color: var(--pixel-primary);
-  text-shadow: 0 0 8px var(--pixel-primary);
-  animation: pixel-text-shadow-pulse 3s ease-in-out infinite;
-}
-
-@keyframes pixel-text-shadow-pulse {
-  0%, 100% {
-    text-shadow: 0 0 6px var(--pixel-primary);
-  }
-  50% {
-    text-shadow: 0 0 14px var(--pixel-primary), 0 0 28px rgba(65, 166, 246, 0.3);
-  }
-}
-
-/* HUD Navigation */
-.hud-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.hud-tab {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  color: var(--pixel-text-secondary);
-  text-decoration: none;
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 13px;
-  border: 2px solid transparent;
-  position: relative;
-  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
-}
-
-.hud-tab:hover {
-  color: var(--pixel-text);
-  background: rgba(65, 166, 246, 0.06);
-  border-color: var(--pixel-border);
-}
-
-.hud-tab.active {
-  color: var(--pixel-primary);
-  background: rgba(65, 166, 246, 0.1);
-  border-color: var(--pixel-primary);
-  box-shadow: 0 2px 0 var(--pixel-primary);
-}
-
-.tab-icon {
-  font-size: 14px;
-  transition: transform 0.15s ease;
-}
-
-.hud-tab:hover .tab-icon {
-  transform: scale(1.15);
-}
-
-.hud-tab.active .tab-icon {
-  transform: scale(1.2);
-}
-
-.tab-label {
-  white-space: nowrap;
-}
-
-/* HUD Right */
-.hud-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.insert-coin-mini {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 7px;
-  color: var(--pixel-warning);
-  animation: pixel-blink 1.5s step-end infinite;
-  letter-spacing: 1px;
-  opacity: 0.6;
-}
-
-.hp-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.hp-label {
-  font-family: var(--font-pixel-en), monospace;
-  font-size: 8px;
-  color: var(--pixel-success);
-}
-
-.hp-fill {
-  width: 60px;
-  height: 8px;
-  background: var(--pixel-success);
-  box-shadow: 0 0 6px rgba(56, 183, 100, 0.3);
-}
-
-/* ===== Content Area ===== */
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-  position: relative;
-  z-index: 2;
-}
-
-/* ===== Bottom Status Bar ===== */
-.hud-bottom {
-  height: 40px;
-  background: var(--pixel-bg-secondary);
-  border-top: 3px solid var(--pixel-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.bottom-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.user-icon {
-  font-size: 16px;
-}
-
-.user-name {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  color: var(--pixel-text-secondary);
-  text-decoration: none;
-  transition: color 0.12s ease;
-}
-
-.user-name:hover {
-  color: var(--pixel-primary);
-}
-
-.bottom-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.breadcrumb {
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 12px;
-  color: var(--pixel-text-secondary);
-}
-
-.bc-prefix {
-  color: var(--pixel-primary);
-}
-
-.bc-path {
-  color: var(--pixel-text);
-}
-
-.logout-btn {
-  background: none;
-  border: 2px solid var(--pixel-accent);
-  color: var(--pixel-accent);
-  cursor: pointer;
-  font-family: var(--font-pixel), var(--font-pixel), monospace;
-  font-size: 11px;
-  padding: 3px 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.12s ease, color 0.12s ease;
-}
-
-.logout-btn:hover {
-  background: var(--pixel-accent);
-  color: var(--pixel-bg);
-}
-
-.logout-btn:active {
-  transform: translate(2px, 2px);
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .hud-bar {
-    padding: 0 8px;
-  }
-
-  .tab-label {
-    display: none;
-  }
-
-  .hud-tab {
-    padding: 6px 10px;
-  }
-
-  .hud-left {
-    gap: 8px;
-  }
-
-  .hud-nav {
-    gap: 0;
-  }
-
-  .insert-coin-mini {
-    display: none;
-  }
-
-  .content-area {
-    padding: 16px 12px;
-  }
-
-  .hud-bottom {
-    padding: 0 8px;
-  }
-
-  .breadcrumb {
-    display: none;
-  }
-}
-
-@keyframes pixel-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+@media (max-width: 560px) {
+  .crumb { display: none; }
+  .brand { font-size: .95rem; }
 }
 </style>
