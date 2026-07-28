@@ -2,6 +2,64 @@
 
 PS：更新记录以日期倒排更新
 
+## 2026年07月27日
+
+### 新增：鉴权会话化（refresh 轮换 + 会话级复用检测 + 设备会话管理）
+把无状态 JWT 升级为**可吊销的有状态会话**，配合桌面端把 refresh 长期存于钥匙串的收紧时机。技术方案见 [`260727-鉴权会话化与应用锁.md`](technology/260727-鉴权会话化与应用锁.md)。
+
+- **背景问题**：旧实现 `/auth/refresh` 签新 refresh 但旧 refresh 永不失效 → 7 天内签发的每个 refresh 都长期有效且可续期；`/auth/logout` 是空壳不作废任何令牌；令牌只含 `sub`，无 jti/会话，无法吊销单会话，改密码也不失效。被窃 refresh = ≥7 天可续期的持久沦陷。
+- **服务端（Phase 1）**（`server/app/`）
+  - 新增 `refresh_sessions` 会话表（`models/session.py`：sid/jti/family_id/吊销标记/滑动续期时间）+ `services/session.py`
+  - **refresh 轮换 + 会话级复用检测**：旧 refresh 重放即吊销该会话族（family），但**不连坐其他设备**
+  - access/refresh 增加 sid/jti/iat claims；`get_current_user` 校验会话存活 → 登出/吊销对 access token **立即生效**
+  - `/logout` 真实吊销；`/password` 改密踢其他设备；新增 `GET/DELETE /sessions` 设备管理
+  - 引入 pytest + 会话化端到端测试（5 passed）
+- **前端（Phase 2）**（`web/src/`）
+  - 统一 refresh worker（`utils/refresh.ts`），收敛 client/sse/auth 三路 refresh（否则复用检测误伤正常多标签 / HTTP+SSE 并发）
+  - 修复 401 重试结果被丢弃（`api/client.ts` 包装层正确回传调用方）
+  - 跨标签 token 同步（storage 事件）；登出连服务端吊销
+  - 修 `BlogEditor` 绕过 tokenStore 的历史 bug（桌面端上传可用）
+  - Settings 页加「设备会话」管理卡片
+
+### 新增：官网落地页设计稿
+`design/260727-pixelpack-landing/`（`index.html` / `main.js` / `styles.css`）—— PixelPack 产品落地页静态原型。
+
+### 新增：开源许可证 + README 重写（含中文版）
+- 新增 `LICENSE` 开源许可证
+- 重写 `README.md`（中文）+ 新增 `docs/readme/README.zh-CN.md`，对齐当前「Web + 桌面端」产品形态与部署架构
+
+## 2026年07月26日
+
+### 新增：冒险者履历 DOSSIER（简历管理 + AI 对话编辑）
+新增个人简历模块，把简历以「公会登记档案」形式管理，支持 **AI 对话编辑**（变更**人工确认后才落库**）。技术方案见 [`260726-简历管理与AI编辑.md`](technology/260726-简历管理与AI编辑.md)，设计稿见 `design/260726-resume/`（基础管理 + AI 三栏对话）与 `design/260726-resume-templates/`（模板原型）。
+
+- **设计**：左侧表单 CRUD + 右侧 A4 简历纸实时预览（像素/RPG 外壳 + 内嵌专业衬线简历纸，可导出 PDF）；AI 编辑以对话为主 + 字段内联润色
+- **后端**（`server/app/`，复用 intel/task_agent 的 GLM + `claude-agent-sdk` 模式）
+  - `models/resume.py`：`Resume` / `ResumeVersion`（版本快照）/ `PendingChange`（待确认变更）/ 对话表
+  - `services/resume.py`：简历 CRUD + 版本化 + Undo（每次接受变更生成新版本，可回滚到任意历史快照）
+  - `services/resume_agent.py`：AI **只读工具按需取**（`get_resume`/`get_section`，不把整份简历常驻 system prompt）；写工具**不直接落库**，而是在数据副本上校验 + 算 diff（非法即返回 error 让模型重试）→ 写 `PendingChange(pending)` → 即时经 SSE 推送，用户点「接受」才回放 args 并生成新版本
+  - `routers/resume.py`：简历 CRUD + 对话线程 + SSE 流式 + 接受/拒绝/回滚端点
+- **Web 实现**（`web/src/`）
+  - `views/Resume.vue`：表单 + A4 实时预览 + AI 对话（流式打字机 + pending 变更卡 + 接受/拒绝）+ 版本/Undo
+  - 多模板 `components/resume-templates/`（Pixel / Pro / Academic / Minimal 四套 + `shared.ts` 公共 + `useResumeI18n`）
+  - `utils/exportPdf.ts`：基于 html2pdf 的 A4 PDF 导出（含字体子集处理）
+  - `api/resume.ts` / `types/resume.ts`；`utils/sse.ts` 新增 `streamResumeChat`
+
+### 新增：桌面端原生客户端（Tauri 2 瘦客户端）
+把 Web 站点扩展为**桌面原生 App**，复用 `web/` Vue 前端，经 HTTPS 直连线上 FastAPI（**服务端零改动**，CORS 已 `*`）。技术方案见 [`260726-桌面端客户端技术方案.md`](technology/260726-桌面端客户端技术方案.md)，设计稿见 `design/260726-desktop-app/`，代码见 `application/desktop/`。
+
+- **选型**：**Tauri 2**（Rust 外壳 + 系统 WebView），为未来移动端（iOS/Android）留路；非 Electron
+- **`application/desktop/src-tauri/`**：`tauri.conf.json`（frontendDist → `web/dist`、CSP、托盘、bundle）、`lib.rs`（插件装配 + 系统托盘 + 全局快捷键 + 命令注册）、`commands.rs`（OS Keychain 钥匙串 set/get/del_secret，存 refresh token）
+- **`web/` 平台层改造**：新增 `utils/platform.ts`（平台探测）、`views/desktop/Setup.vue`（首屏服务器配置）、`views/desktop/DesktopSettings.vue`；`api/client.ts`/`auth`/`sse`/`router` 适配桌面端（token 走 keyring）；`npm run build`(vue-tsc) 通过
+- **能力**：系统托盘 + 常驻 + 全局快捷键 + 开机自启、原生系统通知、本地文件集成；在线为主 + 轻量只读缓存（不本地写入、不双向同步）
+- **v1 偏离/暂缓**：标题栏用系统装饰（自定义像素标题栏留待下版）；只读离线缓存、拖拽上传/批量导入、自动更新与签名分发为 P1/P2。Rust 侧未经本机 `cargo` 验证（环境未装 Rust），见 `application/desktop/README.md`
+
+### 重构：字体体系切回系统字体（移除像素字体）
+移除 Ark Pixel / Press Start 2P / VT323 三款像素字体，全站字体栈改为系统字体，并清理多语言字体资源。
+
+- **改动**：`web/public/fonts/` 删除 `ark-pixel-16px-proportional-*`（7 个语言变体 woff2）+ `OFL.txt`；`index.html` Google Fonts 去掉 `Press Start 2P` / `VT323`；`styles/fonts.css` 的 `--font-pixel` / `--font-pixel-en` / `--font-pixel-num` 改为系统字体栈与等宽栈
+- **连带**：约 30 个 `.vue`/`.css` 文件跟随字体变量收敛；`utils/exportPdf.ts` 适配新字体栈的 PDF 导出
+
 ## 2026年07月19日
 
 ### 部署：/uploads 改由 web 容器直发，网关瘦身成纯路由器

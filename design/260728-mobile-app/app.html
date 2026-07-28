@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PixelPack · 移动端 · GUILD DECK 原型</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="desk">
+  <div class="desk__title">PIXELPACK · GUILD DECK</div>
+  <div class="desk__sub">移动端高保真原型 v1.0 · 点击底部 Dock / 徽记 / 卡片切换屏幕</div>
+
+  <!-- ═══════════ 掌机机身 ═══════════ -->
+  <div class="deck" id="deck">
+    <div class="deck__boot" id="boot"></div>
+
+    <!-- 设备状态条 -->
+    <div class="statusbar">
+      <div class="sb__mark"></div>
+      <div class="sb__brand">PIXELPACK</div>
+      <div class="sb__spacer"></div>
+      <div class="link link--linked" id="link"><span class="link__dot"></span><span class="link__txt">LINKED</span></div>
+      <div class="sb__clock">09:41</div>
+      <div class="sb__batt">82</div>
+    </div>
+
+    <!-- 屏幕区 -->
+    <div class="viewport">
+
+      <!-- ───────────── 开机接驳 / 首次链接服务器 ───────────── -->
+      <section class="screen full" id="scr-handshake">
+        <div style="padding:40px 22px;display:flex;flex-direction:column;height:100%;align-items:center;">
+          <div style="margin-top:30px;text-align:center;">
+            <div class="sb__mark" style="width:26px;height:26px;margin:0 auto 18px;box-shadow:9px 0 0 var(--c-warning),0 9px 0 var(--c-success),9px 9px 0 var(--c-gold);"></div>
+            <div class="display" style="font-size:12px;letter-spacing:2px;color:var(--c-info);">GUILD DECK</div>
+            <div class="hint" style="margin-top:6px;">接驳公会服务器以激活掌机</div>
+          </div>
+
+          <div style="margin-top:36px;">
+            <div class="signal" id="sig">
+              <div class="signal__bar on"></div><div class="signal__bar on"></div>
+              <div class="signal__bar on"></div><div class="signal__bar"></div>
+            </div>
+          </div>
+
+          <div style="width:100%;margin-top:30px;">
+            <div class="field">
+              <span class="field__label">SERVER ENDPOINT</span>
+              <input class="input" value="https://api.airise.site" />
+            </div>
+            <button class="btn btn--primary btn--block" onclick="go('login')">▸ 建立链路</button>
+            <div class="hint center" style="margin-top:12px;">链路 LED：<span style="color:var(--c-success)">■ 在线</span> &nbsp; <span class="muted">□ 同步</span> &nbsp; <span class="muted">□ 离线</span></div>
+          </div>
+
+          <div style="margin-top:auto;padding-bottom:24px;text-align:center;">
+            <div class="hint">© AIRISE GUILD · POCKET EDITION</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── 登录 ───────────── -->
+      <section class="screen full" id="scr-login">
+        <div style="padding:40px 22px;display:flex;flex-direction:column;height:100%;">
+          <div style="text-align:center;margin-top:40px;">
+            <div class="sb__mark" style="width:22px;height:22px;margin:0 auto 16px;"></div>
+            <div class="display" style="font-size:11px;letter-spacing:2px;">登入公会</div>
+            <div class="hint" style="margin-top:6px;">冒险者凭证核验</div>
+          </div>
+          <div style="margin-top:34px;">
+            <div class="field"><span class="field__label">ADVENTURER ID</span><input class="input" placeholder="邮箱 / 账号" value="karian@airise.site" /></div>
+            <div class="field"><span class="field__label">SECRET KEY</span><input class="input" type="password" value="••••••••" /></div>
+            <button class="btn btn--primary btn--block" onclick="go('dashboard')">▸ 进入主城</button>
+            <div class="between" style="margin-top:14px;">
+              <span class="hint">忘记密钥？</span>
+              <span class="hint" style="color:var(--c-info);text-decoration:underline;" onclick="go('register')">注册新冒险者 ▸</span>
+            </div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:20px;" class="center">
+            <div class="hint">首次使用？<span class="link__dot" style="display:inline-block;vertical-align:middle;margin:0 4px;"></span>先 <span style="color:var(--c-info)" onclick="go('handshake')">接驳服务器</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 注册（复用登录骨架，紧凑展示） -->
+      <section class="screen full" id="scr-register">
+        <div style="padding:40px 22px;display:flex;flex-direction:column;height:100%;">
+          <div class="scr-head"><span class="scr-head__back" onclick="go('login')">◂</span><span class="scr-head__title">注册新冒险者</span></div>
+          <div class="field"><span class="field__label">ADVENTURER ID</span><input class="input" placeholder="邮箱" /></div>
+          <div class="field"><span class="field__label">CALL SIGN</span><input class="input" placeholder="昵称" /></div>
+          <div class="field"><span class="field__label">SECRET KEY</span><input class="input" type="password" placeholder="密码" /></div>
+          <button class="btn btn--primary btn--block" onclick="go('character-create')">▸ 缔结契约</button>
+          <div class="hint center" style="margin-top:14px;">注册后将创建你的角色档案</div>
+        </div>
+      </section>
+
+      <!-- 角色创建 -->
+      <section class="screen" id="scr-character-create">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('register')">◂</span><span class="scr-head__title">角色创建</span></div>
+        <div class="card center">
+          <div class="avatar avatar--lg" style="margin:0 auto;">◆</div>
+          <div class="hint" style="margin-top:8px;">选择初始职业</div>
+        </div>
+        <div class="grid-2" style="margin-top:12px;">
+          <div class="card center" style="cursor:pointer;"><div style="font-size:22px;">⚗</div><div class="display" style="font-size:8px;margin-top:6px;">炼金术士</div></div>
+          <div class="card center" style="cursor:pointer;border-color:var(--c-primary);"><div style="font-size:22px;">⚔</div><div class="display" style="font-size:8px;margin-top:6px;color:var(--c-info);">剑士</div></div>
+          <div class="card center" style="cursor:pointer;"><div style="font-size:22px;">✦</div><div class="display" style="font-size:8px;margin-top:6px;">贤者</div></div>
+          <div class="card center" style="cursor:pointer;"><div style="font-size:22px;">⌖</div><div class="display" style="font-size:8px;margin-top:6px;">游侠</div></div>
+        </div>
+        <div class="field" style="margin-top:14px;"><span class="field__label">角色名</span><input class="input" value="KARIAN" /></div>
+        <button class="btn btn--primary btn--block" onclick="go('dashboard')">▸ 踏入公会</button>
+      </section>
+
+      <!-- ═══════════════ 主城 / Dashboard ═══════════════ -->
+      <section class="screen" id="scr-dashboard">
+        <div class="between mb">
+          <div class="display" style="font-size:11px;">主城 · GUILD HALL</div>
+          <div class="hint">07-28 周二</div>
+        </div>
+
+        <!-- 冒险者卡 -->
+        <div class="card">
+          <div class="flex gap" style="align-items:center;">
+            <div class="avatar avatar--lg" style="background:var(--c-primary);color:var(--c-inset);">K</div>
+            <div style="flex:1;min-width:0;">
+              <div class="between"><span style="font-weight:700;font-size:17px;">KARIAN</span><span class="tag tag--gold">Lv.7</span></div>
+              <div class="hint">像素炼金术士 · 公会登记 #0042</div>
+              <div class="flex gap" style="margin-top:10px;align-items:center;">
+                <div style="flex:1;"><div class="meter"><div class="meter__fill meter__fill--gold" style="width:78%;"></div></div></div>
+                <span class="mono" style="font-size:11px;">312/400 EXP</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top:14px;">
+            <div class="stat"><div class="stat__num stat__num--gold">12</div><div class="stat__lbl">连签(天)</div></div>
+            <div class="stat"><div class="stat__num">86</div><div class="stat__lbl">物品</div></div>
+            <div class="stat"><div class="stat__num">12</div><div class="stat__lbl">日志</div></div>
+          </div>
+        </div>
+
+        <!-- 今日委托 -->
+        <div class="card">
+          <div class="card__title">今日委托 <span class="tag tag--info">3/5</span></div>
+          <div class="meter"><div class="meter__fill meter__fill--ok" style="width:60%;"></div></div>
+          <div class="hint" style="margin-top:8px;">再完成 2 项即获 <span style="color:var(--c-gold)">+80 EXP</span></div>
+          <button class="btn btn--sm mt" style="width:100%;" onclick="go('quests')">前往委托大厅 ▸</button>
+        </div>
+
+        <!-- 情报速报 -->
+        <div class="card" style="cursor:pointer;" onclick="go('worldmap')">
+          <div class="card__title">情报速报 <span class="tag tag--info blink">ON AIR</span></div>
+          <div class="row-item" style="border:none;padding:6px 0;background:transparent;box-shadow:none;">
+            <div class="row-item__ico" style="background:var(--c-violet);color:var(--c-inset);">❖</div>
+            <div class="row-item__main"><div class="row-item__title nowrap">Claude 5 发布：Fable 与 Opus</div><div class="row-item__sub">大模型 · 2h前</div></div>
+            <div class="row-item__meta mono" style="color:var(--c-info);">▸</div>
+          </div>
+          <div class="hint">今日 3 条 · 点击进入世界地图</div>
+        </div>
+
+        <!-- 快捷行动 -->
+        <div class="card">
+          <div class="card__title">快捷行动</div>
+          <div class="grid-4">
+            <div class="hub" onclick="go('items')"><div class="hub__ico" style="color:var(--c-primary);">◈</div><div class="hub__lbl">物品</div></div>
+            <div class="hub" onclick="go('quests')"><div class="hub__ico" style="color:var(--c-success);">⚑</div><div class="hub__lbl">委托</div></div>
+            <div class="hub" onclick="go('chat')"><div class="hub__ico" style="color:var(--c-info);">✦</div><div class="hub__lbl">智核</div></div>
+            <div class="hub" onclick="go('blog-list')"><div class="hub__ico" style="color:var(--c-gold);">▤</div><div class="hub__lbl">日志</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 物品 / Items（成本视角）═══════════════ -->
+      <section class="screen" id="scr-items">
+        <div class="between mb"><div class="display" style="font-size:11px;">物品管理 · INVENTORY</div><div class="hint">86 件</div></div>
+
+        <!-- 汇总：总资产 / 总日均 / 物品数 -->
+        <div class="card">
+          <div class="grid-3">
+            <div class="stat"><div class="stat__num stat__num--gold">¥18.2万</div><div class="stat__lbl">总资产价值</div></div>
+            <div class="stat"><div class="stat__num">¥214</div><div class="stat__lbl">日均成本/天</div></div>
+            <div class="stat"><div class="stat__num">86</div><div class="stat__lbl">在册物品</div></div>
+          </div>
+          <div class="flex gap wrap mt" style="margin-top:10px;">
+            <span class="tag tag--ok">使用中 62</span><span class="tag tag--warn">闲置 18</span><span class="tag">退役 6</span>
+          </div>
+        </div>
+
+        <div class="seg mb mt" style="margin-top:12px;">
+          <div class="seg__btn active">全部</div><div class="seg__btn">使用中</div>
+          <div class="seg__btn">闲置</div><div class="seg__btn">退役</div>
+        </div>
+        <input class="input mb" placeholder="检索物品…" />
+
+        <!-- 物品卡：每件展示 日均成本 + 总消耗 + 使用天数 -->
+        <div class="card" onclick="go('item-detail')" style="cursor:pointer;">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-primary);color:var(--c-inset);">◈</div>
+              <div><div style="font-weight:700;">MacBook Pro 14"</div><div class="hint">数码 · 购入 ¥18,999 · 已用 482 天</div></div>
+            </div>
+            <span class="tag tag--ok">使用中</span>
+          </div>
+          <div class="grid-2" style="margin-top:10px;">
+            <div class="stat"><div class="stat__num">¥39.41</div><div class="stat__lbl">每天使用价格</div></div>
+            <div class="stat"><div class="stat__num stat__num--gold">¥19,299</div><div class="stat__lbl">总消耗</div></div>
+          </div>
+        </div>
+
+        <div class="card" onclick="go('item-detail')" style="cursor:pointer;">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-primary);color:var(--c-inset);">◖</div>
+              <div><div style="font-weight:700;">Sony WH-1000XM5</div><div class="hint">数码 · 购入 ¥2,899 · 已用 320 天</div></div>
+            </div>
+            <span class="tag tag--ok">使用中</span>
+          </div>
+          <div class="grid-2" style="margin-top:10px;">
+            <div class="stat"><div class="stat__num">¥9.06</div><div class="stat__lbl">每天使用价格</div></div>
+            <div class="stat"><div class="stat__num stat__num--gold">¥2,899</div><div class="stat__lbl">总消耗</div></div>
+          </div>
+        </div>
+
+        <div class="card" onclick="go('item-detail')" style="cursor:pointer;">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-warning);color:var(--c-inset);">▣</div>
+              <div><div style="font-weight:700;">人体工学椅</div><div class="hint">家具 · 购入 ¥1,599 · 已用 720 天</div></div>
+            </div>
+            <span class="tag tag--warn">闲置</span>
+          </div>
+          <div class="grid-2" style="margin-top:10px;">
+            <div class="stat"><div class="stat__num">¥2.22</div><div class="stat__lbl">每天使用价格</div></div>
+            <div class="stat"><div class="stat__num stat__num--gold">¥1,599</div><div class="stat__lbl">总消耗</div></div>
+          </div>
+        </div>
+
+        <div class="card" onclick="go('item-detail')" style="cursor:pointer;">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-violet);color:var(--c-inset);">▤</div>
+              <div><div style="font-weight:700;">Nintendo Switch</div><div class="hint">数码 · 购入 ¥2,099 · 已用 900 天 · 120 次</div></div>
+            </div>
+            <span class="tag">退役</span>
+          </div>
+          <div class="grid-2" style="margin-top:10px;">
+            <div class="stat"><div class="stat__num">¥2.33</div><div class="stat__lbl">每天 / 每次¥17.83</div></div>
+            <div class="stat"><div class="stat__num stat__num--gold">¥2,099</div><div class="stat__lbl">总消耗</div></div>
+          </div>
+        </div>
+
+        <button class="btn btn--primary" style="position:absolute;right:14px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + 14px);width:54px;height:54px;padding:0;font-size:24px;box-shadow:0 0 12px rgba(65,166,246,0.5),var(--pix-sh);" onclick="go('item-form')">+</button>
+      </section>
+
+      <!-- 物品详情（成本明细） -->
+      <section class="screen" id="scr-item-detail">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('items')">◂</span><span class="scr-head__title">物品详情</span><span class="tag tag--ok">使用中</span></div>
+
+        <!-- 头部 + 日均成本（核心指标） -->
+        <div class="card center">
+          <div class="flex gap" style="align-items:center;justify-content:center;">
+            <div class="row-item__ico" style="width:48px;height:48px;font-size:22px;background:var(--c-primary);color:var(--c-inset);">◈</div>
+            <div style="text-align:left;"><div style="font-weight:700;font-size:17px;">MacBook Pro 14"</div><div class="hint">数码 · #0042</div></div>
+          </div>
+          <div class="hint" style="margin-top:12px;">每天使用价格</div>
+          <div class="display" style="font-size:30px;color:var(--c-info);margin-top:2px;letter-spacing:1px;">¥39.41<span style="font-size:13px;color:var(--c-text-dim);"> / 天</span></div>
+          <div class="hint">购入 ¥18,999 · 已使用 482 天</div>
+        </div>
+
+        <!-- 成本拆解 -->
+        <div class="card">
+          <div class="card__title">成本拆解</div>
+          <div class="grid-2">
+            <div class="stat"><div class="stat__num">¥18,999</div><div class="stat__lbl">购入价</div></div>
+            <div class="stat"><div class="stat__num stat__num--gold">¥19,299</div><div class="stat__lbl">总消耗</div></div>
+            <div class="stat"><div class="stat__num">482</div><div class="stat__lbl">使用天数</div></div>
+            <div class="stat"><div class="stat__num">¥12,000</div><div class="stat__lbl">当前残值</div></div>
+          </div>
+          <hr class="pixel-divider" />
+          <div class="between"><span class="hint">日均成本</span><span class="mono" style="color:var(--c-info);">¥39.41 / 天</span></div>
+          <div class="between"><span class="hint">预期寿命 / 已用</span><span class="mono">1095 天 / 44%</span></div>
+          <div class="between"><span class="hint">保修到期</span><span class="mono" style="color:var(--c-success);">2027-03-15</span></div>
+        </div>
+
+        <!-- 附加成本 -->
+        <div class="card">
+          <div class="card__title">附加成本 <span class="tag tag--gold">+¥300</span></div>
+          <div class="row-item" style="border:none;padding:6px 0;background:transparent;box-shadow:none;"><div class="row-item__ico" style="background:var(--c-card-2);color:var(--c-text-dim);">+</div><div class="row-item__main"><div class="row-item__title">AppleCare+</div><div class="row-item__sub">2024-03 · 延保</div></div><div class="row-item__meta mono">¥300</div></div>
+          <div class="hint">购入价 ¥18,999 ＋ 附加成本 ¥300 ＝ 总消耗 ¥19,299</div>
+        </div>
+
+        <div class="grid-2">
+          <button class="btn" onclick="go('item-form')">✎ 编辑</button>
+          <button class="btn btn--ghost">⇄ 改状态</button>
+        </div>
+        <button class="btn btn--danger btn--block mt">✕ 移除物品</button>
+      </section>
+
+      <!-- 物品表单（购买/使用/折旧信息） -->
+      <section class="screen" id="scr-item-form">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('item-detail')">◂</span><span class="scr-head__title">编辑物品</span></div>
+
+        <div class="card__title">基本信息</div>
+        <div class="field"><span class="field__label">名称</span><input class="input" value="MacBook Pro 14\"" /></div>
+        <div class="field"><span class="field__label">描述</span><textarea class="textarea">M3 Pro / 18GB / 512GB，主力开发机</textarea></div>
+        <div class="field"><span class="field__label">分类</span>
+          <div class="seg"><div class="seg__btn active">数码</div><div class="seg__btn">家电</div><div class="seg__btn">家具</div><div class="seg__btn">其他</div></div>
+        </div>
+
+        <div class="card__title mt">购买信息</div>
+        <div class="grid-2">
+          <div class="field"><span class="field__label">购入价</span><input class="input" value="18999" /></div>
+          <div class="field"><span class="field__label">币种</span>
+            <div class="seg"><div class="seg__btn active">¥</div><div class="seg__btn">$</div><div class="seg__btn">€</div></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><span class="field__label">购入日期</span><input class="input" value="2024-03-15" /></div>
+          <div class="field"><span class="field__label">购买渠道</span><input class="input" value="Apple Store" /></div>
+        </div>
+
+        <div class="card__title mt">使用与折旧</div>
+        <div class="grid-2">
+          <div class="field"><span class="field__label">当前残值</span><input class="input" value="12000" /></div>
+          <div class="field"><span class="field__label">预期寿命(天)</span><input class="input" value="1095" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><span class="field__label">保修到期</span><input class="input" value="2027-03-15" /></div>
+          <div class="field"><span class="field__label">使用次数</span><input class="input" placeholder="可选" /></div>
+        </div>
+
+        <div class="card__title mt">附加成本 <span class="hint" style="margin-left:auto;">影响总消耗</span></div>
+        <div class="row-item"><div class="row-item__ico" style="background:var(--c-card-2);color:var(--c-text-dim);">+</div><div class="row-item__main"><div class="row-item__title">AppleCare+</div><div class="row-item__sub">¥300 · 2024-03</div></div><div class="row-item__meta mono" style="color:var(--c-info);">▸</div></div>
+
+        <div class="grid-2" style="margin-top:16px;"><button class="btn" onclick="go('item-detail')">取消</button><button class="btn btn--primary" onclick="go('item-detail')">保存</button></div>
+      </section>
+
+      <!-- ═══════════════ 委托 / Quests ═══════════════ -->
+      <section class="screen" id="scr-quests">
+        <div class="between mb"><div class="display" style="font-size:11px;">委托大厅</div><div class="hint">+80 EXP 待领</div></div>
+        <div class="seg mb"><div class="seg__btn active">今日</div><div class="seg__btn">全部</div><div class="seg__btn">成就</div></div>
+
+        <div class="card">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-primary);color:var(--c-inset);">⌗</div>
+              <div><div style="font-weight:700;">完成 PixelPack 移动端设计稿</div><div class="hint">开发 · ★★★ · 多步 2/3</div></div>
+            </div>
+            <div class="avatar" style="width:30px;height:30px;background:var(--c-success);color:var(--c-inset);">✓</div>
+          </div>
+          <div class="meter mt"><div class="meter__fill meter__fill--ok" style="width:66%;"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-warning);color:var(--c-inset);">⚑</div>
+              <div><div style="font-weight:700;">Review 今日 PR</div><div class="hint">工作 · ★★ · <span style="color:var(--c-gold)">+30 EXP</span></div></div>
+            </div>
+            <div class="avatar" style="width:30px;height:30px;">☐</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="between">
+            <div class="flex gap" style="align-items:center;">
+              <div class="row-item__ico" style="background:var(--c-violet);color:var(--c-inset);">✦</div>
+              <div><div style="font-weight:700;">阅读 1 篇 AI 论文</div><div class="hint">学习 · ★★★ · <span style="color:var(--c-gold)">+50 EXP</span></div></div>
+            </div>
+            <div class="avatar" style="width:30px;height:30px;">☐</div>
+          </div>
+        </div>
+
+        <button class="btn btn--block mt" onclick="go('chat')"><span style="color:var(--c-info)">✦</span> 召唤 NEXA 生成委托</button>
+      </section>
+
+      <!-- ═══════════════ 智核 / AI Chat ═══════════════ -->
+      <section class="screen" id="scr-chat">
+        <div class="between mb">
+          <div class="flex gap" style="align-items:center;">
+            <div class="avatar" style="background:var(--c-info);color:var(--c-inset);">✦</div>
+            <div><div class="display" style="font-size:9px;">NEXA</div><div class="hint">公会智核 · 在线</div></div>
+          </div>
+          <div class="hint">会话 #12</div>
+        </div>
+
+        <div class="card card--inset" style="padding:10px 12px;">
+          <div class="hint" style="color:var(--c-info);">▸ 我</div>
+          <div style="font-size:14px;">帮我安排今天的学习任务</div>
+        </div>
+
+        <div class="card" style="margin-top:10px;">
+          <div class="flex gap" style="align-items:center;margin-bottom:8px;">
+            <div class="avatar" style="width:30px;height:30px;background:var(--c-info);color:var(--c-inset);">✦</div>
+            <div class="hint" style="color:var(--c-info);">◂ NEXA</div>
+          </div>
+          <div style="font-size:14px;">已查今日清单，为你新建 2 项委托：</div>
+
+          <div class="card card--inset mt" style="border-color:var(--c-info);">
+            <div class="between">
+              <div class="flex gap" style="align-items:center;">
+                <span class="tag tag--info">AI</span>
+                <div><div style="font-weight:600;">阅读 Attention 论文第 3 章</div><div class="hint">学习 · +50 EXP</div></div>
+              </div>
+              <span class="mono" style="color:var(--c-success);">✓ 已入库</span>
+            </div>
+          </div>
+          <div class="hint mt"><span class="blink" style="color:var(--c-info);">●</span> tool: create_task ×2 · 流式中</div>
+        </div>
+
+        <div style="position:absolute;left:14px;right:14px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + 10px);display:flex;gap:8px;">
+          <input class="input" placeholder="向 NEXA 下令…" style="flex:1;" />
+          <button class="btn btn--primary" style="width:48px;padding:0;">▸</button>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 我的 / Profile ═══════════════ -->
+      <section class="screen" id="scr-profile">
+        <div class="display mb" style="font-size:11px;">我的 · ADVENTURER</div>
+
+        <div class="card center">
+          <div class="avatar avatar--lg" style="background:var(--c-primary);color:var(--c-inset);margin:0 auto;">K</div>
+          <div style="font-weight:700;font-size:18px;margin-top:10px;">KARIAN <span class="tag tag--gold">Lv.7</span></div>
+          <div class="hint">像素炼金术士</div>
+          <div class="meter mt"><div class="meter__fill meter__fill--gold" style="width:78%;"></div></div>
+          <div class="hint">312 / 400 EXP · 距 Lv.8 还差 88</div>
+        </div>
+
+        <div class="card__title" style="margin:16px 0 10px;">公会模块</div>
+        <div class="grid-3">
+          <div class="hub" onclick="go('worldmap')"><div class="hub__ico" style="color:var(--c-violet);">❖</div><div class="hub__lbl">世界地图</div></div>
+          <div class="hub" onclick="go('stats')"><div class="hub__ico" style="color:var(--c-info);">▥</div><div class="hub__lbl">统计</div></div>
+          <div class="hub" onclick="go('blog-list')"><div class="hub__ico" style="color:var(--c-gold);">▤</div><div class="hub__lbl">冒险日志</div></div>
+          <div class="hub" onclick="go('resume')"><div class="hub__ico" style="color:var(--c-success);">❒</div><div class="hub__lbl">履历</div></div>
+          <div class="hub" onclick="go('transfer')"><div class="hub__ico" style="color:var(--c-warning);">⇄</div><div class="hub__lbl">传输</div></div>
+          <div class="hub" onclick="go('settings')"><div class="hub__ico" style="color:var(--c-text-dim);">⚙</div><div class="hub__lbl">设置</div></div>
+        </div>
+
+        <div class="card__title" style="margin:16px 0 10px;">安全与设备</div>
+        <div class="row-item" onclick="go('settings')"><div class="row-item__ico">⬓</div><div class="row-item__main"><div class="row-item__title">应用锁</div><div class="row-item__sub">PIN + 生物识别 · 未启用</div></div><span class="toggle"><span class="toggle__track"></span><span class="toggle__knob"></span></span></div>
+        <div class="row-item" onclick="go('settings')"><div class="row-item__ico">▣</div><div class="row-item__main"><div class="row-item__title">设备会话</div><div class="row-item__sub">2 台设备在线</div></div><div class="row-item__meta mono" style="color:var(--c-info);">▸</div></div>
+
+        <button class="btn btn--danger btn--block mt">⏻ 退出登录</button>
+      </section>
+
+      <!-- ═══════════════ 世界地图 / WorldMap ═══════════════ -->
+      <section class="screen" id="scr-worldmap">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">世界地图</span></div>
+        <div class="card" style="background:linear-gradient(180deg,var(--c-card),var(--c-inset));">
+          <div class="between"><span class="tag tag--info blink">◉ ON AIR</span><span class="hint">每日 06:00 侦测</span></div>
+          <div class="display" style="font-size:9px;margin-top:10px;color:var(--c-info);">信号台 · 已捕获 3 条情报</div>
+          <div class="grid-3 mt"><div class="stat"><div class="stat__num">3</div><div class="stat__lbl">今日</div></div><div class="stat"><div class="stat__num">48</div><div class="stat__lbl">累计</div></div><div class="stat"><div class="stat__num">6</div><div class="stat__lbl">疆域</div></div></div>
+          <button class="btn btn--sm mt" style="width:100%;">◎ 发起侦测</button>
+        </div>
+
+        <div class="card">
+          <div class="card__title">今日情报</div>
+          <div class="row-item" style="border:none;padding:8px 0;background:transparent;box-shadow:none;"><div class="row-item__ico" style="background:var(--c-violet);color:var(--c-inset);">❖</div><div class="row-item__main"><div class="row-item__title nowrap">Claude 5 Fable/Opus 发布</div><div class="row-item__sub">大模型 · 2h</div></div></div>
+          <div class="row-item" style="border:none;padding:8px 0;background:transparent;box-shadow:none;"><div class="row-item__ico" style="background:var(--c-info);color:var(--c-inset);">✦</div><div class="row-item__main"><div class="row-item__title nowrap">Agent SDK 支持结构化输出</div><div class="row-item__sub">智能体 · 5h</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">航海日志 <span class="tag">07-27</span></div>
+          <div class="hint">滑动翻阅历史情报，按疆域筛选 ›</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 统计 / Stats ═══════════════ -->
+      <section class="screen" id="scr-stats">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">统计</span><span class="scr-head__sub">近 7 天</span></div>
+        <div class="grid-2 mb">
+          <div class="stat"><div class="stat__num stat__num--gold">1,240</div><div class="stat__lbl">周经验</div></div>
+          <div class="stat"><div class="stat__num">23</div><div class="stat__lbl">完成委托</div></div>
+        </div>
+        <div class="card">
+          <div class="card__title">每日经验 <span class="tag">EXP/DAY</span></div>
+          <!-- 像素柱状图 -->
+          <div style="display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:10px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-primary) 0 8px,var(--c-info) 8px 16px);height:45%;border:2px solid var(--c-border-2);"></div><div class="hint">一</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-primary) 0 8px,var(--c-info) 8px 16px);height:70%;border:2px solid var(--c-border-2);"></div><div class="hint">二</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-primary) 0 8px,var(--c-info) 8px 16px);height:30%;border:2px solid var(--c-border-2);"></div><div class="hint">三</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-primary) 0 8px,var(--c-info) 8px 16px);height:90%;border:2px solid var(--c-border-2);"></div><div class="hint">四</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-primary) 0 8px,var(--c-info) 8px 16px);height:55%;border:2px solid var(--c-border-2);"></div><div class="hint">五</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-info) 0 8px,var(--c-primary) 8px 16px);height:80%;border:2px solid var(--c-info);"></div><div class="hint" style="color:var(--c-info);">六</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;background:repeating-linear-gradient(0deg,var(--c-gold) 0 8px,var(--c-warning) 8px 16px);height:65%;border:2px solid var(--c-gold);"></div><div class="hint" style="color:var(--c-gold);">日</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card__title">物品分布</div>
+          <div class="flex gap wrap">
+            <span class="tag tag--acc">材料 42</span><span class="tag tag--info">装备 18</span><span class="tag tag--ok">消耗 14</span><span class="tag">其他 12</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 冒险日志 / Blog ═══════════════ -->
+      <section class="screen" id="scr-blog-list">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">冒险日志</span><span class="scr-head__sub">12 篇</span></div>
+        <input class="input mb" placeholder="检索日志…" />
+        <div class="card" onclick="go('blog-detail')" style="cursor:pointer;">
+          <div class="between"><span class="display" style="font-size:8px;color:var(--c-info);">07-27</span><span class="tag tag--gold">置顶</span></div>
+          <div style="font-weight:700;margin-top:6px;">移动端立项：GUILD DECK 构想</div>
+          <div class="hint" style="margin-top:4px;">今天敲定了移动端方向——把 PixelPack 做成一台复古掌机…</div>
+          <div class="flex gap mt"><span class="tag">#移动端</span><span class="tag">#设计</span></div>
+        </div>
+        <div class="card" onclick="go('blog-detail')" style="cursor:pointer;">
+          <div class="display" style="font-size:8px;color:var(--c-info);">07-19</div>
+          <div style="font-weight:700;margin-top:6px;">网关瘦身：从双层 nginx 到纯路由</div>
+          <div class="hint" style="margin-top:4px;">把 /uploads 交给 web 容器直发，消除跨 compose 路径漂移…</div>
+        </div>
+        <button class="btn btn--primary" style="position:absolute;right:14px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + 14px);width:54px;height:54px;padding:0;font-size:22px;" onclick="go('blog-detail')">✎</button>
+      </section>
+
+      <section class="screen" id="scr-blog-detail">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('blog-list')">◂</span><span class="scr-head__title">日志</span></div>
+        <div class="card">
+          <div class="between"><span class="display" style="font-size:10px;">移动端立项</span><span class="hint">07-27</span></div>
+          <div style="font-weight:700;font-size:18px;margin:8px 0;">GUILD DECK 构想</div>
+          <div class="hint mb">作者 KARIAN · 阅读 42 · #移动端 #设计</div>
+          <hr class="pixel-divider" />
+          <p style="line-height:1.7;font-size:14px;">今天敲定了移动端方向——把 PixelPack 做成一台复古掌机。手机即设备，底部 Dock 是控制甲板，中央徽记是 AI 智核。</p>
+          <p style="line-height:1.7;font-size:14px;">延续桌面端「终端接驳」的世界观，CRT 开机仪式 + 链路 LED 让它一眼可辨。</p>
+        </div>
+        <div class="grid-2 mt"><button class="btn" onclick="go('blog-list')">✎ 编辑</button><button class="btn btn--ghost">⇪ 分享</button></div>
+      </section>
+
+      <!-- ═══════════════ 冒险者履历 / Resume ═══════════════ -->
+      <section class="screen" id="scr-resume">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">冒险者履历</span><span class="scr-head__sub">v3</span></div>
+        <!-- A4 预览缩略 -->
+        <div class="card" style="background:#f4f1e8;color:#1a1a2e;padding:14px;">
+          <div style="font-family:Georgia,serif;font-weight:700;font-size:16px;border-bottom:2px solid #1a1a2e;padding-bottom:4px;">KARIAN · 全栈炼金术士</div>
+          <div style="font-size:10px;color:#555;margin-top:2px;">karian@airise.site · 5 年经验</div>
+          <div style="font-family:Georgia,serif;font-size:9px;margin-top:8px;font-weight:700;">经历</div>
+          <div style="font-family:Georgia,serif;font-size:8px;line-height:1.5;margin-top:2px;">▸ AIRISE 公会 · 首席炼金 (2023-至今)<br/>▸ 自由冒险者 · 全栈 (2020-2023)</div>
+          <div style="font-family:Georgia,serif;font-size:9px;margin-top:6px;font-weight:700;">技能</div>
+          <div style="font-family:Georgia,serif;font-size:8px;">Vue · FastAPI · Rust · GLM Agent</div>
+        </div>
+        <div class="hint center mt">内嵌专业衬线简历纸 · 投递可用</div>
+        <div class="card mt">
+          <div class="card__title">AI 编辑 <span class="tag tag--info">NEXA</span></div>
+          <div class="hint">对话式编辑，变更确认后落库 · 支持多版本与 Undo</div>
+          <button class="btn btn--block mt" onclick="go('chat')"><span style="color:var(--c-info)">✦</span> 与 NEXA 对话润色</button>
+        </div>
+        <div class="grid-2 mt">
+          <button class="btn">↺ 版本/Undo</button>
+          <button class="btn btn--primary">▽ 导出 PDF</button>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 传输 / Transfer ═══════════════ -->
+      <section class="screen" id="scr-transfer">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">点对点传输</span></div>
+        <div class="card center">
+          <div style="font-size:40px;color:var(--c-info);" class="spin">⇄</div>
+          <div class="display" style="font-size:9px;margin-top:8px;color:var(--c-info);">WEbrtc · P2P</div>
+          <div class="hint">设备间直连 · 数据不经服务器</div>
+        </div>
+        <div class="seg mb mt"><div class="seg__btn active">发起</div><div class="seg__btn">接收</div></div>
+        <div class="card">
+          <div class="card__title">配对码</div>
+          <div class="display center" style="font-size:22px;letter-spacing:6px;color:var(--c-gold);background:var(--c-inset);padding:16px;border:var(--pix-bd2);">7K-9X2</div>
+          <div class="hint center mt">在另一设备输入此码建立链路</div>
+          <div class="meter mt"><div class="meter__fill" style="width:0%;"></div></div>
+          <button class="btn btn--primary btn--block mt">▶ 开始传输</button>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 设置 / Settings ═══════════════ -->
+      <section class="screen" id="scr-settings">
+        <div class="scr-head"><span class="scr-head__back" onclick="go('profile')">◂</span><span class="scr-head__title">设置</span></div>
+
+        <div class="card__title">账户</div>
+        <div class="row-item"><div class="row-item__ico">🖂</div><div class="row-item__main"><div class="row-item__title">karian@airise.site</div><div class="row-item__sub">点击修改资料</div></div><div class="row-item__meta mono" style="color:var(--c-info);">▸</div></div>
+        <div class="row-item"><div class="row-item__ico">🔑</div><div class="row-item__main"><div class="row-item__title">修改密码</div><div class="row-item__sub">改密将踢出其他设备</div></div><div class="row-item__meta mono" style="color:var(--c-info);">▸</div></div>
+
+        <div class="card__title mt">应用锁 · GUILD LOCK</div>
+        <div class="row-item"><div class="row-item__ico">⬓</div><div class="row-item__main"><div class="row-item__title">启用应用锁</div><div class="row-item__sub">PIN + 生物识别</div></div><span class="toggle"><span class="toggle__track"></span><span class="toggle__knob"></span></span></div>
+        <div class="row-item"><div class="row-item__ico">◷</div><div class="row-item__main"><div class="row-item__title">自动锁定</div><div class="row-item__sub">离开 1 分钟后</div></div><div class="row-item__meta mono" style="color:var(--c-info);">▸</div></div>
+
+        <div class="card__title mt">设备会话</div>
+        <div class="row-item"><div class="row-item__ico" style="background:var(--c-success);color:var(--c-inset);">▣</div><div class="row-item__main"><div class="row-item__title">本机 · iPhone 16</div><div class="row-item__sub">当前 · 上海</div></div><span class="tag tag--ok">在线</span></div>
+        <div class="row-item"><div class="row-item__ico">▣</div><div class="row-item__main"><div class="row-item__title">MacBook Pro</div><div class="row-item__sub">桌面端 · 2h 前</div></div><span class="tag">踢出</span></div>
+
+        <div class="card__title mt">外观</div>
+        <div class="card">
+          <div class="seg"><div class="seg__btn active">深色</div><div class="seg__btn">浅色</div><div class="seg__btn">跟随系统</div></div>
+        </div>
+
+        <button class="btn btn--danger btn--block mt">⏻ 退出登录</button>
+        <div class="hint center mt">PixelPack Mobile v1.0.0 · build 260728</div>
+      </section>
+
+    </div><!-- /viewport -->
+
+    <!-- ═══════════════ 底部 Tab Dock ═══════════════ -->
+    <div class="tabbar">
+      <div class="tab active" data-tab="dashboard" onclick="go('dashboard')"><div class="tab__ico">⌂</div><div class="tab__lbl">主城</div></div>
+      <div class="tab" data-tab="items" onclick="go('items')"><div class="tab__ico">◈</div><div class="tab__lbl">物品</div></div>
+      <div class="tab tab--crest" data-tab="chat" onclick="go('chat')"><div class="crest">✦</div><div class="tab__lbl" style="margin-top:24px;">智核</div></div>
+      <div class="tab" data-tab="quests" onclick="go('quests')"><div class="tab__ico">⚑</div><div class="tab__lbl">委托</div></div>
+      <div class="tab" data-tab="profile" onclick="go('profile')"><div class="tab__ico">◉</div><div class="tab__lbl">我的</div></div>
+    </div>
+
+    <!-- 抽屉占位（智核徽记直进对话页，此处保留扩展位） -->
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet">
+      <div class="sheet__grip"></div>
+      <div class="sheet__title">QUICK ACTION</div>
+      <div class="grid-2">
+        <button class="btn" onclick="hideSheet()">+ 物品</button>
+        <button class="btn" onclick="hideSheet()">+ 委托</button>
+        <button class="btn" onclick="hideSheet()">+ 日志</button>
+        <button class="btn" onclick="hideSheet()">✦ 问 NEXA</button>
+      </div>
+    </div>
+  </div><!-- /deck -->
+
+  <div class="desk__sub" style="max-width:760px;text-align:center;line-height:1.7;">
+    <strong style="color:var(--c-info)">导航结构</strong>：底部 5 槽 Dock（主城 · 物品 · <span style="color:var(--c-primary)">智核徽记</span> · 委托 · 我的）；次级模块（世界地图/统计/日志/履历/传输/设置）由「我的」Hub 格进入。首次启动走「开机接驳 → 登录/注册 → 角色创建」。
+  </div>
+</div>
+
+<div class="mock-note">MOCK · 260728 · GUILD DECK</div>
+<script src="main.js"></script>
+</body>
+</html>
