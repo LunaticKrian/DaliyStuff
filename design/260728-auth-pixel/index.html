@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixelPack · 登录 / 注册（Hi-fi Pixel）</title>
+  <meta name="description" content="PixelPack 登录与注册 —— 高保真像素：高级感底座 + 像素工艺签名。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 像素微图标 sprite（shape-rendering: crispEdges） -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="px-gem" viewBox="0 0 8 8">
+      <rect x="4" y="0" width="1" height="1"/><rect x="3" y="1" width="3" height="1"/>
+      <rect x="2" y="2" width="5" height="1"/><rect x="1" y="3" width="7" height="1"/>
+      <rect x="2" y="4" width="5" height="1"/><rect x="3" y="5" width="3" height="1"/>
+      <rect x="4" y="6" width="1" height="1"/>
+    </symbol>
+    <symbol id="px-flame" viewBox="0 0 8 8">
+      <rect x="3" y="7" width="2" height="1"/><rect x="2" y="6" width="4" height="1"/>
+      <rect x="1" y="5" width="6" height="1"/><rect x="2" y="4" width="4" height="1"/>
+      <rect x="3" y="3" width="2" height="1"/><rect x="4" y="2" width="1" height="1"/>
+    </symbol>
+    <symbol id="px-star" viewBox="0 0 8 8">
+      <rect x="3" y="0" width="2" height="1"/><rect x="3" y="1" width="2" height="1"/>
+      <rect x="2" y="2" width="4" height="1"/><rect x="0" y="3" width="8" height="2"/>
+      <rect x="2" y="5" width="4" height="1"/><rect x="3" y="6" width="2" height="1"/>
+      <rect x="3" y="7" width="2" height="1"/>
+    </symbol>
+  </svg>
+
+  <div class="stage">
+
+    <!-- ════════ 左：品牌 / 存档面板 ════════ -->
+    <aside class="brand">
+      <div class="aurora" aria-hidden="true">
+        <span class="orb orb-1"></span><span class="orb orb-2"></span><span class="orb orb-3"></span>
+      </div>
+      <div class="grid-lines" aria-hidden="true"></div>
+
+      <div class="brand-inner">
+        <div class="brand-top">
+          <a class="brandmark" href="#"><span class="brand-dot"></span>PixelPack</a>
+          <span class="brand-tag">自托管 · MIT</span>
+        </div>
+
+        <div class="brand-mid">
+          <div class="brand-headline" data-when="login">
+            <span class="eyebrow">CONTINUE</span>
+            <h2>欢迎回来，<span class="grad">冒险者</span></h2>
+            <p>登录后继续你的物品、消费与日常冒险 —— 存档已就绪。</p>
+          </div>
+          <div class="brand-headline" data-when="register" hidden>
+            <span class="eyebrow">NEW GAME</span>
+            <h2>创建你的<span class="grad">角色</span></h2>
+            <p>几分钟开启一场把生活变成 RPG 的冒险 —— 每件物品都是装备。</p>
+          </div>
+
+          <!-- 签名：角色存档卡（直角 + 角标取景 + 像素底纹 + 分段经验条） -->
+          <div class="save-card">
+            <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
+
+            <!-- 登录态：继续存档 -->
+            <div class="save-login" data-when="login">
+              <div class="save-row">
+                <div class="avatar" style="--exp:78"><div class="lv"><small>LV</small><b>24</b></div></div>
+                <div class="save-meta">
+                  <div class="name">Krian</div>
+                  <div class="tier">冒险者 · 存档 #01</div>
+                </div>
+              </div>
+              <div class="exp-wrap">
+                <div class="exp-head"><span class="lbl">EXP</span><span class="val">7,820 / 10,000</span></div>
+                <div class="blocks" data-blocks="16" data-pct="78"></div>
+              </div>
+              <div class="save-stats">
+                <div><span class="px-ico"><svg><use href="#px-gem"/></svg></span><b>142</b><span>物品</span></div>
+                <div><span class="px-ico"><svg><use href="#px-flame"/></svg></span><b>28</b><span>连胜</span></div>
+                <div><span class="px-ico"><svg><use href="#px-star"/></svg></span><b>17</b><span>成就</span></div>
+              </div>
+            </div>
+
+            <!-- 注册态：新建存档 —— 等级/经验由密码强度驱动 -->
+            <div class="save-register" data-when="register" hidden>
+              <div class="save-row">
+                <div class="avatar" id="regAvatar" style="--exp:0"><div class="lv"><small>LV</small><b id="regLv">1</b></div></div>
+                <div class="save-meta">
+                  <div class="name">新角色</div>
+                  <div class="tier" id="regTier">新手 · 未定职业</div>
+                </div>
+              </div>
+              <div class="exp-wrap">
+                <div class="exp-head"><span class="lbl">EXP</span><span class="val" id="regExpText">0 / 100</span></div>
+                <div class="blocks" id="regExpBar" data-blocks="16"></div>
+              </div>
+              <div class="save-stats">
+                <div><span class="px-ico"><svg><use href="#px-gem"/></svg></span><b>0</b><span>物品</span></div>
+                <div><span class="px-ico"><svg><use href="#px-flame"/></svg></span><b>0</b><span>连胜</span></div>
+                <div><span class="px-ico"><svg><use href="#px-star"/></svg></span><b>0</b><span>成就</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="brand-foot">© 2026 Krian · PixelPack · <a href="#">MIT</a></footer>
+      </div>
+    </aside>
+
+    <!-- ════════ 右：表单面板（控件区，现代精致） ════════ -->
+    <main class="form-panel">
+      <div class="form-card">
+        <div class="switch" role="tablist" aria-label="认证方式">
+          <button type="button" data-view="login" class="is-active" role="tab" aria-selected="true">登录</button>
+          <button type="button" data-view="register" role="tab" aria-selected="false">注册</button>
+        </div>
+
+        <!-- 登录表单 -->
+        <form id="form-login" class="view" novalidate>
+          <header class="form-head">
+            <span class="eyebrow">SIGN IN</span>
+            <h1>登录你的账号</h1>
+            <p>输入用户名与密码，继续你的冒险。</p>
+          </header>
+          <div class="fields">
+            <div class="field">
+              <label for="li-user">用户名</label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
+                <input id="li-user" class="input" type="text" name="username" placeholder="输入用户名" autocomplete="username" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="li-pass">密码</label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                <input id="li-pass" class="input" type="password" name="password" placeholder="输入密码" autocomplete="current-password" />
+                <button type="button" class="toggle-pw" aria-label="显示密码"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div class="error" role="alert" aria-live="polite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <span>用户名或密码不正确，请重试。</span>
+          </div>
+          <button type="submit" class="btn" style="margin-top:1.3rem"><span class="label">登录 · 继续冒险</span><span class="arrow">→</span></button>
+          <div class="divider"><span>或</span></div>
+          <button type="button" class="btn-ghost">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.4 9.4 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+            使用 GitHub 继续
+          </button>
+          <p class="switch-link">还没有账号？<a href="#register" data-goto="register">注册新存档</a></p>
+        </form>
+
+        <!-- 注册表单 -->
+        <form id="form-register" class="view" hidden novalidate>
+          <header class="form-head">
+            <span class="eyebrow">SIGN UP</span>
+            <h1>创建你的账号</h1>
+            <p>起个名字、设置密码 —— 越强的密码，初始等级越高。</p>
+          </header>
+          <div class="fields">
+            <div class="field">
+              <label for="rg-user">用户名</label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></span>
+                <input id="rg-user" class="input" type="text" name="username" placeholder="起个名字" autocomplete="username" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="rg-mail">邮箱 <span class="opt">选填</span></label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+                <input id="rg-mail" class="input" type="email" name="email" placeholder="name@example.com" autocomplete="email" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="rg-pass">密码</label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                <input id="rg-pass" class="input" type="password" name="password" placeholder="设置密码（6 位以上）" autocomplete="new-password" />
+                <button type="button" class="toggle-pw" aria-label="显示密码"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              </div>
+              <div class="pw-strength" aria-hidden="true">
+                <div class="blocks" id="pwBlocks" data-blocks="10"></div>
+                <span class="note">密码强度 · <b id="pwNote">Lv.1 新手</b></span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="rg-pass2">确认密码</label>
+              <div class="input-wrap">
+                <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M5 12V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><rect x="4" y="12" width="16" height="8" rx="2"/></svg></span>
+                <input id="rg-pass2" class="input" type="password" name="confirm" placeholder="再次输入密码" autocomplete="new-password" />
+              </div>
+            </div>
+          </div>
+          <div class="error" role="alert" aria-live="polite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <span>两次输入的密码不一致。</span>
+          </div>
+          <button type="submit" class="btn" style="margin-top:1.3rem"><span class="label">创建账号 · 开启冒险</span><span class="arrow">→</span></button>
+          <div class="divider"><span>或</span></div>
+          <button type="button" class="btn-ghost">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.4 9.4 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+            使用 GitHub 注册
+          </button>
+          <p class="switch-link">已有账号？<a href="#login" data-goto="login">直接登录</a></p>
+        </form>
+
+        <p class="form-meta">数据本地存储<span class="dot">·</span>开源<span class="dot">·</span>JWT 加密</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

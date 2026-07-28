@@ -4,6 +4,7 @@
   "private": true,
   "description": "PixelPack 移动端（Tauri 2 · iOS/Android 瘦客户端，服务端零改动）",
   "scripts": {
+    "tauri": "tauri",
     "dev": "tauri dev",
     "build": "tauri build",
     "ios:dev": "tauri ios dev",

@@ -4,6 +4,9 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
+    // 监听所有网卡：Android 模拟器经 10.0.2.2、真机经 LAN IP 才能访问到 dev server
+    //（否则 Vite 默认只绑 IPv6 的 [::1]，模拟器的 IPv4 请求连不上）
+    host: true,
     port: 3000,
     proxy: {
       '/api': {
