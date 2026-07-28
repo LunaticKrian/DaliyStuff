@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // 防首屏闪烁：在样式应用前按本地/系统偏好设置主题（dark 为默认，无需属性）
+      try {
+        var t = localStorage.getItem('pixelpack-theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch (e) {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

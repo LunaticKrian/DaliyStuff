@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import { initPlatform, setRedirector } from './utils/platform'
 import { setupApiClient } from './api/client'
+import { initTheme } from './stores/theme'
 
 import './styles/theme.css'
 import './styles/fonts.css'
@@ -20,5 +21,6 @@ app.use(router)
 initPlatform().finally(() => {
   setupApiClient()
   setRedirector((p) => router.push(p))
+  initTheme()
   app.mount('#app')
 })
