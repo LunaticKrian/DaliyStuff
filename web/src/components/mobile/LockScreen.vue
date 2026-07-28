@@ -67,29 +67,55 @@ async function biometricAuth() {
 </template>
 
 <style scoped>
+/* 令牌兜底：脱离 .m-deck 时也保留新视觉语言 */
 .lock-overlay {
+  --pixel-bg: #0b0d14;
+  --pixel-bg-secondary: #14171f;
+  --pixel-card-bg: rgba(255, 255, 255, 0.045);
+  --pixel-border: rgba(255, 255, 255, 0.09);
+  --pixel-accent: #fb7185;
+  --pixel-info: #38bdf8;
+  --pixel-text: #f4f6fb;
+  --pixel-text-secondary: #9aa3b2;
+  --d-grad: linear-gradient(135deg, #818cf8 0%, #7c5cff 40%, #22d3ee 100%);
+  --d-radius: 14px;
+  --d-radius-sm: 10px;
+  --d-shadow-sm: 0 4px 14px -8px rgba(0, 0, 0, .6);
+
   position: absolute; inset: 0; z-index: 500;
-  background: var(--pixel-bg);
+  background: radial-gradient(120% 80% at 50% 0%, rgba(99, 102, 241, .10), transparent 60%), var(--pixel-bg);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 0 40px calc(env(safe-area-inset-bottom, 0px) + 40px);
 }
+
 .dots { display: flex; gap: 16px; margin: 28px 0 8px; }
 .dots span {
-  width: 16px; height: 16px; border: 2px solid var(--pixel-border); background: transparent;
-  transition: background 120ms steps(2);
+  width: 16px; height: 16px;
+  border: 1px solid var(--pixel-border);
+  border-radius: 50%;
+  background: transparent;
+  transition: background .18s ease, border-color .18s ease;
 }
-.dots span.filled { background: var(--pixel-info); }
-.dots.err span.filled { background: var(--pixel-accent); }
+.dots span.filled { background: var(--d-grad); border-color: transparent; }
+.dots.err span.filled { background: var(--pixel-accent); border-color: transparent; }
+
 .pad {
   display: grid; grid-template-columns: repeat(3, 64px); gap: 14px; margin-top: 24px;
 }
 .key {
-  height: 64px; background: var(--pixel-card-bg); color: var(--pixel-text);
-  border: 3px solid var(--pixel-border);
-  font-family: var(--font-pixel-num); font-size: 22px; cursor: pointer;
-  transition: transform 60ms steps(2);
+  height: 64px;
+  background: var(--pixel-card-bg);
+  backdrop-filter: blur(10px);
+  color: var(--pixel-text);
+  border: 1px solid var(--pixel-border);
+  border-radius: 14px;
+  font-family: var(--font-pixel-num);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: var(--d-shadow-sm);
+  transition: transform .12s ease, background .15s ease;
 }
-.key:active { transform: translate(2px, 2px); background: var(--pixel-bg-secondary); }
+.key:active { transform: scale(.96); background: var(--pixel-bg-secondary); }
 .key.fn { font-size: 18px; color: var(--pixel-info); }
-.key[disabled] { opacity: 0.3; }
+.key[disabled] { opacity: 0.3; box-shadow: none; }
 </style>

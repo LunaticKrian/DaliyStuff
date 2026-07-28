@@ -104,21 +104,60 @@ async function onTest() {
 </template>
 
 <style scoped>
-.signal { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 52px; margin-bottom: 12px; }
-.signal .bar { width: 12px; background: var(--pixel-border); transition: background 0.12s steps(2); }
+/* 令牌兜底：脱离 .m-deck 时也保留新视觉语言 */
+.m-screen {
+  --pixel-bg: #0b0d14;
+  --pixel-bg-secondary: #14171f;
+  --pixel-card-bg: rgba(255, 255, 255, 0.045);
+  --pixel-border: rgba(255, 255, 255, 0.09);
+  --pixel-accent: #fb7185;
+  --pixel-warning: #fbbf24;
+  --pixel-success: #34d399;
+  --pixel-info: #38bdf8;
+  --pixel-text: #f4f6fb;
+  --pixel-text-secondary: #9aa3b2;
+  --d-grad: linear-gradient(135deg, #818cf8 0%, #7c5cff 40%, #22d3ee 100%);
+  --d-radius: 14px;
+  --d-radius-sm: 10px;
+  --d-shadow-sm: 0 4px 14px -8px rgba(0, 0, 0, .6);
+}
+
+.signal { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 52px; margin-bottom: 14px; }
+.signal .bar {
+  width: 12px;
+  background: var(--pixel-border);
+  border-radius: 3px;
+  transition: background .2s ease, box-shadow .2s ease;
+}
 .signal .bar:nth-child(1) { height: 13px; }
 .signal .bar:nth-child(2) { height: 25px; }
 .signal .bar:nth-child(3) { height: 37px; }
 .signal .bar:nth-child(4) { height: 49px; }
-.signal .bar.on { background: var(--pixel-success); box-shadow: 0 0 6px rgba(56, 183, 100, 0.5); }
-.signal .bar.fail { background: var(--pixel-accent); }
+.signal .bar.on {
+  background: var(--pixel-success);
+  box-shadow: 0 0 10px rgba(52, 211, 153, .45);
+}
+.signal .bar.fail {
+  background: var(--pixel-accent);
+  box-shadow: 0 0 10px rgba(251, 113, 133, .4);
+}
+
 .boot-log {
-  width: 100%; padding: 10px 12px;
-  background: var(--pixel-bg); border: 2px solid var(--pixel-border);
-  font-family: var(--font-pixel-num); font-size: 11px; line-height: 1.7;
-  color: var(--pixel-success); min-height: 96px; text-align: left;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--pixel-bg);
+  border: 1px solid var(--pixel-border);
+  border-radius: 10px;
+  font-family: var(--font-pixel-num);
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--pixel-success);
+  min-height: 96px;
+  text-align: left;
+  box-shadow: var(--d-shadow-sm);
 }
 .boot-log .dim { color: var(--pixel-text-secondary); }
 .boot-log .warn { color: var(--pixel-warning); }
+
 .caret { color: var(--pixel-success); animation: m-blink 0.8s steps(2) infinite; }
 </style>

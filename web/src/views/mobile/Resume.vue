@@ -91,19 +91,42 @@ function exportPdf() {
 </template>
 
 <style scoped>
-.a4 {
-  background: #f4f1e8; color: #1a1a2e; padding: 18px 16px;
-  border: 2px solid var(--pixel-border); font-family: Georgia, 'Times New Roman', serif;
+/* 令牌兜底：脱离 .m-deck 时也保留新视觉语言 */
+.m-screen {
+  --pixel-bg: #0b0d14;
+  --pixel-bg-secondary: #14171f;
+  --pixel-card-bg: rgba(255, 255, 255, 0.045);
+  --pixel-border: rgba(255, 255, 255, 0.09);
+  --pixel-primary: #22d3ee;
+  --pixel-info: #38bdf8;
+  --pixel-text: #f4f6fb;
+  --pixel-text-secondary: #9aa3b2;
+  --d-grad: linear-gradient(135deg, #818cf8 0%, #7c5cff 40%, #22d3ee 100%);
+  --d-radius: 14px;
+  --d-radius-sm: 10px;
+  --d-shadow-sm: 0 4px 14px -8px rgba(0, 0, 0, .6);
 }
-.a4__name { font-size: 19px; font-weight: 700; border-bottom: 2px solid #1a1a2e; padding-bottom: 4px; }
-.a4__sub { font-size: 12px; color: #444; margin-top: 3px; }
-.a4__contact { font-size: 10px; color: #666; margin-top: 2px; }
-.a4__h { font-size: 12px; font-weight: 700; margin: 12px 0 4px; border-bottom: 1px solid #aaa; }
+
+/* A4 履历预览：保留纸质质感，外壳套用新语言的柔焦卡片 */
+.a4 {
+  background: #f4f1e8;
+  color: #1a1a2e;
+  padding: 20px 18px;
+  border: 1px solid var(--pixel-border);
+  border-radius: 14px;
+  box-shadow: var(--d-shadow-sm);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.a4__name { font-size: 19px; font-weight: 700; border-bottom: 1px solid #1a1a2e; padding-bottom: 6px; }
+.a4__sub { font-size: 12px; color: #444; margin-top: 4px; }
+.a4__contact { font-size: 10px; color: #666; margin-top: 3px; }
+.a4__h { font-size: 12px; font-weight: 700; margin: 14px 0 6px; border-bottom: 1px solid rgba(26, 26, 46, .2); }
 .a4__row { font-size: 11px; line-height: 1.7; display: flex; gap: 8px; }
 .a4__date { width: 86px; flex: none; color: #666; font-size: 10px; }
+
 @media print {
   .m-head, .m-card, .m-btn, .m-fab, .m-empty { display: none !important; }
   .m-screen { padding: 0 !important; }
-  .a4 { border: none; }
+  .a4 { border: none; box-shadow: none; border-radius: 0; }
 }
 </style>
