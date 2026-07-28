@@ -2,6 +2,31 @@
 
 PS：更新记录以日期倒排更新
 
+## 2026年07月28日
+
+### 新增：移动端客户端 GUILD DECK（Tauri 2 · iOS/Android · 全模块）
+
+把 PixelPack 从「Web + 桌面」扩展到**移动端原生 App**，复用 `web/` Vue 前端，瘦客户端经 HTTPS 直连线上 API（服务端零改动）。技术方案见 [`260728-移动端客户端技术方案.md`](technology/260728-移动端客户端技术方案.md)，设计稿见 `design/260728-mobile-app/`（16 屏可交互原型）。
+
+**选型**：**Tauri 2 mobile**（与桌面端同栈，Rust 壳 + 系统 WebView），覆盖 **iOS + Android**；UI **全新移动端设计**（非响应式套壳）；**完整对齐 Web**。签名设计「**公会掌机 GUILD DECK**」：CRT 开机仪式 + 设备状态条链路 LED（与桌面同源）+ 方向键式 Tab Dock（中央凸起智核徽记）。字体跟随现网系统字体。
+
+**前端基座**（`web/src/`）
+- `utils/platform.ts`：新增 `isMobile/isIOS/isAndroid`（UA 判定，无新依赖）+ `setMobileOverride`
+- `layouts/MobileLayout.vue`：掌机外壳（开机幕 + 状态条 + viewport + Tab Dock）+ 应用锁挂载
+- `styles/mobile.css`：移动端设计系统（`m-*` 前缀，复用 `--pixel-*` token）
+- `App.vue` / `router/index.ts`：按 `isMobile()` 选布局 + 分流到 `views/mobile/*`，`meta.tab` 控制 Dock；新增 `/me`（我的）
+- `composables/useAppLock.ts` + `components/mobile/LockScreen.vue`：**PIN 应用锁**（SHA-256 存储，启动/回前台落锁），生物识别走 Tauri 命令
+
+**移动视图层**（`web/src/views/mobile/`，19 个，全部复用 api/stores/composables/types）
+- 鉴权流：Setup（首屏接驳）/ Login / Register / CharacterCreation
+- P0：Dashboard · Items（**成本视角：每件日均成本 + 总消耗 + 使用天数 + 附加成本**）/ ItemDetail / ItemForm / Quests / Chat（智核 SSE 流式）/ Profile / Settings（账户/应用锁/设备会话/登出）
+- P1：WorldMap（信号台+情报+航海日志）/ Stats（日均榜+分类）/ BlogList·Detail·Editor / Resume（预览+打印PDF）/ Transfer（WebRTC 移植）
+
+**移动外壳**（`application/mobile/`，对齐 `application/desktop/` 结构）
+- `src-tauri/`：`Cargo.toml`（tauri2 + store/os/notification）、`tauri.conf.json`（frontendDist→web/dist、CSP）、`lib.rs`/`commands.rs`（令牌 set/get/del_secret + 生物识别占位）、capabilities、README（含工具链/构建/生物识别接入步骤）
+
+**验证与偏离**：前端 `npm run build`(vue-tsc) **通过**；Rust 外壳待工具链编译（本机无 Rust/iOS/Android，同桌面端）。偏离见技术方案 §9——履历史 AI 编辑暂缓（仅预览+打印PDF）、生物识别占位（PIN 已全可用）、令牌用 store 而非 Keychain/Keystore（生产强化路径已记）。
+
 ## 2026年07月27日
 
 ### 新增：鉴权会话化（refresh 轮换 + 会话级复用检测 + 设备会话管理）

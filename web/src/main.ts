@@ -9,6 +9,7 @@ import './styles/theme.css'
 import './styles/fonts.css'
 import './styles/animations.css'
 import './styles/nes-compat.css'
+import './styles/mobile.css'
 
 const app = createApp(App)
 app.use(createPinia())

@@ -3,10 +3,13 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AuthLayout from './layouts/AuthLayout.vue'
 import MainLayout from './layouts/MainLayout.vue'
+import MobileLayout from './layouts/MobileLayout.vue'
 import ToastNotification from './components/ToastNotification.vue'
+import { isMobile } from './utils/platform'
 
 const route = useRoute()
 const layout = computed(() => {
+  if (isMobile()) return MobileLayout
   return route.meta.layout === 'auth' ? AuthLayout : MainLayout
 })
 </script>

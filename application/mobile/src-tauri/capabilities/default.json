@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "PixelPack 移动端默认权限集合",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "store:allow-load",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-save",
+    "store:allow-delete",
+    "os:default",
+    "notification:default"
+  ]
+}

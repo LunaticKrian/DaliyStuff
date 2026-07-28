@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { isTauri, isServerConfigured } from '../utils/platform'
+import { isTauri, isServerConfigured, isMobile } from '../utils/platform'
+
+// 按平台选择视图：移动端用 views/mobile/*，桌面/Web 用 views/*。
+// isMobile() 基于 UA（iOS/Android），模块加载即定，导航期取值稳定。
+function pick(desktop: () => Promise<unknown>, mobile: () => Promise<unknown>) {
+  return () => (isMobile() ? mobile() : desktop())
+}
 
 const router = createRouter({
   history: createWebHistory(),
@@ -8,7 +14,10 @@ const router = createRouter({
     {
       path: '/setup',
       name: 'setup',
-      component: () => import('../views/desktop/Setup.vue'),
+      component: pick(
+        () => import('../views/desktop/Setup.vue'),
+        () => import('../views/mobile/Setup.vue'),
+      ),
       meta: { desktop: true },
     },
     {
@@ -20,128 +29,194 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue'),
+      component: pick(
+        () => import('../views/Login.vue'),
+        () => import('../views/mobile/Login.vue'),
+      ),
       meta: { layout: 'auth', guest: true },
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/Register.vue'),
+      component: pick(
+        () => import('../views/Register.vue'),
+        () => import('../views/mobile/Register.vue'),
+      ),
       meta: { layout: 'auth', guest: true },
     },
     {
       path: '/',
       name: 'dashboard',
-      component: () => import('../views/Dashboard.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Dashboard.vue'),
+        () => import('../views/mobile/Dashboard.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'dashboard' },
     },
     {
       path: '/world-map',
       name: 'world-map',
-      component: () => import('../views/WorldMap.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/WorldMap.vue'),
+        () => import('../views/mobile/WorldMap.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/items',
       name: 'items',
-      component: () => import('../views/ItemList.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/ItemList.vue'),
+        () => import('../views/mobile/Items.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'items' },
     },
     {
       path: '/items/new',
       name: 'item-new',
-      component: () => import('../views/ItemForm.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/ItemForm.vue'),
+        () => import('../views/mobile/ItemForm.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'items' },
     },
     {
       path: '/items/:id',
       name: 'item-detail',
-      component: () => import('../views/ItemDetail.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/ItemDetail.vue'),
+        () => import('../views/mobile/ItemDetail.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'items' },
     },
     {
       path: '/items/:id/edit',
       name: 'item-edit',
-      component: () => import('../views/ItemForm.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/ItemForm.vue'),
+        () => import('../views/mobile/ItemForm.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'items' },
     },
     {
       path: '/categories',
       name: 'categories',
       component: () => import('../views/Categories.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/tags',
       name: 'tags',
       component: () => import('../views/Tags.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/stats',
       name: 'stats',
-      component: () => import('../views/Stats.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Stats.vue'),
+        () => import('../views/mobile/Stats.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
+    },
+    {
+      path: '/me',
+      name: 'me',
+      component: pick(
+        () => import('../views/Dashboard.vue'),
+        () => import('../views/mobile/Profile.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/Settings.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Settings.vue'),
+        () => import('../views/mobile/Settings.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/quests',
       name: 'quests',
-      component: () => import('../views/Quests.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Quests.vue'),
+        () => import('../views/mobile/Quests.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'quests' },
     },
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../views/Chat.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Chat.vue'),
+        () => import('../views/mobile/Chat.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'chat' },
     },
     {
       path: '/transfer',
       name: 'transfer',
-      component: () => import('../views/Transfer.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Transfer.vue'),
+        () => import('../views/mobile/Transfer.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/resume',
       name: 'resume',
-      component: () => import('../views/Resume.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/Resume.vue'),
+        () => import('../views/mobile/Resume.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/character/create',
       name: 'character-create',
-      component: () => import('../views/CharacterCreation.vue'),
+      component: pick(
+        () => import('../views/CharacterCreation.vue'),
+        () => import('../views/mobile/CharacterCreation.vue'),
+      ),
       meta: { requiresAuth: true },
     },
     {
       path: '/blog',
       name: 'blog',
-      component: () => import('../views/BlogList.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/BlogList.vue'),
+        () => import('../views/mobile/BlogList.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/blog/new',
       name: 'blog-new',
-      component: () => import('../views/BlogEditor.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/BlogEditor.vue'),
+        () => import('../views/mobile/BlogEditor.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/blog/:id',
       name: 'blog-detail',
-      component: () => import('../views/BlogDetail.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/BlogDetail.vue'),
+        () => import('../views/mobile/BlogDetail.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/blog/:id/edit',
       name: 'blog-edit',
-      component: () => import('../views/BlogEditor.vue'),
-      meta: { requiresAuth: true },
+      component: pick(
+        () => import('../views/BlogEditor.vue'),
+        () => import('../views/mobile/BlogEditor.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
     },
     {
       path: '/share/:token',
@@ -153,7 +228,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  // 桌面端：未配置服务器地址 → 强制走首屏接驳
+  // 桌面/移动 Tauri：未配置服务器地址 → 强制走首屏接驳
   if (isTauri() && !isServerConfigured() && to.name !== 'setup') {
     return { name: 'setup' }
   }
@@ -172,7 +247,7 @@ router.beforeEach(async (to) => {
     return { name: 'dashboard' }
   }
 
-  // Redirect to character creation if profile not completed
+  // 未完成角色档案 → 强制创建
   if (auth.isAuthenticated && auth.user && !auth.user.profile_completed && to.name !== 'character-create') {
     return { name: 'character-create' }
   }

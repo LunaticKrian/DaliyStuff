@@ -19,6 +19,36 @@ let _origin = '' // '' = Web（相对）或桌面未配置
 let _configured = false
 const _tok: Partial<Record<TokenKey, string>> = {}
 
+// ── 移动端检测 ──────────────────────────────────────────────
+// UA 判定 iOS/Android：Tauri mobile 的系统 WebView UA 含此；手机浏览器亦命中。
+// 桌面端（Tauri mac/win/linux 或桌面浏览器）不命中 → 桌面布局。无额外依赖。
+// Tauri mobile 外壳可通过 setMobileOverride() 在启动时强制覆盖。
+const _ua = (typeof navigator !== 'undefined' && navigator.userAgent) || ''
+const _iPadIOS13 =
+  typeof navigator !== 'undefined' &&
+  navigator.platform === 'MacIntel' &&
+  (navigator.maxTouchPoints ?? 0) > 1 // iPad iOS13+ 伪装桌面 UA
+let _ios = /iphone|ipad|ipod/i.test(_ua) || _iPadIOS13
+let _android = /android/i.test(_ua)
+let _mobileOverride: 'ios' | 'android' | null = null
+
+/** 外壳启动时可强制指定平台（覆盖 UA 判定）。 */
+export function setMobileOverride(v: 'ios' | 'android' | null): void {
+  _mobileOverride = v
+}
+export function isIOS(): boolean {
+  if (_mobileOverride) return _mobileOverride === 'ios'
+  return _ios
+}
+export function isAndroid(): boolean {
+  if (_mobileOverride) return _mobileOverride === 'android'
+  return _android
+}
+/** 移动端（iOS 或 Android）。决定是否使用 MobileLayout + 移动视图。 */
+export function isMobile(): boolean {
+  return isIOS() || isAndroid()
+}
+
 // ── 运行环境 ────────────────────────────────────────────────
 export function isTauri(): boolean {
   return _tauri

@@ -1,0 +1,7 @@
+# 由 `tauri ios init` / `tauri android init` 生成
+gen/
+# Rust 构建产物
+target/
+# 生成后端密钥/签名
+*.keystore
+*.jks
