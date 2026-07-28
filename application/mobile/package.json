@@ -8,8 +8,10 @@
     "build": "tauri build",
     "ios:dev": "tauri ios dev",
     "ios:build": "tauri ios build",
+    "android:init": "tauri android init",
     "android:dev": "tauri android dev",
     "android:build": "tauri android build",
+    "android:build:apk": "tauri android build --apk",
     "icon": "tauri icon"
   },
   "devDependencies": {
