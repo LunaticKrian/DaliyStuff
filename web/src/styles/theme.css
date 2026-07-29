@@ -30,127 +30,23 @@
   --pixel-shadow: rgba(17, 20, 40, 0.15);
 }
 
+/* ═══════════════════════════════════════════════
+   通用工具类（新语言：1px 描边 + 圆角 + 柔焦投影）
+   仍被多处模板引用；本地 scoped 覆盖优先级更高。
+   ═══════════════════════════════════════════════ */
 .pixel-border {
-  border: 3px solid var(--pixel-border);
-  border-radius: 0;
-  box-shadow: 3px 3px 0 var(--pixel-shadow);
+  border: 1px solid var(--pixel-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px -8px rgba(0, 0, 0, 0.6);
 }
 
 .pixel-shadow {
-  box-shadow: 3px 3px 0 var(--pixel-shadow);
+  box-shadow: 0 4px 14px -8px rgba(0, 0, 0, 0.6);
 }
 
-/* ═══════════════════════════════════════════════
-   CRT Scanline Overlay (global)
-   Apply via .scanlines on a fixed/absolute overlay
-   ═══════════════════════════════════════════════ */
-.scanlines {
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.05) 2px,
-    rgba(0, 0, 0, 0.05) 4px
-  );
-  pointer-events: none;
-  z-index: 100;
-}
-
-/* ═══════════════════════════════════════════════
-   Pixel Grid Texture (subtle background pattern)
-   Apply on .pixel-grid-texture to any container
-   ═══════════════════════════════════════════════ */
-.pixel-grid-texture {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 8px 8px;
-}
-
-/* ═══════════════════════════════════════════════
-   Noise texture (for CRT retro feel)
-   Apply on .pixel-noise for animated static noise
-   ═══════════════════════════════════════════════ */
-.pixel-noise::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ═══════════════════════════════════════════════
-   Decorative Corner Pieces
-   Apply .pixel-corner-decoration for retro RPG frame
-   ═══════════════════════════════════════════════ */
-.pixel-corner-decoration {
-  position: relative;
-}
-.pixel-corner-decoration::before,
-.pixel-corner-decoration::after {
-  content: '◆';
-  position: absolute;
-  font-size: 8px;
-  color: var(--pixel-primary);
-  opacity: 0.4;
-}
-.pixel-corner-decoration::before {
-  top: 6px;
-  left: 6px;
-}
-.pixel-corner-decoration::after {
-  bottom: 6px;
-  right: 6px;
-}
-
-/* ═══════════════════════════════════════════════
-   Vignette (CRT screen edge darkening)
-   ═══════════════════════════════════════════════ */
-.pixel-vignette {
-  position: relative;
-}
-.pixel-vignette::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 60%,
-    rgba(0, 0, 0, 0.15) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ═══════════════════════════════════════════════
-   Glow effects
-   ═══════════════════════════════════════════════ */
-.pixel-glow-primary {
-  box-shadow: 0 0 8px rgba(65, 166, 246, 0.25), 3px 3px 0 var(--pixel-shadow);
-}
-
-.pixel-glow-accent {
-  box-shadow: 0 0 8px rgba(177, 62, 83, 0.25), 3px 3px 0 var(--pixel-shadow);
-}
-
-.pixel-glow-success {
-  box-shadow: 0 0 8px rgba(56, 183, 100, 0.25), 3px 3px 0 var(--pixel-shadow);
-}
-
-.pixel-glow-warning {
-  box-shadow: 0 0 8px rgba(239, 125, 87, 0.25), 3px 3px 0 var(--pixel-shadow);
-}
-
-/* ═══════════════════════════════════════════════
-   Pixel Divider
-   ═══════════════════════════════════════════════ */
 .pixel-divider {
   border: none;
-  height: 3px;
+  height: 2px;
   background: repeating-linear-gradient(
     90deg,
     var(--pixel-border) 0px,
@@ -173,6 +69,7 @@
 ::-webkit-scrollbar-thumb {
   background: var(--pixel-border);
   border: 2px solid var(--pixel-bg);
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--pixel-primary);
