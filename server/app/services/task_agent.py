@@ -10,7 +10,7 @@
 """
 import json
 import logging
-import os
+import time
 from collections.abc import AsyncGenerator
 
 from claude_agent_sdk import (
@@ -25,18 +25,14 @@ from claude_agent_sdk import (
     tool,
 )
 
-from app.config import settings
 from app.database import async_session_factory
 from app.schemas.task import TaskCreate
 from app.services import task as task_svc
+from app.services.llm_config import (
+    check_quota, load_snapshot, record_usage, sdk_env, with_extra_prompt,
+)
 
 logger = logging.getLogger(__name__)
-
-# 把 .env/Settings 的 GLM 配置注入 os.environ，确保 Agent SDK 子进程继承（同 intel）
-for _k in ("ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL"):
-    _v = getattr(settings, _k, None)
-    if _v and not os.environ.get(_k):
-        os.environ[_k] = _v
 
 
 SYSTEM_PROMPT = """你是 PixelPack 的每日任务规划助手「NEXA」。用户用自然语言描述今天的学习 / 工作 / 生活计划，\
@@ -135,13 +131,16 @@ def _build_tools(user_id: int, created: list[dict]):
     )
 
 
-def _build_options(server) -> ClaudeAgentOptions:
+def _build_options(server, snap) -> ClaudeAgentOptions:
     return ClaudeAgentOptions(
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=with_extra_prompt(SYSTEM_PROMPT, snap),
         mcp_servers={"taskkit": server},
         allowed_tools=["list_today_tasks", "create_task"],
         permission_mode="bypassPermissions",
-        max_turns=settings.TASK_AGENT_MAX_TURNS,
+        max_turns=snap.max_turns,
+        max_budget_usd=snap.max_budget_usd,
+        env=sdk_env(snap),
+        model=snap.model,
         # 开启逐 token 流式：SDK 额外产出 StreamEvent（Anthropic 原生 content_block_delta/text_delta），
         # 否则每轮只发一个完整 AssistantMessage → 前端收到的是整段而非流式。
         include_partial_messages=True,
@@ -153,17 +152,34 @@ async def run_agent(user_id: int, prompt: str) -> AsyncGenerator[dict, None]:
 
     prompt 为拼接好的对话历史字符串（见 chat.history_prompt）。
     """
+    # 1. per-user 配置（无配置/未启用 → 友好报错，不抛异常）
+    async with async_session_factory() as db:
+        snap = await load_snapshot(db, user_id)
+    if snap is None:
+        yield {"type": "error", "message": "未配置 AI 模型，请先在「设置 → AI 配置」中填写。"}
+        yield {"type": "done", "text": "", "subtype": "no_config", "tasks_created": 0}
+        return
+    # 2. 配额校验
+    async with async_session_factory() as db:
+        ok, reason = await check_quota(db, user_id)
+    if not ok:
+        yield {"type": "error", "message": reason}
+        yield {"type": "done", "text": "", "subtype": "quota_exceeded", "tasks_created": 0}
+        return
+
     created: list[dict] = []
     server = _build_tools(user_id, created)
-    options = _build_options(server)
+    options = _build_options(server, snap)
 
-    logger.info("[task-agent] start user=%s turns=%s", user_id, settings.TASK_AGENT_MAX_TURNS)
+    logger.info("[task-agent] start user=%s model=%s turns=%s", user_id, snap.model, snap.max_turns)
     full_text: list[str] = []
     seen_created = 0
     result_subtype = "unknown"
+    result_msg = None
     # 当前 assistant 轮是否已通过 StreamEvent 收到逐 token 文本。
     # 用于避免与该轮完整 TextBlock 重复推送（并保留「无 partial 时的回退」）。
     turn_streamed = False
+    t0 = time.monotonic()
 
     try:
         async for msg in query(prompt=prompt, options=options):
@@ -191,10 +207,22 @@ async def run_agent(user_id: int, prompt: str) -> AsyncGenerator[dict, None]:
                 seen_created += 1
             if isinstance(msg, ResultMessage):
                 result_subtype = msg.subtype or "unknown"
+                result_msg = msg
                 logger.info("[task-agent] done subtype=%s turns=%s", result_subtype, getattr(msg, "num_turns", None))
     except Exception as e:
         logger.exception("[task-agent] run failed")
         yield {"type": "error", "message": f"agent 运行失败: {e}"}
+
+    # 3. 记账（拿到 ResultMessage 才有 token 统计；失败则跳过）
+    if result_msg is not None:
+        try:
+            async with async_session_factory() as db:
+                await record_usage(
+                    db, user_id=user_id, agent_type="chat", model=snap.model,
+                    result_msg=result_msg, duration_ms=int((time.monotonic() - t0) * 1000),
+                )
+        except Exception:
+            logger.exception("[task-agent] record_usage failed")
 
     yield {"type": "done", "text": "".join(full_text), "subtype": result_subtype,
            "tasks_created": len(created)}

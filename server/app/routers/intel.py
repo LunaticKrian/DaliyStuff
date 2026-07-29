@@ -20,8 +20,8 @@ async def get_today_intel(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[ArticleResponse]:
-    """今日推送（信号台）。"""
-    return await list_today(db)
+    """今日推送（信号台，仅当前用户的）。"""
+    return await list_today(db, current_user.id)
 
 
 @router.get("/archive", response_model=ArchivePageResponse)
@@ -31,8 +31,8 @@ async def get_archive_intel(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> ArchivePageResponse:
-    """历史归档（航海日志），一天一页，可选按疆域筛选。"""
-    return await list_archive(db, region=region, page=page)
+    """历史归档（航海日志），一天一页，可选按疆域筛选（仅当前用户的）。"""
+    return await list_archive(db, current_user.id, region=region, page=page)
 
 
 @router.get("/stats", response_model=IntelStatsResponse)
@@ -40,8 +40,8 @@ async def get_intel_stats(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> IntelStatsResponse:
-    """顶部统计。"""
-    return await get_stats(db)
+    """顶部统计（仅当前用户的）。"""
+    return await get_stats(db, current_user.id)
 
 
 @router.post("/generate")
@@ -54,7 +54,7 @@ async def generate_intel(
     overwrite=true 会先清空今日再重新生成。
     """
     try:
-        n = await generate_intel_now(overwrite=overwrite)
+        n = await generate_intel_now(user_id=current_user.id, overwrite=overwrite)
     except Exception as e:  # noqa: BLE001
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

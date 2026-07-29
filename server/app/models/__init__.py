@@ -1,4 +1,8 @@
 from app.models.user import User
+from app.models.user_ai_config import UserAIConfig
+from app.models.quota import UserQuota
+from app.models.usage import UsageRecord
+from app.models.audit import AuditLog
 from app.models.session import RefreshSession
 from app.models.category import Category
 from app.models.tag import Tag
@@ -19,7 +23,8 @@ from app.models.resume import (
 )
 
 __all__ = [
-    "User", "RefreshSession", "Category", "Tag", "Item", "AdditionalCost", "ItemImage",
+    "User", "UserAIConfig", "UserQuota", "UsageRecord", "AuditLog",
+    "RefreshSession", "Category", "Tag", "Item", "AdditionalCost", "ItemImage",
     "item_tags", "DailyQuest", "UserAchievement", "Task", "ChatSession", "ChatMessage",
     "Journal", "IntelArticle",
     "Resume", "ResumeSnapshot", "ResumeChatThread", "ResumeChatMessage", "PendingChange",

@@ -8,9 +8,15 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     UPLOAD_DIR: str = "uploads"
 
-    # ── AI 资讯（世界地图）──
-    # GLM 连接：可由部署 shell 环境注入，也可写进 .env。
-    # intel_agent 启动时会把下面三项注入 os.environ，供 Agent SDK 子进程稳定继承。
+    # ── 用户 AI 配置加密（per-user API Key 入库）──
+    # 标准 Fernet 密钥（base64 urlsafe 32 字节）或任意口令；未配则从 SECRET_KEY 派生（仅单机）。
+    ENCRYPTION_KEY: str | None = None
+    # ── 超级管理员 seed（首启建账号；明文不入库，首登强制改密）──
+    SUPERADMIN_USERNAME: str = "super-hero"
+    SUPERADMIN_PASSWORD: str = "QazWsx1314520!"
+
+    # ── 已废弃（v260729 起模型/key 改为 per-user，见 user_ai_configs 表）──
+    # 保留字段仅为兼容旧 .env，不再作为模型源；Agent 已改为读取各用户自己的配置。
     ANTHROPIC_BASE_URL: str | None = None
     ANTHROPIC_AUTH_TOKEN: str | None = None
     ANTHROPIC_MODEL: str | None = None

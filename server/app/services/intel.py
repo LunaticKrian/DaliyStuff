@@ -1,4 +1,7 @@
-"""AI 资讯业务层：读取（today/archive/stats）+ 写入（store/generate）。"""
+"""AI 资讯业务层：读取（today/archive/stats）+ 写入（store/generate）。
+
+v260729 起 per-user：所有读取/写入都按 user_id 过滤；定时任务遍历已配置用户各自跑。
+"""
 import asyncio
 import logging
 from datetime import date, timedelta
@@ -37,11 +40,11 @@ def to_response(a: IntelArticle) -> ArticleResponse:
 
 
 # ── 读取 ───────────────────────────────────────────────────────────────
-async def list_today(db: AsyncSession) -> list[ArticleResponse]:
+async def list_today(db: AsyncSession, user_id: int) -> list[ArticleResponse]:
     today = date.today()
     rows = (await db.execute(
         select(IntelArticle)
-        .where(IntelArticle.published_at == today)
+        .where(IntelArticle.user_id == user_id, IntelArticle.published_at == today)
         .order_by(IntelArticle.id.desc())
     )).scalars().all()
     return [to_response(a) for a in rows]
@@ -49,10 +52,11 @@ async def list_today(db: AsyncSession) -> list[ArticleResponse]:
 
 async def list_archive(
     db: AsyncSession,
+    user_id: int,
     region: str | None = None,
     page: int = 1,
 ) -> ArchivePageResponse:
-    """历史归档（航海日志）—— **一天一页**。
+    """历史归档（航海日志）—— **一天一页**（仅当前用户的）。
 
     page = 第几个有内容的日期（1 起，DESC）。每页返回该日期下的全部文章。
     region 过滤时只统计有匹配文章的日期，自动跳过空日期。
@@ -60,7 +64,7 @@ async def list_archive(
     today = date.today()
     page = max(1, int(page))
 
-    where_clauses = [IntelArticle.published_at < today]
+    where_clauses = [IntelArticle.published_at < today, IntelArticle.user_id == user_id]
     if region:
         where_clauses.append(IntelArticle.region == region)
 
@@ -96,19 +100,20 @@ async def list_archive(
     )
 
 
-async def get_stats(db: AsyncSession) -> IntelStatsResponse:
+async def get_stats(db: AsyncSession, user_id: int) -> IntelStatsResponse:
     today = date.today()
     week_ago = today - timedelta(days=7)
     today_count = (await db.scalar(
         select(func.count()).select_from(IntelArticle)
-        .where(IntelArticle.published_at == today)
+        .where(IntelArticle.user_id == user_id, IntelArticle.published_at == today)
     )) or 0
     week_count = (await db.scalar(
         select(func.count()).select_from(IntelArticle)
-        .where(IntelArticle.published_at >= week_ago)
+        .where(IntelArticle.user_id == user_id, IntelArticle.published_at >= week_ago)
     )) or 0
     archived_count = (await db.scalar(
         select(func.count()).select_from(IntelArticle)
+        .where(IntelArticle.user_id == user_id)
     )) or 0
     return IntelStatsResponse(
         todayCount=today_count,
@@ -120,25 +125,26 @@ async def get_stats(db: AsyncSession) -> IntelStatsResponse:
 
 # ── 写入 ───────────────────────────────────────────────────────────────
 async def store_daily_intel(
-    db: AsyncSession, drafts: list[ArticleDraft], *, overwrite: bool = False,
+    db: AsyncSession, drafts: list[ArticleDraft], *, user_id: int, overwrite: bool = False,
 ) -> int:
-    """把 Agent 产出的草稿入库。published_at = 今日。
+    """把 Agent 产出的草稿入库（归属 user_id）。published_at = 今日。
 
-    - overwrite=True（手动「发起侦测」刷新）：先清空今日再全部写入。
-    - overwrite=False（每日定时任务，默认）：**基于数据库已有数据去重追加**——
+    - overwrite=True（手动「发起侦测」刷新）：先清空「该用户今日」再全部写入。
+    - overwrite=False（每日定时任务，默认）：**基于该用户已有数据去重追加**——
       以 url（无 url 则退化为标题）为去重键，跳过已存在的，仅追加新条目。
     """
     today = date.today()
 
     if overwrite:
         await db.execute(
-            delete(IntelArticle).where(IntelArticle.published_at == today)
+            delete(IntelArticle).where(
+                IntelArticle.user_id == user_id, IntelArticle.published_at == today,
+            )
         )
         existing_keys: set[str] = set()
     else:
-        # 取库中全部 (url, title) 作为去重依据
         rows = (await db.execute(
-            select(IntelArticle.url, IntelArticle.title)
+            select(IntelArticle.url, IntelArticle.title).where(IntelArticle.user_id == user_id)
         )).all()
         existing_keys = {_dedup_key(url, title) for url, title in rows if url or title}
 
@@ -153,9 +159,10 @@ async def store_daily_intel(
             continue
         logger.info(
             "[store] +%s | %s | %s",
-            d.region, (d.source or "?")[:20], (d.title or "")[:60],
+            d.region, (d.source or "")[:20], (d.title or "")[:60],
         )
         db.add(IntelArticle(
+            user_id=user_id,
             region=d.region,
             title=(d.title or "")[:200],
             summary=(d.summary or "")[:500],
@@ -180,8 +187,8 @@ def _dedup_key(url: str | None, title: str | None) -> str:
     return ""
 
 
-async def generate_intel_now(*, overwrite: bool = False) -> int:
-    """跑一次 Agent 生成并入库。用独立 session，带并发锁。
+async def generate_intel_now(*, user_id: int, overwrite: bool = False) -> int:
+    """跑一次 Agent（用 user_id 的配置）生成并入库。用独立 session，带并发锁。
 
     供手动端点 POST /api/intel/generate 调用。
     """
@@ -190,18 +197,39 @@ async def generate_intel_now(*, overwrite: bool = False) -> int:
         from app.services.intel_agent import fetch_ai_intel
         from app.database import async_session_factory
 
-        drafts = await fetch_ai_intel()
+        drafts = await fetch_ai_intel(user_id)
         async with async_session_factory() as db:
-            n = await store_daily_intel(db, drafts, overwrite=overwrite)
+            n = await store_daily_intel(db, drafts, user_id=user_id, overwrite=overwrite)
             await db.commit()
-        logger.info("intel generated (overwrite=%s): %d drafts -> %d stored",
-                    overwrite, len(drafts), n)
+        logger.info("intel generated user=%s (overwrite=%s): %d drafts -> %d stored",
+                    user_id, overwrite, len(drafts), n)
         return n
 
 
 async def scheduled_generate_intel() -> None:
-    """每日定时入口。失败只记日志不抛穿（调度器继续运行）。"""
+    """每日定时入口：遍历「已启用 AI 配置」的用户，逐个跑各自的 intel。
+
+    单个用户失败不影响其他用户；整体失败只记日志不抛穿（调度器继续运行）。
+    """
+    from app.database import async_session_factory
+    from app.models.user_ai_config import UserAIConfig
+
     try:
-        await generate_intel_now(overwrite=False)
+        async with async_session_factory() as db:
+            rows = (await db.execute(
+                select(UserAIConfig.user_id).where(
+                    UserAIConfig.enabled.is_(True),
+                    UserAIConfig.model != "",
+                    UserAIConfig.base_url != "",
+                    UserAIConfig.api_key_enc != "",
+                )
+            )).scalars().all()
+        user_ids = [r for r in rows if r is not None]
+        logger.info("scheduled intel: %d configured users", len(user_ids))
+        for uid in user_ids:
+            try:
+                await generate_intel_now(user_id=uid, overwrite=False)
+            except Exception:  # noqa: BLE001
+                logger.exception("intel generation failed for user=%s", uid)
     except Exception:  # noqa: BLE001
         logger.exception("daily intel generation failed")

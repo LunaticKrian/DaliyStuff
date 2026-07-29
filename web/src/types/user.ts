@@ -8,6 +8,7 @@ export interface User {
   character_class: string | null
   birthday: string | null
   profile_completed: boolean
+  is_admin: boolean
   created_at: string
 }
 

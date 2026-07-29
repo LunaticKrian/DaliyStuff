@@ -8,7 +8,7 @@
 """
 import json
 import logging
-import os
+import time
 from datetime import datetime, timedelta, timezone
 
 from claude_agent_sdk import (
@@ -26,8 +26,12 @@ from claude_agent_sdk import (
 )
 
 from app.config import settings
+from app.database import async_session_factory
 from app.schemas.intel import ArticleDraft, IntelBatch
 from app.services.intel_sources import fetch_page_text, fetch_rss_items
+from app.services.llm_config import (
+    check_quota, load_snapshot, record_usage, sdk_env, with_extra_prompt,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,12 +43,7 @@ def _trunc(s: str, limit: int = 2000) -> str:
     s = str(s)
     return s if len(s) <= limit else f"{s[:limit]}…<+{len(s) - limit} chars>"
 
-# 把 .env/Settings 里的 GLM 配置注入 os.environ，确保 Agent SDK 拉起的子进程稳定继承
-# （pydantic-settings 读 .env 只写 Settings 对象，不写 os.environ）。
-for _k in ("ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL"):
-    _v = getattr(settings, _k, None)
-    if _v and not os.environ.get(_k):
-        os.environ[_k] = _v
+# (v260729) per-user 模型/key 改为运行时经 ClaudeAgentOptions(env=, model=) 注入，见 build_options(snap)。
 
 
 # ── in-process MCP 工具 ────────────────────────────────────────────────
@@ -146,14 +145,16 @@ def build_prompt() -> str:
     )
 
 
-def build_options() -> ClaudeAgentOptions:
+def build_options(snap) -> ClaudeAgentOptions:
     return ClaudeAgentOptions(
-        system_prompt=build_system_prompt(),
+        system_prompt=with_extra_prompt(build_system_prompt(), snap),
         mcp_servers={"intel": INTEL_SERVER},
         allowed_tools=["search_ai_news", "fetch_page"],
         permission_mode="bypassPermissions",
-        max_turns=settings.INTEL_MAX_TURNS,
-        max_budget_usd=settings.INTEL_MAX_BUDGET,
+        max_turns=snap.max_turns,
+        max_budget_usd=snap.max_budget_usd,
+        env=sdk_env(snap),
+        model=snap.model,
         output_format={
             "type": "json_schema",
             "schema": IntelBatch.model_json_schema(),
@@ -201,26 +202,48 @@ def _log_stream_message(msg) -> None:
         logger.debug("[agent·消息] %s", type(msg).__name__)
 
 
-async def fetch_ai_intel() -> list[ArticleDraft]:
-    """跑一次 Agent，返回结构化情报草稿。失败抛异常交由上层处理。"""
+async def fetch_ai_intel(user_id: int) -> list[ArticleDraft]:
+    """跑一次 Agent（使用 user_id 的 per-user 配置），返回结构化情报草稿。
+
+    未配置 / 配额超限 → 抛 ValueError（上层据此跳过该用户）。
+    """
+    async with async_session_factory() as db:
+        snap = await load_snapshot(db, user_id)
+    if snap is None:
+        raise ValueError(f"user {user_id} 未配置 AI 模型，跳过 intel 生成")
+    async with async_session_factory() as db:
+        ok, reason = await check_quota(db, user_id)
+    if not ok:
+        raise ValueError(f"user {user_id} {reason}，跳过 intel 生成")
+
     prompt = build_prompt()
-    options = build_options()
+    options = build_options(snap)
 
     logger.info("=" * 60)
-    logger.info("[agent·启动] model=%s base=%s max_turns=%s",
-                os.environ.get("ANTHROPIC_MODEL"), os.environ.get("ANTHROPIC_BASE_URL"),
-                settings.INTEL_MAX_TURNS)
+    logger.info("[agent·启动] user=%s model=%s base=%s turns=%s",
+                user_id, snap.model, snap.base_url, snap.max_turns)
     logger.info("[agent·系统提示] %s", _trunc(build_system_prompt(), 1200))
     logger.info("[agent·用户输入] %s", prompt)
     logger.info("-" * 60)
 
     result_msg: ResultMessage | None = None
+    t0 = time.monotonic()
     async for msg in query(prompt=prompt, options=options):
         _log_stream_message(msg)
         if isinstance(msg, ResultMessage):
             result_msg = msg
 
     logger.info("-" * 60)
+    if result_msg is not None:
+        try:
+            async with async_session_factory() as db:
+                await record_usage(
+                    db, user_id=user_id, agent_type="intel", model=snap.model,
+                    result_msg=result_msg, duration_ms=int((time.monotonic() - t0) * 1000),
+                )
+        except Exception:
+            logger.exception("[intel-agent] record_usage failed")
+
     if result_msg is None:
         logger.error("[agent·失败] 未返回 ResultMessage")
         raise RuntimeError("Agent 未返回结果")

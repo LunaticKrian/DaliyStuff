@@ -138,6 +138,24 @@ const router = createRouter({
       meta: { requiresAuth: true, tab: 'profile' },
     },
     {
+      path: '/ai-config',
+      name: 'ai-config',
+      component: pick(
+        () => import('../views/AIConfig.vue'),
+        () => import('../views/mobile/AIConfig.vue'),
+      ),
+      meta: { requiresAuth: true, tab: 'profile' },
+    },
+    {
+      path: '/hero',
+      name: 'hero',
+      component: pick(
+        () => import('../views/admin/SiteAdmin.vue'),
+        () => import('../views/mobile/admin/SiteAdmin.vue'),
+      ),
+      meta: { requiresAuth: true, requiresAdmin: true, tab: 'profile' },
+    },
+    {
       path: '/quests',
       name: 'quests',
       component: pick(
@@ -244,6 +262,11 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.guest && auth.isAuthenticated) {
+    return { name: 'dashboard' }
+  }
+
+  // 仅管理员可访问（如 /hero）
+  if (to.meta.requiresAdmin && !auth.user?.is_admin) {
     return { name: 'dashboard' }
   }
 

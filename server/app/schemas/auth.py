@@ -24,6 +24,7 @@ class UserResponse(BaseModel):
     character_class: str | None
     birthday: date_type | None
     profile_completed: bool
+    is_admin: bool
     created_at: datetime
 
     model_config = {"from_attributes": True}

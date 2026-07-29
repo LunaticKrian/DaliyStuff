@@ -15,6 +15,7 @@ from app.database import Base, engine
 setup_logging()
 from app.models import (  # noqa: F401 – ensure tables are created
     AdditionalCost,
+    AuditLog,
     Category,
     ChatMessage,
     ChatSession,
@@ -32,10 +33,16 @@ from app.models import (  # noqa: F401 – ensure tables are created
     Tag,
     Task,
     User,
+    UserAIConfig,
     UserAchievement,
+    UserQuota,
+    UsageRecord,
     item_tags,
 )
-from app.routers import auth, categories, chat, intel, items, journals, quests, resume, rtc, stats, tags, tasks
+from app.routers import (
+    auth, admin, categories, chat, intel, items, journals,
+    quests, resume, rtc, stats, tags, tasks, user_config,
+)
 from app.utils.migrate import ensure_column
 
 
@@ -46,6 +53,12 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
         await conn.run_sync(Base.metadata.create_all)
         # create_all 不会 ALTER 已存在的表：给 users 补 exp 列（任务系统经验持久化）
         await ensure_column(conn, "users", "exp", "INTEGER DEFAULT 0")
+        # v260729：用户后台 / per-user AI 配置所需列
+        await ensure_column(conn, "users", "is_admin", "BOOLEAN DEFAULT 0 NOT NULL")
+        await ensure_column(conn, "users", "disabled", "BOOLEAN DEFAULT 0 NOT NULL")
+        await ensure_column(conn, "users", "must_change_password", "BOOLEAN DEFAULT 0 NOT NULL")
+        # v260729：每日资讯改 per-user，旧数据 user_id 留空视为公共
+        await ensure_column(conn, "intel_articles", "user_id", "INTEGER")
         # 简历模板选择 + 双语 PendingChange 语言侧（履历模板/双语特性）
         await ensure_column(conn, "resumes", "template", "VARCHAR(32) DEFAULT 'pixel' NOT NULL")
         await ensure_column(conn, "resume_pending_changes", "lang", "VARCHAR(8) DEFAULT 'zh' NOT NULL")
@@ -55,6 +68,10 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[None, None]:
             "UPDATE intel_articles SET published_at = date(published_at) "
             "WHERE published_at != date(published_at)"
         ))
+
+    # v260729：首启确保超级管理员账号存在（口令哈希入库，首登强制改密）
+    from app.utils.seed import ensure_superadmin
+    await ensure_superadmin()
 
     # 每日 AI 资讯定时生成（APScheduler）
     scheduler = None
@@ -112,6 +129,8 @@ app.include_router(tasks.router)
 app.include_router(chat.router)
 app.include_router(rtc.router)
 app.include_router(resume.router)
+app.include_router(user_config.router)
+app.include_router(admin.router)
 
 # ── Static Files ───────────────────────────────────────────────────────
 # 修正：原代码 getattr(settings, 'upload_dir', ...) 用了小写属性名，

@@ -7,8 +7,10 @@ from app.database import Base
 
 
 class IntelArticle(Base):
-    """AI 技术情报文章（全局共享，无 user_id）。
+    """AI 技术情报文章。
 
+    v260729 起改 per-user：每条归属生成它的用户（user_id）。历史数据 user_id 为空，
+    视为公共数据（前端默认仅展示当前用户的）。
     对齐前端 web/src/types/intel.ts 的 Article 接口。
     published_at = 推送日（生成当天），非原文真实发布日。
     """
@@ -16,6 +18,7 @@ class IntelArticle(Base):
     __tablename__ = "intel_articles"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int | None] = mapped_column(Integer, index=True, nullable=True)
     region: Mapped[str] = mapped_column(String(16), nullable=False, index=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     summary: Mapped[str] = mapped_column(String(500), nullable=False, default="", server_default="")

@@ -14,7 +14,7 @@
 """
 import json
 import logging
-import os
+import time
 from collections.abc import AsyncGenerator
 
 from claude_agent_sdk import (
@@ -30,18 +30,14 @@ from claude_agent_sdk import (
 )
 from pydantic import ValidationError
 
-from app.config import settings
 from app.database import async_session_factory
 from app.models.resume import PendingChange, Resume
 from app.services import resume as resume_svc
+from app.services.llm_config import (
+    check_quota, load_snapshot, record_usage, sdk_env, with_extra_prompt,
+)
 
 logger = logging.getLogger(__name__)
-
-# 把 .env/Settings 的 GLM 配置注入 os.environ（同 intel / task_agent）
-for _k in ("ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL"):
-    _v = getattr(settings, _k, None)
-    if _v and not os.environ.get(_k):
-        os.environ[_k] = _v
 
 
 SYSTEM_PROMPT = """\
@@ -212,18 +208,21 @@ def _err(msg: str):
     return {"content": [{"type": "text", "text": json.dumps({"error": msg}, ensure_ascii=False)}]}
 
 
-def _build_options(server, lang: str = "zh") -> ClaudeAgentOptions:
+def _build_options(server, snap, lang: str = "zh") -> ClaudeAgentOptions:
     lang_label = "中文" if lang == "zh" else "English"
-    system_prompt = (
+    base = (
         SYSTEM_PROMPT
         + f"\n\n当前简历语言：{lang_label}。所有文案改写、新增条目内容必须使用{lang_label}输出。"
     )
     return ClaudeAgentOptions(
-        system_prompt=system_prompt,
+        system_prompt=with_extra_prompt(base, snap),
         mcp_servers={"resumekit": server},
         allowed_tools=["get_resume", "get_section", "update_profile", "add_entry", "update_entry", "delete_entry"],
         permission_mode="bypassPermissions",
-        max_turns=settings.RESUME_AGENT_MAX_TURNS,
+        max_turns=snap.max_turns,
+        max_budget_usd=snap.max_budget_usd,
+        env=sdk_env(snap),
+        model=snap.model,
         # 开启逐 token 流式：SDK 额外产出 StreamEvent（Anthropic 原生 content_block_delta/text_delta），
         # 否则每轮只发一个完整 AssistantMessage → 前端收到的是整段而非流式。
         include_partial_messages=True,
@@ -242,22 +241,39 @@ async def run_agent(
       {type: done, text, subtype, count}
       {type: error, message}
     """
+    # 1. per-user 配置
+    async with async_session_factory() as db:
+        snap = await load_snapshot(db, user_id)
+    if snap is None:
+        yield {"type": "error", "message": "未配置 AI 模型，请先在「设置 → AI 配置」中填写。"}
+        yield {"type": "done", "text": "", "subtype": "no_config", "count": 0}
+        return
+    # 2. 配额校验
+    async with async_session_factory() as db:
+        ok, reason = await check_quota(db, user_id)
+    if not ok:
+        yield {"type": "error", "message": reason}
+        yield {"type": "done", "text": "", "subtype": "quota_exceeded", "count": 0}
+        return
+
     created: list[dict] = []
     # 取当前语言，注入 system_prompt，让模型用对应语言产出文案
     async with async_session_factory() as _db:
         _r = await _db.get(Resume, resume_id)
         lang = _r.lang if _r else "zh"
     server = _build_tools(resume_id, group_id, created)
-    options = _build_options(server, lang)
+    options = _build_options(server, snap, lang)
 
-    logger.info("[resume-agent] start user=%s resume=%s group=%s turns=%s",
-                user_id, resume_id, group_id, settings.RESUME_AGENT_MAX_TURNS)
+    logger.info("[resume-agent] start user=%s resume=%s model=%s turns=%s",
+                user_id, resume_id, snap.model, snap.max_turns)
     full_text: list[str] = []
     seen = 0
     subtype = "unknown"
+    result_msg = None
     # 当前 assistant 轮是否已通过 StreamEvent 收到逐 token 文本。
     # 用于避免与该轮完整 TextBlock 重复推送（并保留「无 partial 时的回退」）。
     turn_streamed = False
+    t0 = time.monotonic()
 
     try:
         async for msg in query(prompt=prompt or "（开始）", options=options):
@@ -287,9 +303,21 @@ async def run_agent(
                 seen += 1
             if isinstance(msg, ResultMessage):
                 subtype = msg.subtype or "unknown"
+                result_msg = msg
                 logger.info("[resume-agent] done subtype=%s turns=%s", subtype, getattr(msg, "num_turns", None))
     except Exception as e:  # noqa: BLE001
         logger.exception("[resume-agent] run failed")
         yield {"type": "error", "message": f"agent 运行失败: {e}"}
+
+    # 3. 记账
+    if result_msg is not None:
+        try:
+            async with async_session_factory() as db:
+                await record_usage(
+                    db, user_id=user_id, agent_type="resume", model=snap.model,
+                    result_msg=result_msg, duration_ms=int((time.monotonic() - t0) * 1000),
+                )
+        except Exception:
+            logger.exception("[resume-agent] record_usage failed")
 
     yield {"type": "done", "text": "".join(full_text), "subtype": subtype, "count": len(created)}

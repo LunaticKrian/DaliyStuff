@@ -23,6 +23,10 @@ class User(Base):
     character_class: Mapped[str | None] = mapped_column(String(100), nullable=True)
     birthday: Mapped[date_type | None] = mapped_column(Date, nullable=True)
     profile_completed: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
+    # ── v260729：角色 / 后台管控 ──
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
+    must_change_password: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False,
     )

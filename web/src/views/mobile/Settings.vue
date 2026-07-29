@@ -64,6 +64,25 @@ async function logout() {
       <span class="m-head__title">设置</span>
     </div>
 
+    <!-- AI 与管理 -->
+    <div class="m-section-title">AI 与管理</div>
+    <div class="m-row" style="cursor: pointer;" @click="router.push('/ai-config')">
+      <div class="m-row__ico">◈</div>
+      <div class="m-row__main">
+        <div class="m-row__title">AI 模型配置</div>
+        <div class="m-row__sub">模型 / 接口 / 密钥</div>
+      </div>
+      <span style="color: var(--pixel-text-secondary); font-size: 18px;">›</span>
+    </div>
+    <div v-if="auth.user?.is_admin" class="m-row" style="cursor: pointer;" @click="router.push('/hero')">
+      <div class="m-row__ico">▦</div>
+      <div class="m-row__main">
+        <div class="m-row__title">站点管理后台</div>
+        <div class="m-row__sub">用户 / 配额 / 用量 / 审计</div>
+      </div>
+      <span style="color: var(--pixel-text-secondary); font-size: 18px;">›</span>
+    </div>
+
     <!-- 账户 -->
     <div class="m-section-title">账户</div>
     <div class="m-card">

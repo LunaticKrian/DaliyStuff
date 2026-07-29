@@ -57,4 +57,17 @@ async def get_current_user(
     user = await get_user_by_id(db, session.user_id)
     if user is None:
         raise credentials_exception
+    if user.disabled:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="账号已被禁用",
+        )
+    return user
+
+
+async def get_current_admin(user: User = Depends(get_current_user)) -> User:
+    """要求当前用户是管理员（is_admin）。用于 /api/admin/* 路由。"""
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="需要管理员权限",
+        )
     return user

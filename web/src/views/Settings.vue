@@ -117,6 +117,36 @@ async function handleChangePassword() {
       </h1>
     </div>
 
+    <!-- AI 与管理 入口 -->
+    <div class="settings-card pixel-border">
+      <div class="card-header">
+        <span class="card-icon">✦</span>
+        <span>AI 与管理</span>
+      </div>
+      <div class="card-body">
+        <router-link to="/ai-config" class="link-row">
+          <span class="link-main">
+            <span class="link-icon">◈</span>
+            <span>
+              <span class="link-title">AI 模型配置</span>
+              <span class="link-desc">配置你自己的模型 / 接口 / 密钥</span>
+            </span>
+          </span>
+          <span class="link-chev">›</span>
+        </router-link>
+        <router-link v-if="auth.user?.is_admin" to="/hero" class="link-row">
+          <span class="link-main">
+            <span class="link-icon">▦</span>
+            <span>
+              <span class="link-title">站点管理后台</span>
+              <span class="link-desc">用户 / 配额 / 用量 / 审计</span>
+            </span>
+          </span>
+          <span class="link-chev">›</span>
+        </router-link>
+      </div>
+    </div>
+
     <!-- Profile Section -->
     <div class="settings-card pixel-border">
       <div class="card-header">
@@ -311,4 +341,13 @@ async function handleChangePassword() {
 .session-badge { font-family: var(--d-f-mono); font-size: 10px; font-weight: 600; color: #0a0b10; background: var(--pixel-primary); padding: 2px 7px; border-radius: 999px; letter-spacing: .04em; }
 [data-theme="light"] .session-badge { color: #fff; }
 .session-meta { font-family: var(--d-f-mono); font-size: 11px; color: var(--pixel-text-secondary); }
+
+/* ===== Link rows（入口卡）===== */
+.link-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 12px; background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); text-decoration: none; color: var(--pixel-text); transition: border-color .2s ease, transform .15s ease; }
+.link-row:hover { border-color: var(--pixel-primary); transform: translateX(2px); }
+.link-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.link-icon { color: var(--pixel-primary); font-size: 15px; width: 18px; text-align: center; flex: none; }
+.link-title { font-family: var(--d-f-body); font-size: 13px; font-weight: 600; display: block; }
+.link-desc { font-family: var(--d-f-mono); font-size: 11px; color: var(--pixel-text-secondary); display: block; margin-top: 2px; }
+.link-chev { color: var(--pixel-text-secondary); font-size: 18px; flex: none; }
 </style>

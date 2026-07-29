@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixelPack · 260729 设计稿 · 用户 AI 配置 + 管理后台</title>
+  <link rel="stylesheet" href="../260728-site-redesign/design-system/tokens.css" />
+  <link rel="stylesheet" href="../260728-site-redesign/design-system/typography.css" />
+  <link rel="stylesheet" href="../260728-site-redesign/design-system/components.css" />
+  <link rel="stylesheet" href="../260728-site-redesign/design-system/pixel.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2rem) 4rem; }
+    .ov-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .ov-bg .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .5; }
+    .ov-bg .a { width: 480px; height: 480px; left: -10%; top: -12%; background: radial-gradient(circle, var(--aurora-1), transparent 65%); }
+    .ov-bg .b { width: 380px; height: 380px; right: -8%; bottom: -10%; background: radial-gradient(circle, var(--aurora-2), transparent 65%); }
+    .hero { text-align: center; margin-bottom: 2.4rem; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: .6rem 0; }
+    .hero .sub { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: .95rem; }
+    .mk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-bottom: 2.4rem; }
+    @media (max-width: 860px){ .mk-grid { grid-template-columns: 1fr; } }
+    .mk { display: block; }
+    .mk .card { padding: 0; overflow: hidden; height: 100%; }
+    .mk .shot { height: 168px; display: grid; place-items: center; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, var(--surface-2), var(--surface)); position: relative; overflow: hidden; }
+    .mk .meta { padding: 1rem 1.1rem; }
+    .mk .meta h3 { font-size: 1rem; display: flex; align-items: center; gap: .5rem; }
+    .mk .meta p { color: var(--muted); font-size: .82rem; margin-top: .35rem; line-height: 1.5; }
+    .mk .tags { display: flex; gap: .35rem; flex-wrap: wrap; margin-top: .7rem; }
+    /* mini previews */
+    .mini-tower { display: flex; align-items: flex-end; gap: 3px; height: 46px; }
+    .mini-tower i { width: 6px; background: var(--surface-3); border-radius: 1px; }
+    .mini-tower i:nth-child(1){height:34%}.mini-tower i:nth-child(2){height:52%}.mini-tower i:nth-child(3){height:72%}.mini-tower i:nth-child(4){height:90%}.mini-tower i:nth-child(5){height:100%}
+    .mini-tower i.on { background: var(--grad); box-shadow: 0 0 8px rgba(34,211,238,.5); }
+    .mini-phone { width: 96px; height: 150px; border: 2px solid var(--border-2); border-radius: 16px; background: var(--bg-1); padding: 8px 7px; display: flex; flex-direction: column; gap: 5px; }
+    .mini-phone .bar { height: 7px; border-radius: 2px; background: var(--surface-3); }
+    .mini-phone .bar.g { background: var(--grad); }
+    .mini-phone .blk { display: flex; gap: 2px; }
+    .mini-phone .blk i { flex: 1; height: 7px; background: var(--surface-3); border-radius: 1px; }
+    .mini-phone .blk i.on { background: var(--cyan); }
+    .mini-tbl { width: 78%; }
+    .mini-tbl .r { display: flex; align-items: center; gap: .4rem; padding: .32rem .5rem; border-bottom: 1px solid var(--border); }
+    .mini-tbl .r:last-child { border: 0; }
+    .mini-tbl .av { width: 14px; height: 14px; border-radius: 50%; background: var(--grad-soft); flex: none; }
+    .mini-tbl .ln { flex: 1; height: 6px; border-radius: 2px; background: var(--surface-3); }
+    .mini-tbl .bd { width: 26px; height: 10px; border-radius: 1px; background: var(--surface-3); }
+    .mini-tbl .bd.a { background: rgba(251,191,36,.5); } .mini-tbl .bd.s { background: rgba(34,211,238,.5); }
+    .sect { margin-bottom: 2.2rem; }
+    .sect h2 { font-size: 1.2rem; margin-bottom: .9rem; display: flex; align-items: center; gap: .5rem; }
+    .dec { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+    @media (max-width: 680px){ .dec { grid-template-columns: 1fr; } }
+    .dec .li { padding: .9rem 1rem; }
+    .dec .li .k { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cyan); }
+    .dec .li .v { font-size: .9rem; margin-top: .25rem; }
+    .swatch-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .sw { width: 46px; height: 46px; border-radius: var(--r-sm); border: 1px solid var(--border-2); }
+    .back { display: inline-flex; align-items: center; gap: .4rem; color: var(--muted); font-family: var(--f-mono); font-size: .76rem; }
+    .back:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="pi-sparkles" viewBox="0 0 24 24" fill="currentColor"><path d="M11 1h2v4h-2zm0 22h2v-4h-2zM9 5h2v4H9zm0 14h2v-4H9zm4-14h2v4h-2zm0 14h2v-4h-2zM5 9h4v2H5zm14 0h-4v2h4zM1 11h4v2H1zm22 0h-4v2h4zM5 13h4v2H5zm14 0h-4v2h4zm0-12h2v6h-2z"/><path d="M17 3h6v2h-6zM3 17h2v2H3zm-2 2h2v2H1zm2 2h2v2H3zm2-2h2v2H5z"/></symbol>
+  <symbol id="pi-shield" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2h16v2H4zM2 4h2v10H2zm18 0h2v10h-2zM4 14h2v2H4zm2 2h2v2H6zm4 4h4v2h-4zm10-6h-2v2h2zm-2 2h-2v2h2zm-2 2h-2v2h2zm-6 0H8v2h2z"/></symbol>
+  <symbol id="pi-arrow-left" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11v2H4v-2zM8 13v2H6v-2zm2 2v2H8v-2zm2 2v2h-2v-2zm-4-6V9H6v2z"/><path d="M10 15V7H8v8zm2 2V5h-2v12z"/></symbol>
+  <symbol id="pi-check" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18H8v-2h2v2Zm-2-2H6v-2h2v2Zm4-2v2h-2v-2h2Zm-6 0H4v-2h2v2Zm8 0h-2v-2h2v2Zm2-2h-2v-2h2v2Zm2-2h-2V8h2v2Zm2-2h-2V6h2v2Z"/></symbol>
+  <symbol id="pi-lock" viewBox="0 0 24 24" fill="currentColor"><path d="M9 1h6v2H9zM7 3h2v2H7zm8 0h2v2h-2zM5 5h2v5H5zm12 0h2v5h-2zM4 10h16v11H4zm6 5h4v4h-4z"/></symbol>
+  <symbol id="pi-target" viewBox="0 0 24 24" fill="currentColor"><path d="M5 1h14v2H5zM3 3h2v2H3zm0 16h2v2H3zm16 0h2v2h-2zm0-16h2v2h-2zm2 2h2v14h-2zM5 21h14v2H5zM1 5h2v14H1zm8 0h6v2H9zM5 9h2v6H5zm4 8h6v2H9zm8-8h2v6h-2zm-6 0h2v2h-2zM7 7h2v2H7zm0 8h2v2H7zm8 0h2v2h-2zm0-8h2v2h-2zm-6 4h2v2H9zm2 2h2v2h-2zm2-2h2v2h-2z"/></symbol>
+  <symbol id="pi-users" viewBox="0 0 24 24" fill="currentColor"><path d="M8 2h6v2H8zm0 8h6v2H8zm6-6h2v6h-2zM6 4h2v6H7zM6 4h1v6H6zM3 16h2v6H3zm12 0h2v6h-2zM6 13h10v2H6zm-2 2h2v2H4zm12 0h2v2h-2zM16 16h2v2h-2zM6 16h2v2H6z"/></symbol>
+</svg>
+
+<div class="ov-bg" aria-hidden="true"><span class="orb a"></span><span class="orb b"></span></div>
+
+<div class="wrap">
+  <a class="back" href="../../docs/technology/260729-用户AI配置与管理后台.md"><svg class="pi sm"><use href="#pi-arrow-left"/></svg> 技术方案文档</a>
+
+  <div class="hero">
+    <span class="eyebrow">DESIGN · 260729</span>
+    <h1>用户 AI 配置 <span class="grad">+</span> 站点管理后台</h1>
+    <p class="sub">把模型 / 接口 / 密钥从 <span class="mono" style="color:var(--cyan)">.env</span> 迁到「每个用户自助配置」，并新增管理员后台。下为高保真设计稿，点击进入全屏预览。</p>
+  </div>
+
+  <!-- Mockup 入口 -->
+  <div class="mk-grid">
+    <a class="mk" href="desktop-ai-config.html">
+      <div class="card card-hover">
+        <div class="shot">
+          <div class="mini-tower"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        </div>
+        <div class="meta">
+          <h3><svg class="pi" style="color:var(--cyan)"><use href="#pi-sparkles"/></svg> 桌面 · AI 模型配置</h3>
+          <p>模型链路 HUD + 连接参数表单 + 测试连接 + 用量配额。</p>
+          <div class="tags"><span class="badge">per-user</span><span class="badge success">掩码 key</span><span class="badge info">测试连接</span></div>
+        </div>
+      </div>
+    </a>
+    <a class="mk" href="desktop-admin.html">
+      <div class="card card-hover">
+        <div class="shot">
+          <div class="mini-tbl">
+            <div class="r"><span class="av"></span><span class="ln"></span><span class="bd s"></span></div>
+            <div class="r"><span class="av"></span><span class="ln"></span><span class="bd a"></span></div>
+            <div class="r"><span class="av"></span><span class="ln"></span><span class="bd"></span></div>
+            <div class="r"><span class="av"></span><span class="ln"></span><span class="bd"></span></div>
+          </div>
+        </div>
+        <div class="meta">
+          <h3><svg class="pi" style="color:var(--cyan)"><use href="#pi-shield"/></svg> 桌面 · 站点管理后台</h3>
+          <p>用户管理 + 角色权限 + 模型分布 + 审计日志 + 配额编辑。</p>
+          <div class="tags"><span class="badge warn">admin only</span><span class="badge info">审计</span><span class="badge">配额</span></div>
+        </div>
+      </div>
+    </a>
+    <a class="mk" href="mobile-ai-config.html">
+      <div class="card card-hover">
+        <div class="shot">
+          <div class="mini-phone">
+            <div class="bar g" style="width:60%"></div>
+            <div class="bar"></div>
+            <div class="blk"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="bar" style="width:80%"></div>
+            <div class="bar"></div>
+            <div class="bar" style="width:50%"></div>
+          </div>
+        </div>
+        <div class="meta">
+          <h3><svg class="pi" style="color:var(--cyan)"><use href="#pi-sparkles"/></svg> 移动 · AI 模型配置</h3>
+          <p>移动外壳下的紧凑配置页，同签名 HUD + 表单 + 用量。</p>
+          <div class="tags"><span class="badge">iOS / Android</span><span class="badge success">响应式</span></div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 签名元素 -->
+  <div class="sect">
+    <h2><svg class="pi" style="color:var(--cyan)"><use href="#pi-target"/></svg> 签名核心元素 · 模型链路 HUD</h2>
+    <div class="px-card dither grad-border" style="max-width:560px"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
+      <div class="link-hud">
+        <div class="signal">
+          <div class="tower live"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+          <div class="slbl">SIGNAL</div>
+        </div>
+        <div class="core">
+          <span class="prov">Anthropic 兼容 · GLM</span>
+          <div class="model grad">glm-5.2</div>
+          <span class="keychip"><svg class="pi sm" style="color:var(--cyan)"><use href="#pi-lock"/></svg> sk-****4f8c · 加密存储</span>
+        </div>
+        <div class="status"><span class="badge success"><span class="dot"></span>已启用</span></div>
+      </div>
+    </div>
+    <p class="t-muted" style="margin-top:.9rem;font-size:.88rem;max-width:680px">用像素工艺的<strong>直角卡 + 四角刻度 + 抖动底纹</strong>，把「模型 / base_url / 密钥 / 连接状态」框成科幻取景器；分段像素块当<strong>信号强度塔</strong>，呼应 PixelPack 的数据层像素语言——避开通用设置表单的默认皮。控件区（input/btn/toggle）仍保持现代精致，像素只点缀于这一数据表面。</p>
+  </div>
+
+  <!-- 设计决策映射 -->
+  <div class="sect">
+    <h2><svg class="pi" style="color:var(--cyan)"><use href="#pi-check"/></svg> 已定决策（对应技术方案 §0 / §3.9）</h2>
+    <div class="dec">
+      <div class="card li dec-li"><div class="k">配置层级</div><div class="v">纯 per-user，<span class="mono">.env</span> 的 ANTHROPIC_* 废弃</div></div>
+      <div class="card li dec-li"><div class="k">Key 存储</div><div class="v">服务端 Fernet 加密入库，读取掩码</div></div>
+      <div class="card li dec-li"><div class="k">管理后台</div><div class="v">用户 + 审计 + 用量统计 + 每用户配额</div></div>
+      <div class="card li dec-li"><div class="k">配置项</div><div class="v">model / base_url / api_key / max_turns / budget / system_prompt</div></div>
+      <div class="card li dec-li"><div class="k">每日资讯 intel</div><div class="v">改 per-user，定时遍历已配置用户各自跑</div></div>
+      <div class="card li dec-li"><div class="k">超级管理员</div><div class="v">预制 super-hero，口令哈希入库、首登改密</div></div>
+      <div class="card li dec-li"><div class="k">system_prompt</div><div class="v">附加到各 Agent 内置提示之后（不覆盖）</div></div>
+      <div class="card li dec-li"><div class="k">配额超限</div><div class="v">拒绝并提示，不静默计费</div></div>
+    </div>
+  </div>
+
+  <!-- 色板 / 字体 -->
+  <div class="sect">
+    <h2><svg class="pi" style="color:var(--cyan)"><use href="#pi-sparkles"/></svg> 设计令牌（沿用整站）</h2>
+    <div class="row gap-md wrap">
+      <div class="col gap-sm">
+        <span class="faint mono" style="font-size:.64rem">渐变 / grad</span>
+        <div class="swatch-row">
+          <span class="sw" style="background:var(--grad)"></span>
+          <span class="sw" style="background:var(--indigo)"></span>
+          <span class="sw" style="background:var(--violet)"></span>
+          <span class="sw" style="background:var(--cyan)"></span>
+          <span class="sw" style="background:var(--success)"></span>
+          <span class="sw" style="background:var(--warn)"></span>
+          <span class="sw" style="background:var(--danger)"></span>
+        </div>
+      </div>
+      <div class="col gap-sm">
+        <span class="faint mono" style="font-size:.64rem">字体</span>
+        <div style="font-family:var(--f-display);font-weight:700">Space Grotesk · 标题</div>
+        <div style="font-family:var(--f-body)">Inter · 正文（中文回退 PingFang）</div>
+        <div class="mono" style="font-size:.84rem">JetBrains Mono · 数据/标签</div>
+      </div>
+    </div>
+    <p class="faint mono" style="font-size:.7rem;margin-top:1rem">深 / 浅双主题（右上角切换）· 禁像素字体 · 像素工艺仅数据层点缀</p>
+  </div>
+</div>
+</body>
+</html>

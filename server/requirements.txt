@@ -6,6 +6,7 @@ alembic
 pydantic-settings
 email-validator
 python-jose[cryptography]
+cryptography            # 用户 API Key 加密（Fernet）；jose 已间接依赖，此处显式声明
 passlib[bcrypt]
 python-multipart
 Pillow

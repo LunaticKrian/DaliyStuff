@@ -44,7 +44,7 @@ onUnmounted(() => {
   if (starTimer) clearInterval(starTimer)
 })
 
-const navItems = [
+const baseNav = [
   { path: '/', label: '角色信息', icon: 'home' },
   { path: '/quests', label: '委托大厅', icon: 'clipboard' },
   { path: '/chat', label: 'AI 对话', icon: 'message' },
@@ -52,6 +52,12 @@ const navItems = [
   { path: '/world-map', label: '世界地图', icon: 'globe' },
   { path: '/resume', label: '冒险履历', icon: 'notebook' },
 ]
+// 仅管理员可见的「规则制定」入口（路由到 /hero 管理后台）；普通用户不渲染。
+const navItems = computed(() =>
+  auth.user?.is_admin
+    ? [...baseNav, { path: '/hero', label: '规则制定', icon: 'shield' }]
+    : baseNav,
+)
 
 async function handleLogout() {
   await auth.logout()
@@ -100,6 +106,7 @@ function onToggleTheme(e: MouseEvent) {
       <symbol id="ml-target" viewBox="0 0 24 24" fill="currentColor"><path d="M5 1h14v2H5zM3 3h2v2H3zm0 16h2v2H3zm16 0h2v2h-2zm0-16h2v2h-2zm2 2h2v14h-2zM5 21h14v2H5zM1 5h2v14H1zm8 0h6v2H9zM5 9h2v6H5zm4 8h6v2H9zm8-8h2v6h-2zm-6 0h2v2h-2zM7 7h2v2H7zm0 8h2v2H7zm8 0h2v2h-2zm0-8h2v2h-2zm-6 4h2v2H9zm2 2h2v2h-2zm2-2h2v2h-2z"/></symbol>
       <symbol id="ml-globe" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v2H6zm0 18h12v2H6zM4 4h2v2H4zm5 0h2v2H9zm0 14h2v2H9zm4 0h2v2h-2zM7 6h2v12H7zm8 0h2v12h-2zm-2-2h2v2h-2zm7 0h-2v2h2zM2 6h2v12H2zm20 0h-2v12h2zM4 18h2v2H4zm16 0h-2v2h2z"/><path d="M3 11h18v2H3z"/></symbol>
       <symbol id="ml-notebook" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h14v2H6zm0 18h14v2H6zM20 4h2v16h-2zM4 4h2v16H4z"/><path d="M2 7h6v2H2zm0 4h6v2H2zm0 4h6v2H2zM16 4h2v16h-2z"/></symbol>
+      <symbol id="ml-shield" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2h16v2H4zM2 4h2v10H2zm18 0h2v10h-2zM4 14h2v2H4zm2 2h2v2H6zm4 4h4v2h-4zm10-6h-2v2h2zm-2 2h-2v2h2zm-2 2h-2v2h2zm-6 0H8v2h2z"/></symbol>
       <symbol id="ml-user" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6v2H9zm0 8h6v2H9zm6-6h2v6h-2zM7 4h2v6H7zM4 18h2v4H4zm14 0h2v4h-2zM8 14h8v2H8zm-2 2h2v2H6zm10 0h2v2h-2z"/></symbol>
       <symbol id="ml-logout" viewBox="0 0 24 24" fill="currentColor"><path d="M8 11h12v2H8zm8-2h2v2h-2z"/><path d="M14 7h2v10h-2zm2 6h2v2h-2zM6 2h12v2H6zm0 18h12v2H6zM4 4h2v16H4zm14 0h2v3h-2zm0 13h2v3h-2z"/></symbol>
       <symbol id="ml-clock" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12v2H6zM2 6h2v12H2zm18 0h2v12h-2zm-2-2h2v2h-2zM4 4h2v2H4zm2 18h12v-2H6zm12-2h2v-2h-2zM4 20h2v-2H4zm7-14h2v7h-2zm2 7h2v2h-2zm2 2h2v2h-2z"/></symbol>
