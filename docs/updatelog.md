@@ -2,6 +2,41 @@
 
 PS：更新记录以日期倒排更新
 
+## 2026年07月29日
+
+### 重构：整站 UI 迁移到新设计系统（高级深色 + 像素点缀 + 深/浅双主题）
+
+把全站从旧「冷调深蓝像素 + CRT 复古 + 像素字体 + 硬边框无圆角」整体迁移到新设计语言：**高级深色为底座（近黑底 + 靛蓝/紫/青渐变 + 玻璃拟态 + Space Grotesk / Inter / JetBrains Mono）+ 像素工艺仅在「游戏/数据」层点缀（Pixelarticons + 立绘像素化 + 角标取景 + 分段经验条）**，并补齐**深/浅双主题切换**。桌面 + 移动 + 外壳 + 共享组件全部迁移，`npm run build`（vue-tsc）通过。
+
+**关键纠偏**：彻底移除像素字体（Press Start 2P / Pixelify Sans / VT323 不支持中文，中英混排极难看）——像素感只靠**像素图标 + 立绘画质 + 角标 + 分段块**传达，文字一律现代字体（中文回退 PingFang）。
+
+**设计稿**（`design/`）
+- `260728-auth-ui/`：登录注册纯高级版（分屏 + 角色存档卡签名）
+- `260728-auth-pixel/`：高保真像素融合版（分段经验条 / 角标取景 / 像素图标）
+- `260728-site-redesign/`：整站设计系统（tokens 双主题 + typography + pixel + components + 58 个 Pixelarticons sprite）+ 桌面/移动可交互原型 + 总览页
+
+**主题切换基础设施**（`web/src/`）
+- `stores/theme.ts`：Pinia store（mode/toggle/set，持久化 localStorage，默认跟随系统 `prefers-color-scheme`）
+- `index.html`：内联脚本前置应用 `data-theme` 防首屏闪烁
+- `layouts/MainLayout.vue`：顶栏 ☾/☀ 切换 + **View Transitions API 圆形展开过渡**（回调内同步改 DOM 以适配 Vue 异步 watcher；不支持/减弱动效时回退即时切换）；夜间动态星点 + 24h 时间进度药丸
+
+**桌面端迁移**（只重写各 `<style scoped>`，模板/脚本不动 → 功能零回归）
+- 已迁：Dashboard / MainLayout / Quests / Chat / AuthLayout / Login / Register + 15 页（ItemList·Detail·Form / Stats / Settings / WorldMap / Transfer / Resume / Categories / Tags / CharacterCreation / BlogList·Editor·Detail·Share）
+- 共享组件：CharacterInfoModal / PixelSelect / PixelDatePicker / ToastNotification（Toast 与 CharacterInfoModal 用 Teleport 到 body，在自身根自带令牌块；浮层用实心底）
+
+**移动端迁移**
+- 核心：重写全局 `styles/mobile.css`（`m-*` 设计系统，令牌+字体挂 `.m-deck`，去 CRT/硬投影/霓虹，保留掌机外壳 + Tab Dock）→ 一举提升 16 个纯用 m- 类的移动页
+- 另迁 3 个有 scoped 样式的移动页（Chat/Setup/Resume）+ `components/mobile/LockScreen.vue`
+
+**全局基线 + 清理**
+- `styles/theme.css` `:root`/`[data-theme=light]` 的 `--pixel-*` 重映射为新色板；`styles/fonts.css` 的 `--font-pixel*` → Inter / JetBrains Mono / Space Grotesk；`index.html` 加载 Space Grotesk
+- 清理 `theme.css` / `animations.css`：删零引用复古工具（scanlines / pixel-glow-* / insert-coin / pixel-noise / vignette / CRT 扫描…），保留并重塑引用项（pixel-border / pixel-loading 圆形平滑 spinner / pixel-card-hover 等）
+- 全 src 终检：像素字体 0、硬偏移投影 0
+
+**资产**：图标 [Pixelarticons](https://github.com/halfmage/pixelarticons)（MIT，24×24）；字体 Google Fonts（OFL）
+
+**偏离/未迁**：`views/desktop/{Setup,DesktopSettings}`（Tauri 桌面专用屏）、`components/resume-templates/TemplatePixel.vue`（**故意**像素风简历模板，保留）。登录/注册/AI 对话已在 dev server 截图核验；其余因需后端/登录未实页截图，依赖构建 + 类型检查 + 同源设计语言保证。
+
 ## 2026年07月28日
 
 ### 新增：移动端客户端 GUILD DECK（Tauri 2 · iOS/Android · 全模块）

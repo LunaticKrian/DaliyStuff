@@ -45,7 +45,7 @@ design/YYMMDD-<英文slug>/
 └── main.js     （可选）交互/状态预览
 ```
 
-设计稿须复用现有视觉体系（冷调深蓝像素 + CRT 复古、`--pixel-*` token、Press Start 2P / Ark Pixel / VT323 字体、硬边框无圆角、steps() 阶跃动画），并签名一个**有辨识度的核心元素**，不要落入通用模板默认值。
+设计稿须复用现有视觉体系（**高级深色**：近黑底 + 靛蓝/紫/青渐变 + 玻璃拟态 + Space Grotesk / Inter / JetBrains Mono；像素工艺仅点缀于「游戏/数据」层；深/浅双主题；详见 `design/260728-site-redesign/`），**禁止像素字体**（Press Start 2P / Pixelify Sans 等不支持中文），并签名一个**有辨识度的核心元素**，不要落入通用模板默认值。
 
 > 纯后端 / 无界面改动的特性可跳过本步。
 
