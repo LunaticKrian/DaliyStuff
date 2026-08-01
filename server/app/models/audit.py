@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, Integer, String, func
+from sqlalchemy import JSON, DateTime, Integer, String, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -16,7 +16,7 @@ class AuditLog(Base):
     action: Mapped[str] = mapped_column(String(64), nullable=False)
     target_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     target_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    detail: Mapped[dict] = mapped_column(JSON, default=dict, server_default="{}")
+    detail: Mapped[dict] = mapped_column(JSON, default=dict, server_default=text("('{}')"))  # MySQL: JSON 列默认值需表达式形式
     ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), index=True, nullable=False,

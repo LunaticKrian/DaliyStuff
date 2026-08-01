@@ -79,7 +79,7 @@ async def month_usage(db: AsyncSession, user_id: int) -> tuple[int, float]:
             func.coalesce(func.sum(UsageRecord.cost_usd), 0.0),
         ).where(
             UsageRecord.user_id == user_id,
-            func.strftime("%Y-%m", UsageRecord.created_at) == func.strftime("%Y-%m", "now"),
+            func.date_format(UsageRecord.created_at, "%Y-%m") == func.date_format(func.now(), "%Y-%m"),
         )
     )
     toks, cost = res.one()

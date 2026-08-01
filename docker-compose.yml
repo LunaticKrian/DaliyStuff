@@ -7,22 +7,52 @@
 # 前端构建：随 `docker compose up -d --build web` 完成，无需宿主机 node 环境。
 #
 # 密钥：./server/.env 由 env_file 注入（不进镜像、不进 git）。
+#       MySQL 口令 MYSQL_ROOT_PASSWORD / MYSQL_APP_PASSWORD 同样来自 ./server/.env。
 
 services:
+  mysql:
+    image: mysql:8.4                # LTS；生产固定具体 tag，勿用 latest
+    container_name: pixelpack-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-pixelpack}
+      MYSQL_DATABASE: pixelpack     # 首启自动建库 → 不需要 db-init
+      MYSQL_USER: pixelpack         # 自动建 app 用户并授予 pixelpack 全权限
+      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:-pixelpack}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      # 持久化到宿主；:Z 给 SELinux(CentOS 部署)打标签，Mac/Docker Desktop 下 no-op。
+      # 镜像 entrypoint 以 root 启动、首启自动 chown 给 mysql 用户(UID 999)，空目录无需手动 chown。
+      - ./data/mysql:/var/lib/mysql:Z
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - airise-web
+    # 不对主机暴露端口；本地调试可临时加 `ports: ["3306:3306"]`。
+
   api:
     build: ./server
     image: pixelpack-api
     container_name: pixelpack-api
     restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
     env_file:
       - ./server/.env
     environment:
-      # 持久化到挂载卷，避免容器重建丢库 / 丢文件
-      DATABASE_URL: "sqlite+aiosqlite:////app/data/data.db"
+      # 运行期 async 驱动连 compose 内网 mysql:3306；charset 必须 utf8mb4
+      DATABASE_URL: "mysql+asyncmy://pixelpack:${MYSQL_APP_PASSWORD:-pixelpack}@mysql:3306/pixelpack?charset=utf8mb4"
       # 写入 /app/data/uploads；网关以只读方式挂载同一路径直接 serve
       UPLOAD_DIR: "/app/data/uploads"
     volumes:
-      - ./data:/app/data
+      - ./data/uploads:/app/data/uploads
     networks:
       - airise-web
     # 不对主机暴露端口；外部一律经 airc-nginx 网关访问

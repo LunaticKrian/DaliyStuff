@@ -1,8 +1,9 @@
 fastapi
 uvicorn[standard]
 sqlalchemy[asyncio]
-aiosqlite
 alembic
+asyncmy              # 应用运行期 async MySQL 驱动（C 扩展，优先 wheel）
+pymysql              # Alembic 迁移用（sync，纯 Python 零编译）
 pydantic-settings
 email-validator
 python-jose[cryptography]

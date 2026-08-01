@@ -31,8 +31,17 @@ RUN { sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/deb
  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# asyncmy：amd64 有 manylinux wheel 直接用；arm64（Apple Silicon 本机构建）无 wheel，需 gcc + libc 头文件编译其 Cython 扩展。
+# build-essential 提供 gcc/g++/libc6-dev；装 → pip → purge 同层完成，不增镜像体积（asyncmy 纯 Cython，运行期无额外 .so 依赖）。
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential \
+ && pip install --no-cache-dir -r requirements.txt \
+ && apt-get purge -y --auto-remove build-essential \
+ && rm -rf /var/lib/apt/lists/*
 
+COPY alembic.ini ./alembic.ini
+COPY alembic/ ./alembic/
+COPY entrypoint.sh ./entrypoint.sh
 COPY app/ ./app/
 
 # ── 切换到非 root 用户 ───────────────────────────────────────────────
@@ -44,6 +53,7 @@ COPY app/ ./app/
 RUN groupadd -r -g 1000 app \
  && useradd -r -u 1000 -g app -m -d /home/app app \
  && mkdir -p /app/data /app/uploads \
+ && chmod +x /app/entrypoint.sh \
  && chown -R app:app /app /home/app
 
 # claude 子进程需要可写的 HOME（写会话/缓存）；TMPDIR 默认 /tmp 全局可写。
@@ -62,15 +72,15 @@ ENV IS_SANDBOX=1
 
 USER app
 
-# data.db 与 uploads/ 由 docker-compose 挂载到 /app/data（见 compose volumes）。
+# uploads/ 由 docker-compose 挂载到 /app/data/uploads（见 compose volumes）；
+# DB 数据在 mysql 容器的 ./data/mysql 卷，不再有 data.db。
 # ⚠️ 挂载会覆盖镜像内目录属主：宿主机的 ./data 必须 chown 给 1000:1000，
 #    否则非 root 的 app 用户无法写入（见 docs/deploy.md）。
 EXPOSE 8000
 
-# 在 /app 下启动，使 "./data.db"、"uploads" 等相对路径解析到 /app。
-# DATABASE_URL / UPLOAD_DIR 由 compose 注入，指向 /app/data 以实现持久化。
+# entrypoint 先 `alembic upgrade head` 对齐 schema，再 exec uvicorn。
+# DATABASE_URL / UPLOAD_DIR 由 compose 注入。
 # --log-config 给 uvicorn 自身日志（启动/退出/访问日志）加时间戳，
 # 默认 LOGGING_CONFIG 只有 levelprefix+message 无时间。业务 app.* 日志的时间戳
 # 见 app/logging_config.py。两者日期格式已对齐。
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", \
-     "--log-config", "app/uvicorn_log_config.json"]
+CMD ["./entrypoint.sh"]

@@ -25,7 +25,7 @@ from app.utils.deps import get_current_admin
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
-_MONTH_COND = func.strftime("%Y-%m", UsageRecord.created_at) == func.strftime("%Y-%m", "now")
+_MONTH_COND = func.date_format(UsageRecord.created_at, "%Y-%m") == func.date_format(func.now(), "%Y-%m")
 
 
 async def _audit(

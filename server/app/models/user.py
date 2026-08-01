@@ -1,6 +1,6 @@
 from datetime import date as date_type, datetime
 
-from sqlalchemy import JSON, Boolean, Date, DateTime, Integer, String, func
+from sqlalchemy import JSON, Boolean, Date, DateTime, Integer, String, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -16,7 +16,7 @@ class User(Base):
     email: Mapped[str | None] = mapped_column(String(255), unique=True, nullable=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    settings: Mapped[dict] = mapped_column(JSON, default=dict, server_default="{}")
+    settings: Mapped[dict] = mapped_column(JSON, default=dict, server_default=text("('{}')"))  # MySQL: JSON 列默认值需表达式形式，不能 DEFAULT '{}'
     exp: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     character_name: Mapped[str | None] = mapped_column(String(50), nullable=True)
     portrait_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
