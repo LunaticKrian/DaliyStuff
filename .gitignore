@@ -25,7 +25,7 @@ server/uploads/
 
 application/desktop/src-tauri/target
 
-data/mysql
+data
 
 # 本地开发覆盖（不提交）
 docker-compose.override.yml
