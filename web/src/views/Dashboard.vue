@@ -692,7 +692,8 @@ onUnmounted(() => {
 
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
   font-family: var(--d-f-body);
   color: var(--pixel-text);
 }
@@ -718,7 +719,7 @@ onUnmounted(() => {
 .loading-text { font-family: var(--d-f-mono); font-size: 12px; letter-spacing: .12em; color: var(--pixel-text-secondary); }
 
 /* —— 主布局 —— */
-.main-layout { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; align-items: stretch; }
+.main-layout { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: minmax(0, 1fr); gap: 16px; align-items: stretch; flex: 1; min-height: 0; }
 
 /* —— 玻璃面板（覆盖全局 .pixel-border 复古硬边框）—— */
 .char-panel,
@@ -731,7 +732,7 @@ onUnmounted(() => {
   border-radius: var(--d-radius) !important;
   box-shadow: var(--d-shadow-sm) !important;
 }
-.char-panel { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+.char-panel { padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; min-height: 0; }
 
 .char-top-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
 .char-portrait-col { position: relative; display: flex; justify-content: center; }
@@ -838,7 +839,7 @@ onUnmounted(() => {
 .at-locked { font-size: 10px; color: var(--pixel-text-secondary); margin-top: 5px; opacity: .7; }
 
 /* —— 冒险日志 —— */
-.journal-panel { padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.journal-panel { padding: 16px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
 .journal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--pixel-border); margin-bottom: 12px; }
 .journal-header-title { display: flex; align-items: center; gap: 8px; font-family: var(--d-f-mono); font-size: 12px; color: var(--pixel-text-secondary); letter-spacing: .04em; }
 .jh-icon { color: var(--pixel-primary); font-size: 13px; }
@@ -849,7 +850,7 @@ onUnmounted(() => {
 .journal-form-input:focus, .journal-form-textarea:focus { border-color: var(--pixel-primary); box-shadow: 0 0 0 3px rgba(34, 211, 238, .16); }
 .journal-form-input::placeholder, .journal-form-textarea::placeholder { color: var(--pixel-text-secondary); opacity: .6; }
 .journal-form-actions { display: flex; gap: 8px; justify-content: flex-end; }
-.journal-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
+.journal-list { flex: 1; overflow-y: auto; min-height: 0; display: flex; flex-direction: column; gap: 7px; }
 .journal-entry { background: var(--pixel-bg-secondary); border: 1px solid var(--pixel-border); border-radius: var(--d-radius-sm); padding: 9px 11px; cursor: pointer; transition: border-color .15s ease, background .15s ease; }
 .journal-entry:hover { border-color: var(--pixel-primary); background: var(--pixel-card-bg); }
 .journal-entry.system { border-left: 3px solid var(--pixel-info); }
@@ -873,10 +874,10 @@ onUnmounted(() => {
 .je-content { font-family: var(--d-f-body); font-size: 12px; color: var(--pixel-text-secondary); line-height: 1.55; padding-top: 7px; margin-top: 7px; border-top: 1px dashed var(--pixel-border); white-space: pre-wrap; }
 
 /* —— 右侧面板 —— */
-.side-panel { display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+.side-panel { display: flex; flex-direction: column; gap: 16px; overflow: hidden; min-height: 0; }
 .menu-section, .info-section { padding: 16px; }
 .info-section.recent-section { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-.info-section.recent-section .recent-list { overflow: hidden; flex: 1; min-height: 0; }
+.info-section.recent-section .recent-list { overflow-y: auto; flex: 1; min-height: 0; }
 .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-family: var(--d-f-mono); font-size: 12px; color: var(--pixel-text-secondary); letter-spacing: .04em; padding-bottom: 10px; border-bottom: 1px solid var(--pixel-border); }
 .section-icon { color: var(--pixel-primary); font-size: 13px; }
 .section-icon.alert { color: var(--pixel-accent); }
@@ -956,19 +957,41 @@ onUnmounted(() => {
 [data-theme="light"] .pixel-btn.primary { color: #fff; }
 .pixel-btn.primary:hover { background: var(--d-grad); box-shadow: 0 12px 28px -8px rgba(99, 102, 241, .95); }
 
+/* —— 模块内滚动条（细线，融入深/浅主题）—— */
+.char-panel,
+.journal-list,
+.info-section.recent-section .recent-list { scrollbar-width: thin; scrollbar-color: var(--pixel-border) transparent; }
+.char-panel::-webkit-scrollbar,
+.journal-list::-webkit-scrollbar,
+.info-section.recent-section .recent-list::-webkit-scrollbar { width: 8px; height: 8px; }
+.char-panel::-webkit-scrollbar-track,
+.journal-list::-webkit-scrollbar-track,
+.info-section.recent-section .recent-list::-webkit-scrollbar-track { background: transparent; }
+.char-panel::-webkit-scrollbar-thumb,
+.journal-list::-webkit-scrollbar-thumb,
+.info-section.recent-section .recent-list::-webkit-scrollbar-thumb { background: var(--pixel-border); border-radius: 999px; }
+.char-panel::-webkit-scrollbar-thumb:hover,
+.journal-list::-webkit-scrollbar-thumb:hover,
+.info-section.recent-section .recent-list::-webkit-scrollbar-thumb:hover { background: var(--pixel-text-secondary); }
+
 /* —— 响应式（布局断点不变）—— */
 @media (max-width: 1100px) {
   .main-layout { grid-template-columns: 1fr 1fr; }
   .journal-panel { grid-column: 1 / -1; max-height: 360px; }
 }
 @media (max-width: 900px) {
-  .main-layout { grid-template-columns: 1fr; }
+  /* 窄屏单列堆叠：解除固定高度，恢复整页滚动 */
+  .dashboard-page { height: auto; overflow: visible; }
+  .main-layout { grid-template-columns: 1fr; grid-template-rows: none; flex: none; }
+  .char-panel { overflow-y: visible; }
+  .journal-panel { grid-column: auto; max-height: none; overflow: visible; }
+  .side-panel { overflow: visible; }
+  .info-section.recent-section .recent-list { overflow-y: visible; }
   .char-top-row { grid-template-columns: 1fr; justify-items: center; }
   .char-info { align-items: center; text-align: center; }
   .portrait-frame { width: 160px; height: 200px; }
   .speech-bubble { display: none; }
   .modal-columns { grid-template-columns: 1fr; }
-  .journal-panel { grid-column: auto; max-height: none; }
 }
 
 @keyframes pixel-blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
